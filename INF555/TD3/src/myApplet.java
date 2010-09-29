@@ -4,8 +4,6 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 
-import Jama.Matrix;
-
 
 public class myApplet extends Applet {
 	
@@ -18,7 +16,6 @@ public class myApplet extends Applet {
 	final static double Ymax=scale;
 	double a1,b1,c1,a2,b2,c2;
 	double x,y,z;
-	Matrix l1,l2;
 	/**
 	 * 
 	 */
@@ -36,8 +33,6 @@ public class myApplet extends Applet {
 		a2=Math.random();
 		b2=Math.random();
 		c2=Math.random();
-		l1 = new Matrix(new double[] {a1,b1,c1},1);
-		l2 = new Matrix(new double[] {a2,b2,c2},1);
 		x=(b1*c2-b2*c1);
 		y=(c1*a2-c2*a1);
 		z=a1*b2-a2*b1;
