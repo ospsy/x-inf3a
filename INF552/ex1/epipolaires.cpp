@@ -36,8 +36,14 @@ mat fundamental(cam C[2]) {
 	return mat::CrossProd(e2)*C[1].A*inverse(C[0].A);
 }
 
-float NCC(const Image<byte>& I1, m1, const Image<byte>& I2, m2){
-	
+float NCC(const Image<byte>& I1, const IntPoint2& m1, const Image<byte>& I2, const IntPoint2& m2){
+	const int W_length=2;
+	float I1avg=0, I2avg=0;
+	for(int i =-W_length;i<=W_length;i++){
+		for(int j =-W_length;j<=W_length;j++){
+			//I1avg+=I1
+		}
+	}
 	return 0.;
 }
 
