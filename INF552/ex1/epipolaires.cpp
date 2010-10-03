@@ -36,6 +36,11 @@ mat fundamental(cam C[2]) {
 	return mat::CrossProd(e2)*C[1].A*inverse(C[0].A);
 }
 
+float NCC(const Image<byte>& I1, m1, const Image<byte>& I2, m2){
+	
+	return 0.;
+}
+
 int main() {
 	Image<byte> I[2];
 	load(I[0],srcPath("face00.gif"));
@@ -59,9 +64,14 @@ int main() {
 		int &refx=x, &refy=y;
 		getMouse(refx,refy);
 		cout << x << " " << y << endl;
+		
+		if(x>=I[0].width()) break;
 		drawCircle(x,y,10,BLUE);
-		//if(x>=I[0].width) break;
-		vec l =F*vec(x,y);
+		vec l =F*vec(x,y,1);
+		int yl1=(int)(-l[2]/l[1]);
+		int yl2=(int)(-(l[2]+l[0]*I[0].width())/l[1]);
+		drawLine(I[0].width(),yl1,I[0].width()*2-1,yl2,BLUE);
+
 	}
 	
 	endGraphics();
