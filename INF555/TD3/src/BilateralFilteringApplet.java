@@ -11,7 +11,7 @@ public class BilateralFilteringApplet extends Applet {
 	static int width, height;
 	static double sigmas=4.0;
 	static double sigmai=10.25;
-	static int k=2;
+	static int k=1;
 
 	static double G(double x, double s){
 		return Math.exp(-(double)(x*x)/(2*s*s));
@@ -81,9 +81,8 @@ public class BilateralFilteringApplet extends Applet {
 		raster = (int[])pg.getPixels();
 
 		rastero=BilateralFiltering(raster, sigmas, sigmai, k);
-
 		ImageProducer ip = new MemoryImageSource(width , height ,rastero , 0 , width);
-		this.resize(width, height);
+		this.resize(2*width, height);
 		imgo = createImage(ip);
 		
 	}
