@@ -8,8 +8,8 @@ public class BilateralFiltering extends Applet {
 	static int raster []; int rastero [];
 	static PixelGrabber pg;
 	static int width, height;
-	static double sigmas=2.0;
-	static double sigmai=10.25;
+	static double sigmas=5.0;
+	static double sigmai=16.25;
 	static int k=2;
 
 	static double G(double x, double s){
@@ -18,7 +18,7 @@ public class BilateralFiltering extends Applet {
 
 	static int [] BilateralFiltering(int [] raster, double sigmas, double sigmai, int k)
 	{
-		int [] result=null, rasteri;
+		int [] result=null;
 		int grey=0, greyc, ngrey,alpha, index, indexc;	
 		int i,j, ii, jj,l;
 		int bound=(int)(3.0*sigmas);
