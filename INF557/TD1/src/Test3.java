@@ -1,3 +1,6 @@
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class Test3 {
 
@@ -7,19 +10,23 @@ public class Test3 {
 	 */
 	public static void main(String[] args) throws InterruptedException {
 		PhysicalLayer pl = new PhysicalLayer();
-	    String tentativeName = "SuperPanda"; // replace as per your chosing
-	    SNACASD sd = new SNACASD(pl, 5, 3);
-	    if (!sd.verifyUniqueness(tentativeName)) {
-	      System.out.println(tentativeName + " is already in use, exiting");
-	      System.exit(0);
+	   SNACASD sd = new SNACASD(pl, 5, 3);
+	    if(!sd.connect()){
+	    	System.out.println("Impossible de trouver un nom, aborting...");
+	    	System.exit(0);
 	    }
+	    Election elec = new Election(sd);
+	    
 	    while (true) {
 	      String m = pl.receive();
 	      if (m != null) {
+	    	  System.out.println(m);
 				sd.handleDiscover(m);
+				sd.handleService(m);
+				elec.handleElectionMessages(m);
 	      }
 	      // sleep for a bit
-	      Thread.sleep(500);
+	      Thread.sleep(0);
 	    }
 	}
 

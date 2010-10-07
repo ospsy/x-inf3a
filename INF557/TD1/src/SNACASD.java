@@ -1,10 +1,21 @@
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 
 public class SNACASD {
-  String myName;
+  public String myName;
   private PhysicalLayer pl;
   private int retries;
   private int maxtime;
+  private HashMap<String, User> users;
 
+  public void send(String m){
+	  pl.send(m);
+  }
+  
   public SNACASD(PhysicalLayer pl, int retries, int maxtime) {
     // pl is the physical layer instance, via which
     //       outgoing messages are sent
@@ -15,6 +26,7 @@ public class SNACASD {
     this.pl = pl;
     this.retries = retries;
     this.maxtime = maxtime;
+    users=new HashMap<String, User>();
   }
 
   public boolean verifyUniqueness(String tentativeName){
@@ -38,16 +50,16 @@ public class SNACASD {
 			e.printStackTrace();
 		}
 		  String s;
-		  boolean myMessage=true;
+		  boolean myMessage=true;//permet d'éviter de traiter son propre message
 		  while((s=pl.receive())!=null){
-			  if((TypeMessage.isDISCOVER(s) && TypeMessage.getDest(s)==tentativeName)){
+			  if((TypeMessage.isDISCOVER(s) && TypeMessage.getDest(s).equals(tentativeName))){
 				  if(myMessage) myMessage=false;
 				  else{
 					  failed=true;
 					  break;
 				  }
 			  }
-			  if((TypeMessage.isSERVICES(s) && TypeMessage.getSource(s)==tentativeName))
+			  if((TypeMessage.isSERVICES(s) && TypeMessage.getSource(s).equals(tentativeName)))
 				  {failed=true;
 				  break;
 				  }
@@ -75,7 +87,58 @@ public class SNACASD {
     // handles a DISCOVER message m, if appropriate
     // (i.e. is destined for this node or for all nodes),
     // and replies with a SERVICE message
-	  if(TypeMessage.isDISCOVER(m) && TypeMessage.getDest(m)==myName)
+	  if(TypeMessage.isDISCOVER(m) && TypeMessage.getDest(m).equals(myName))
 		  pl.send(TypeMessage.services(myName, "ALL"));
+  }
+  
+  public void handleService(String m){
+	  if(TypeMessage.isSERVICES(m)){
+		  String tmp=TypeMessage.getSource(m);
+		  if(users.containsKey(tmp)){
+			  users.get(tmp).update();
+		  }else{
+			  users.put(tmp, new User(tmp));
+		  }
+	  }
+  }
+  
+  /**
+   * Etablit la connection (generation du nom et création du thread des SERVICE)
+   * @return true si OK, false sinon
+   */
+  public boolean connect(){
+	  if(getUniqueName().equals(""))
+		  return false;
+	  else{
+		  Timer t1 = new Timer();
+			t1.schedule(new TimerTask() {
+				
+				@Override
+				public void run() {
+					pl.send(TypeMessage.services(myName, "ALL"));
+					
+				}
+			}, 0, 4000);
+			t1.schedule(new TimerTask() {
+				
+				@Override
+				public void run() {
+					System.out.println("Copains:");
+					LinkedList<String> removables=new LinkedList<String>();
+					for(User u : users.values()){
+						if(!u.check(pl, myName)){
+							removables.add(u.userName);
+						}
+					}
+					for(String s :removables)
+						users.remove(s);
+					for(User u : users.values()){
+						System.out.println(u.userName);
+					}
+				}
+			}, 0, 1000);
+			
+			return true;
+	  }
   }
 }

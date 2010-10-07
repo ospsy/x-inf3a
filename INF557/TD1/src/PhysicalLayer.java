@@ -239,7 +239,9 @@ class TypeMessage {
   public static boolean isGoodType(String type) {
     return (type.equals("SERVICES") || type.equals("DISCOVER")
         || type.equals("MESSAGE") || type.equals("ACK") || type.equals("NACK")
-        || type.equals("JOIN") || type.equals("ACCEPT"));
+        || type.equals("JOIN") || type.equals("ACCEPT") || type.equals("election")
+        || type.equals("ELECTION") || type.equals("OK") || type.equals("ok")
+        || type.equals("leader") || type.equals("LEADER"));
   }
 
   public static boolean isOfType(String message, String type) {
@@ -254,6 +256,18 @@ class TypeMessage {
   public static boolean isDISCOVER(String message) {
     return isOfType(message, "DISCOVER");
   }
+  
+  public static boolean isELECTION(String message) {
+	    return isOfType(message, "ELECTION") || isOfType(message, "election");
+  }
+  
+  public static boolean isLEADER(String message) {
+	    return isOfType(message, "LEADER") || isOfType(message, "leader");
+}
+  
+  public static boolean isOK(String message) {
+	    return isOfType(message, "OK") || isOfType(message, "ok");
+}
 
   public static String getSource(String message) {
     return message.split(":")[1];
@@ -274,6 +288,17 @@ class TypeMessage {
   public static String discover(String source, String dest) {
     return message(source, dest, "DISCOVER");
   }
+  
+  public static String election(String source, String dest) {
+	    return message(source, dest, "ELECTION");
+  }
+  
+  public static String ok(String source, String dest) {
+	    return message(source, dest, "OK");
+}
+  public static String leader(String source, String dest) {
+	    return message(source, dest, "LEADER");
+}
 
   // etc
 }
