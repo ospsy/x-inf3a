@@ -12,7 +12,7 @@ import Jama.*;
 public class ICPApplet extends Applet {
 	private static final long serialVersionUID = -517368936032866861L;
 	static final int width=800, height=600;
-	Collection<Matrix> P,Q,R;
+	Collection<Matrix> P,Q,Re;
 	static final double epsilon=1;
 	static final double xMax=8;
 	static final double xMin=-xMax;
@@ -42,8 +42,24 @@ public class ICPApplet extends Applet {
 		return result;
 	}
 	
-	public Matrix ICP(Collection<Matrix> P, Collection<Matrix> Q){
-		return null;
+	public void ICP(Matrix R, Matrix t, Collection<Matrix> P, Collection<Matrix> Q){
+		Matrix mQ = mean(Q);
+		Matrix mP = mean(P);
+		
+		LinkedList<Matrix> P2 = new LinkedList<Matrix>();
+		for(Matrix ptP : P){
+			P2.add(ptP.minus(mP));
+		}
+		LinkedList<Matrix> Q2 = new LinkedList<Matrix>();
+		for(Matrix ptQ : Q){
+			Q2.add(ptQ.minus(mQ));
+		}
+		Matrix m= scatter(P2, Q2);
+		
+		SingularValueDecomposition svd=m.svd();
+		R=svd.getU().times(svd.getV().transpose());
+		
+		t=mQ.minus(R.times(mP));
 	}
 	
 	public void generationAleatoire(Matrix R, Matrix t, Collection<Matrix> P, Collection<Matrix> Q,int n){
@@ -63,27 +79,27 @@ public class ICPApplet extends Applet {
 	public void init() {
 		P=new LinkedList<Matrix>();
 		Q=new LinkedList<Matrix>();
-		P.add(new Matrix(new double[][] {{2}, {2}}));
+		/*P.add(new Matrix(new double[][] {{2}, {2}}));
 		P.add(new Matrix(new double[][] {{6}, {3}}));
 		P.add(new Matrix(new double[][] {{5}, {1}}));
 		Q.add(new Matrix(new double[][] {{-0.8}, {-1}}));
 		Q.add(new Matrix(new double[][] {{-3.7}, {-1.9}}));
-		Q.add(new Matrix(new double[][] {{-1.5}, {-2.1}}));
+		Q.add(new Matrix(new double[][] {{-1.5}, {-2.1}}));*/
 		resize(width, height);
 		
-
-		Matrix t = mean(P).minus(mean(Q));
-		t.print(4, 1);
-		R=new LinkedList<Matrix>();
-		for(Matrix ptQ : Q){
-			R.add(ptQ.plus(t));
+		//TODO passer en projectif!!!!
+		Matrix tTheorique=null;
+		Matrix RTheorique=null;
+		generationAleatoire(RTheorique, tTheorique, P, Q, 10);
+		
+		Matrix t=null;
+		Matrix R=null;
+		ICP(R, t, P, Q);
+		
+		Re=new LinkedList<Matrix>();
+		for(Matrix ptP : P){
+			Re.add(R.times(ptP).plus(t));
 		}
-		
-		Matrix m= scatter(P, R);
-		SingularValueDecomposition svd=m.svd();
-		Matrix R=svd.getU().times(svd.getV().transpose());
-		
-		
 	}
 	
 	
@@ -103,6 +119,6 @@ public class ICPApplet extends Applet {
 		g.setColor(Color.RED);
 		drawCollection(Q, g);
 		g.setColor(Color.GREEN);
-		drawCollection(R, g);
+		drawCollection(Re, g);
 	}
 }
