@@ -8,13 +8,14 @@ using namespace Imagine;
 
 typedef FVector<double,3> vec;
 typedef FMatrix<double,3,3> mat;
+const int W_length=5;
 
 class cam {
 public:
 	mat A;
 	vec b;
 	void read(const string& s);
-	inline vec center() const { return -inverse(A)*b; } //TODO A vérifier
+	inline vec center() const { return -inverse(A)*b; } //TODO A vï¿½rifier
 	inline vec proj(vec M) const { return A*M+b; }
 };
 
@@ -28,7 +29,7 @@ void cam::read(const string& s) {
 }
 
 mat fundamental(cam C[2]) {
-	// Vous devez trouver pour les données fournies:
+	// Vous devez trouver pour les donnï¿½es fournies:
 	// F = 0.000426009 0.0096959 -7.28753
 	//     -0.0204891 0.00309733 136.434
 	//     8.77836 -135.769 2853.02
@@ -36,15 +37,41 @@ mat fundamental(cam C[2]) {
 	return mat::CrossProd(e2)*C[1].A*inverse(C[0].A);
 }
 
-float NCC(const Image<byte>& I1, const IntPoint2& m1, const Image<byte>& I2, const IntPoint2& m2){
-	const int W_length=2;
-	float I1avg=0, I2avg=0;
+double moyenne(const Image<byte>& I, const IntPoint2& m){
+	double result=0;
+	double W_card=0;
 	for(int i =-W_length;i<=W_length;i++){
 		for(int j =-W_length;j<=W_length;j++){
-			//I1avg+=I1
+			if(0<=m.x()+i && I.width()>m.x()+i && 0<=m.y()+j && I.height()>m.y()+j){
+				result+=(double)(I(m.x()+i,m.y()+j));
+				W_card++;
+			}
 		}
 	}
-	return 0.;
+	return result/W_card;
+}
+
+double produit(const Image<byte>& I1, const IntPoint2& m1, const Image<byte>& I2, const IntPoint2& m2){
+	int W_card=0;
+	double result=0;
+	double avgI1=moyenne(I1,m1), avgI2=moyenne(I2,m2);
+	for(int i =-W_length;i<=W_length;i++){
+		for(int j =-W_length;j<=W_length;j++){
+			IntPoint2 m1tmp= m1+IntPoint2(i,j);
+			IntPoint2 m2tmp=m2+IntPoint2(i,j);
+			if(0<=m1tmp.x() && I1.width()>m1tmp.x() && 0<=m1tmp.y() && I1.height()>m1tmp.y()
+					&& 0<=m2tmp.x() && I2.width()>m2tmp.x() && 0<=m2tmp.y() && I2.height()>m2tmp.y())
+			{
+				result+=(double)((I1(m1tmp)-avgI1)*(I2(m2tmp)-avgI2));
+				W_card++;
+			}
+		}
+	}
+	return result/W_card;
+}
+
+double NCC(const Image<byte>& I1, const IntPoint2& m1, const Image<byte>& I2, const IntPoint2& m2){
+	return produit(I1,m1,I2,m2)/sqrt(produit(I1,m1,I1,m1)*produit(I2,m2,I2,m2));
 }
 
 int main() {
@@ -64,7 +91,7 @@ int main() {
 	mat F=fundamental(C);
 	cout << F << endl;
 
-	// Completer par le tracé d'épipolaires choisies a la souris
+	// Completer par le tracï¿½ d'ï¿½pipolaires choisies a la souris
 	while(true){
 		int x=0,y=0;
 		int &refx=x, &refy=y;
@@ -77,6 +104,18 @@ int main() {
 		int yl1=(int)(-l[2]/l[1]);
 		int yl2=(int)(-(l[2]+l[0]*I[0].width())/l[1]);
 		drawLine(I[0].width(),yl1,I[0].width()*2-1,yl2,BLUE);
+		IntPoint2 init(0,yl1);
+		IntPoint2 ptMax;
+		double max=-1;
+		for(int xx=0;xx<I[0].width();xx++){
+			IntPoint2 pt1(x,y), pt2=init+IntPoint2(xx,(int)(-(l[0]*xx)/l[1]));
+			double ncc = NCC(I[0],pt1,I[1],pt2);
+			if(ncc>max){
+				ptMax=pt2;
+				max=ncc;
+			}
+		}
+		fillCircle(ptMax+IntPoint2(I[0].width(),0),5,BLUE);
 
 	}
 	
