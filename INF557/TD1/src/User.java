@@ -1,5 +1,6 @@
 
 public class User {
+	final long defaultPeriod=1500;
 	long timeOfLastMsg;
 	long period;
 	boolean isDying;
@@ -7,22 +8,22 @@ public class User {
 	
 	User(String name){
 		timeOfLastMsg=System.currentTimeMillis();
-		period=20000;
+		period=defaultPeriod;
 		isDying=false;
 		userName=name;
 	}
 	
-	void update(){
+	synchronized void update(){
 		isDying=false;
 		long tmp = System.currentTimeMillis()-timeOfLastMsg;
 		if(tmp>3*period || tmp<period/3)
-			period=2*tmp;
+			period=Math.max(2*tmp,defaultPeriod);
 		timeOfLastMsg=System.currentTimeMillis();
 	}
 	
-	boolean check(PhysicalLayer pl,String myName){
+	synchronized boolean check(PhysicalLayer pl,String myName){
 		if(isDying) return false;
-		if((System.currentTimeMillis()-timeOfLastMsg)>period){
+		if((System.currentTimeMillis()-timeOfLastMsg)>3*period){
 			isDying=true;
 			pl.send(TypeMessage.discover(myName, userName));
 		}

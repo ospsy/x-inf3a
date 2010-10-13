@@ -18,15 +18,17 @@ public class Test3 {
 	    Election elec = new Election(sd);
 	    
 	    while (true) {
-	      String m = pl.receive();
-	      if (m != null) {
+	      
+	      while (true) {
+	    	  String m = pl.receive();
+	    	  if(m==null) break;
 	    	  System.out.println(m);
 				sd.handleDiscover(m);
 				sd.handleService(m);
 				elec.handleElectionMessages(m);
 	      }
 	      // sleep for a bit
-	      Thread.sleep(0);
+	      Thread.sleep(20);
 	    }
 	}
 

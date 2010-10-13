@@ -136,7 +136,7 @@ public class SNACASD {
 						System.out.println(u.userName);
 					}
 				}
-			}, 0, 1000);
+			}, 0, 3000);
 			
 			return true;
 	  }

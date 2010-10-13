@@ -6,7 +6,9 @@ public class Test2 {
 	public static void main(String[] args){
 		final PhysicalLayer pl = new PhysicalLayer();
 		
-		Timer t1 = new Timer();
+		pl.send(TypeMessage.election("-1", ">0"));
+		
+		/*Timer t1 = new Timer();
 		t1.schedule(new TimerTask() {
 			
 			@Override
@@ -22,7 +24,7 @@ public class Test2 {
 				pl.send("B");
 				
 			}
-		}, 11000, 7000);
+		}, 11000, 7000);*/
 		
 	}
 }
