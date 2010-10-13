@@ -115,7 +115,7 @@ public class Homographie {
 		}*/
 		
 		
-		/*unperpective*/
+		/*unperspective*/
 		Image img = new Image("newcourt.png");
 		
 		Point[] l=new Point[4], r=new Point[4];

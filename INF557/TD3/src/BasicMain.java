@@ -57,7 +57,7 @@ public class BasicMain {
     }
     String myName = args[0];
     int successRate = Integer.parseInt(args[1]);
-    TransportLayer.init(myName, successRate, TransportProtocol.STOP_AND_WAIT); // change
+    TransportLayer.init(myName, successRate, TransportProtocol.GO_BACK_N); // change
                                                                        // of
                                                                        // protocol
                                                                        // here

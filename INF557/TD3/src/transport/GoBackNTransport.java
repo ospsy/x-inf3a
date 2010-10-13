@@ -1,5 +1,6 @@
 package transport;
 
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -7,13 +8,17 @@ import common.MessageBuffer;
 import common.MessageFormat;
 
 public class GoBackNTransport extends TransportLayer {
-
-	private int counterSend = 0;
+	private final GoBackNTransport me=this;
+	private int counterSending = 0;
+	private int counterSent = 0;
 	private int counterReceived = 0;
-	private int lastAck=0;
+	private LinkedList<String> messagesEnEnvoi= new LinkedList<String>();
 	private MessageBuffer buffer = new MessageBuffer();
 	private String dest=null;
-	private TimerTask task=null;
+	private TimerTask task=new TimerTask() {
+		@Override
+		public void run() {	}
+	};
 	private static final Timer timer=new Timer();
 	private final long period=1000;
 
@@ -31,10 +36,14 @@ public class GoBackNTransport extends TransportLayer {
 		super();
 		startThread();
 		dest=clientName;
-	}
-
-	private synchronized int getLastAck(){
-		return lastAck;
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				sendNack(dest, counterReceived);
+				
+			}
+		}, 0, 5000);
 	}
 	
 	private void startThread() {
@@ -42,12 +51,15 @@ public class GoBackNTransport extends TransportLayer {
 
 			public void run() {
 				while(true){
-					synchronized(this){
-						final String m=buffer.receive();
-						if(m==null) continue;
-						counterSend++;
-						sendMessage(dest, counterSend, m);
-						System.out.println(counterSend+" envoyé");
+					synchronized(me){
+						if(counterSending-counterSent>=messagesEnEnvoi.size()){
+							final String m=buffer.receive();
+							if(m==null) continue;//rien à envoyer
+							messagesEnEnvoi.add(m);
+						}
+						counterSending++;
+						sendMessage(dest, counterSending, messagesEnEnvoi.get(counterSending-counterSent-1));
+						System.out.println(counterSending+" envoyé");
 					}
 				}
 			}
@@ -57,13 +69,6 @@ public class GoBackNTransport extends TransportLayer {
 
 	@Override
 	synchronized boolean processAck(String packet) {
-		int n=MessageFormat.getNum(packet);
-		if (n==lastAck+1 && MessageFormat.getSource(packet).equals(dest)) {
-			lastAck++;
-			System.out.println("Ack "+n);
-			task.cancel();
-			return true;
-		}
 		return false;
 	}
 
@@ -72,7 +77,7 @@ public class GoBackNTransport extends TransportLayer {
 		final int n=MessageFormat.getNum(packet);
 		if(MessageFormat.getSource(packet).equals(dest) && received != null) {
 			if (n==counterReceived+1){
-				task.cancel();
+				task.cancel();//si on renvoyait un nack, on arrête
 				counterReceived++;
 				received.addMessageInBuffer(MessageFormat.getContent(packet));
 			}else if(n>counterReceived+1){
@@ -93,7 +98,17 @@ public class GoBackNTransport extends TransportLayer {
 
 	@Override
 	boolean processNack(String packet) {
-		// TODO Auto-generated method stub
+		int n=MessageFormat.getNum(packet);
+		if (MessageFormat.getSource(packet).equals(dest)) {
+			synchronized (me) {
+				counterSending=MessageFormat.getNum(packet);
+				while(MessageFormat.getNum(messagesEnEnvoi.getFirst())<=counterSending)
+					messagesEnEnvoi.remove();
+				counterSent=counterSending;
+			}
+			System.out.println("Nack "+n);
+			return true;
+		}
 		return false;
 	}
 
@@ -105,7 +120,7 @@ public class GoBackNTransport extends TransportLayer {
 	// wait until all packets are really sent
 	public void flush() {
 		while(true){
-			if(buffer.isEmpty()) break;
+			if(messagesEnEnvoi.isEmpty()) break;
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
