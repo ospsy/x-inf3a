@@ -7,6 +7,7 @@
 #include "Hough.h"
 
 using namespace std;
+using namespace Imagine;
 
 typedef FVector<double,3> vec;
 typedef FMatrix<double,3,3> mat;
@@ -24,9 +25,10 @@ int main() {
 	Image<byte> I;
 	load(I,srcPath("img.png"));
 	int w=I.width(),h=I.height(); // On suppose les deux images de memes dimensions
-
-	openWindow(w,h);
-	display((Image<byte>)Hough(I));
+	int T=500, R=500;
+	openWindow(T,R);
+	Image<byte> result=Hough(I,T,R);
+	display(result);
 	click();
 	return 0;
 }
