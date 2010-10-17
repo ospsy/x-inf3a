@@ -274,9 +274,12 @@ int main() {
 	int Ntriangles=2*(result.width()-1)*(result.height()-1);
 	DoublePoint3 *P=new DoublePoint3[Npoints];
 	Triangle *T=new Triangle[Ntriangles];
+	Color *col = new Color[Npoints];
 	for(int x=0;x<result.width();x++){
 		for(int y=0;y<result.height();y++){
 			P[y*result.width()+x]=DoublePoint3(x,y,result(x,y));
+			byte b=I[0](x,y);
+			col[y*result.width()+x]=Color(b,b,b);
 		}
 	}
 	for(int x=0;x<result.width()-1;x++){
@@ -285,7 +288,8 @@ int main() {
 				T[2*(y*result.width()+x)+1]=Triangle((y+1)*result.width()+x+1,y*result.width()+x+1,(y+1)*result.width()+x);
 			}
 		}
-	VtkMesh M(P,Npoints,T,Ntriangles);
+	VtkMesh M(P,Npoints,T,Ntriangles,VERTEX_COLOR);
+	M.setColors(col);
 	Window win = openWindow(600,600,"3D",WINDOW_VTK);
 	setActiveWindow(win);
 	showMesh(M);

@@ -154,9 +154,9 @@
 <pathentry kind="mac" name="__EXCEPTIONS" path="" value="1"/>
 <pathentry kind="mac" name="__GCC_HAVE_DWARF2_CFI_ASM" path="" value="1"/>
 <pathentry kind="mac" name="_GNU_SOURCE" path="" value="1"/>
-<pathentry include="/usr/local/Imagine++-3.2.1-Linux-2.6.32-24-generic/include" kind="inc" path="" system="true"/>
-<pathentry include="/home/benoit/X/Imagine-source/ThirdParty/wxWidgets/src/tmp/linux/lib/wx/include/gtk2-unicode-2.9" kind="inc" path="" system="true"/>
-<pathentry include="/home/benoit/X/Imagine-source/ThirdParty/wxWidgets/src/tmp/linux/include/wx-2.9" kind="inc" path="" system="true"/>
+<pathentry include="/usr/local/Imagine++/include" kind="inc" path="" system="true"/>
+<pathentry include="/home/benoit/Imagine/ThirdParty/wxWidgets/src/tmp/linux/lib/wx/include/gtk2-unicode-2.9" kind="inc" path="" system="true"/>
+<pathentry include="/home/benoit/Imagine/ThirdParty/wxWidgets/src/tmp/linux/include/wx-2.9" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/gtk-2.0" kind="inc" path="" system="true"/>
 <pathentry include="/usr/lib/gtk-2.0/include" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/atk-1.0" kind="inc" path="" system="true"/>
@@ -169,7 +169,7 @@
 <pathentry include="/usr/include/freetype2" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/directfb" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include/libpng12" kind="inc" path="" system="true"/>
-<pathentry include="/usr/local/Imagine++-3.2.1-Linux-2.6.32-24-generic/include/vtk-5.6" kind="inc" path="" system="true"/>
+<pathentry include="/usr/local/Imagine++/include/vtk-5.6" kind="inc" path="" system="true"/>
 <pathentry include="/usr/include" kind="inc" path="" system="true"/>
 <pathentry include="/usr/local/include" kind="inc" path="" system="true"/>
 <pathentry include="/usr/lib/gcc/i486-linux-gnu/4.4.3/include" kind="inc" path="" system="true"/>
