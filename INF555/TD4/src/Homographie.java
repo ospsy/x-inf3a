@@ -91,6 +91,7 @@ public class Homographie {
 		r[3]=new Point(904,443);
 		
 		Image out = img1;
+		//forward
 		Image img1 = new Image("bookcovers1.png");
 		Image img2 = new Image("bookcovers2.png");
 		Matrix H = createHomographie4Points(r,l);
@@ -117,12 +118,25 @@ public class Homographie {
 		
 		/*unperspective*/
 		Image img = new Image("newcourt.png");
+		ViewerClicker vc = new ViewerClicker(img);
 		
-		Point[] l=new Point[4], r=new Point[4];
+		//prédéfinis
+		/*Point[] l=new Point[4], r=new Point[4];
 		l[0]=new Point(455,806); r[0]=new Point(0,0);
 		l[1]=new Point(779,537);r[1]=new Point(img.getWidth(),0);
 		l[2]=new Point(803,202); r[2]=new Point(img.getWidth(),img.getHeight());
 		l[3]=new Point(440,332); r[3]=new Point(0,img.getHeight());
+		*/
+		//Avec la souris (haut-gauche, haut-droit, bas-droit, bas-gauche)
+		Point[] l, r=new Point[4];
+		r[0]=new Point(0,0);
+		r[1]=new Point(img.getWidth(),0);
+		r[2]=new Point(img.getWidth(),img.getHeight());
+		r[3]=new Point(0,img.getHeight());
+		l=vc.getPoints();
+		
+		
+		
 		
 		Image out = new Image(img.getWidth(), img.getHeight());
 		
@@ -135,11 +149,25 @@ public class Homographie {
 				double xxf=(pt.get(0,0)/pt.get(2, 0));
 				double yyf=(pt.get(1,0)/pt.get(2, 0));
 				int xx = (int) xxf;
+				double alphaX= xxf-xx;
 				int yy = (int) yyf;
+				double alphaY= yyf-yy;
 				if(xx>0 && xx<out.getWidth() && yy>0 && yy<out.getHeight()){
-					out.setGreen(x, y, img.getGreen(xx, yy));
-					out.setBlue(x, y, img.getBlue(xx, yy));
-					out.setRed(x, y, img.getRed(xx, yy));
+					int green= (int)(img.getGreen(xx, yy)*(1-alphaX)*(1-alphaY)+
+						img.getGreen(xx+1, yy)*(alphaX)*(1-alphaY)+
+						img.getGreen(xx, yy+1)*(1-alphaX)*(alphaY)+
+						img.getGreen(xx+1, yy+1)*(alphaX)*(alphaY));
+					int red= (int)(img.getRed(xx, yy)*(1-alphaX)*(1-alphaY)+
+						img.getRed(xx+1, yy)*(alphaX)*(1-alphaY)+
+						img.getRed(xx, yy+1)*(1-alphaX)*(alphaY)+
+						img.getRed(xx+1, yy+1)*(alphaX)*(alphaY));
+					int blue= (int)(img.getBlue(xx, yy)*(1-alphaX)*(1-alphaY)+
+						img.getBlue(xx+1, yy)*(alphaX)*(1-alphaY)+
+						img.getBlue(xx, yy+1)*(1-alphaX)*(alphaY)+
+						img.getBlue(xx+1, yy+1)*(alphaX)*(alphaY));
+					out.setGreen(x, y, green);
+					out.setBlue(x, y, blue);
+					out.setRed(x, y, red);
 				}
 			}
 		}

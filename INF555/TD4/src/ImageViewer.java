@@ -3,17 +3,20 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 
+@SuppressWarnings("serial")
 public class ImageViewer extends JFrame {
-    
+    private ImageComponent ic;
+	
     public ImageViewer(Image img) {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        ImageComponent ic = new ImageComponent(img);
+        ic = new ImageComponent(img);
         add(ic);
         pack();
         setVisible(true);
     }
 }
 
+@SuppressWarnings("serial")
 class ImageComponent extends JComponent {
 
     private Image img;
@@ -26,4 +29,6 @@ class ImageComponent extends JComponent {
     public void paint(Graphics g) {
         g.drawImage(img.toImage(), 0, 0, this);
     }
+    
+    
 }
