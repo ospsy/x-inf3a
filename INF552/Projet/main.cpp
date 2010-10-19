@@ -24,10 +24,13 @@ const int W_length=5;
 int main() {
 	Image<byte> I;
 	load(I,srcPath("img.png"));
-	int w=I.width(),h=I.height(); // On suppose les deux images de memes dimensions
-	int T=500, R=500;
-	openWindow(T,R);
+	int w=I.width(),h=I.height();
+	openWindow(w,h);
+	display(I);
+	drawLine(0,-100,w,2*h,BLUE);
+	int T=200, R=200;
 	Image<byte> result=Hough(I,T,R);
+	setActiveWindow(openWindow(T,R));
 	display(result);
 	click();
 	return 0;
