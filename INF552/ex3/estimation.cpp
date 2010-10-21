@@ -25,7 +25,14 @@ Homography homographyFrom4Pairs(const Vec2 m1[4],const Vec2 m2[4]) {
 	A.fill(0);
 	// Completer: remplir A et B pour que H verifie AH=B avec H(m1[k])=m2[k] 
 	for(int k=0;k<4;k++){
-		// ...
+		B[2*k]=m2[k][0];
+		B[2*k+1]=m2[k][1];
+		A(0,0)=m1[k][0];
+		A(0,1)=m1[k][1];
+		A(0,2)=1;
+		A(1,3)=m1[k][0];
+		A(1,4)=m1[k][1];
+		A(1,5)=1;
 	}
 	Matrix<double> C=inverse(A);
 	if(norm(C)==0)	// non inversible
@@ -46,7 +53,7 @@ Homography meanHomography(const Array<Feat>& feats1,const Array<Feat>& feats2,co
 		Vec2 m2=feats2[it->second].pos;
 		// ...
 	}
-	Matrix<double> C=pseudoInverse(A);	// Moindres carrés
+	Matrix<double> C=pseudoInverse(A);	// Moindres carrï¿½s
 	if(norm(C)==0)	// non invertible
 		return Homography(0.);
 	Vector<double> H=C*B;
@@ -55,7 +62,7 @@ Homography meanHomography(const Array<Feat>& feats1,const Array<Feat>& feats2,co
 
 Homography manualHomography(int w) {
 	Vec2 m1[4],m2[4];
-	// Completer: Entrer les m1 et les m2 à la souris tels que m1[k] et m2[k] se correspondent
+	// Completer: Entrer les m1 et les m2 ï¿½ la souris tels que m1[k] et m2[k] se correspondent
 	// ...
 	return homographyFrom4Pairs(m1,m2);
 }
@@ -88,7 +95,7 @@ public:
 	double operator() (const Homography& H,const pair<size_t,size_t>& p) const {
 		Vec2 m1(feats1[p.first].pos);
 		Vec2 m2(feats2[p.second].pos);
-		// Corriger: retourner la distance au carré entre m2 et l'image de m1 par H
+		// Corriger: retourner la distance au carrï¿½ entre m2 et l'image de m1 par H
 		// ...
 		return 0; 
 	}
@@ -150,7 +157,7 @@ int main() {
 
 	Homography H;
 	// Supprimer progressivement les commentaires
-	// H=manualHomography(w);
+	H=manualHomography(w);
 	// displayStitch(I1,I2,H);setActiveWindow(W1);
 	// H=autoHomography(I1,I2);
 	// displayStitch(I1,I2,H);setActiveWindow(W1);
