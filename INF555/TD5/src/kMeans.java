@@ -11,9 +11,10 @@ public class kMeans {
 		int w=in.getWidth();
 		Point3d[] couleurs = new Point3d[h*w];
 		HashMap<Point3d,Integer> associedColor = new HashMap<Point3d, Integer>();
-		final int k=256;
+		final int k=64;
 		Point3d[] colorMap = new Point3d[k];
 
+		//initialisation des points3D
 		for(int j=0;j<h;j++){
 			for(int i=0;i<w;i++){
 				Point3d pt=new Point3d(in.getRed(i, j)/255., in.getGreen(i, j)/255., in.getBlue(i, j)/255.);
@@ -22,18 +23,18 @@ public class kMeans {
 			}
 		}
 
+		//initialisation des k couleurs
 		for(int i=0;i<k;i++)
 			colorMap[i]= (Point3d) couleurs[(int)(w*h*Math.random())].clone();
 
-		boolean finished=false;
 		int N=0;
-		while(!finished){
+		double lastDistance=Double.MAX_VALUE;
+		while(true){
 			N++;
 			if(N==60)break;
 			double distanceTotale=0;
-			finished=true;
 			for(int n=0;n<w*h;n++){
-				int iMin=0;
+				int iMin=-1;
 				double min=Double.MAX_VALUE;
 				for(int i=0;i<k;i++){
 					double tmp=couleurs[n].distanceSquared(colorMap[i]);
@@ -44,13 +45,13 @@ public class kMeans {
 				}
 				distanceTotale+=min;
 				if(!associedColor.get(couleurs[n]).equals(new Integer(iMin))){
-					finished=false;
 					associedColor.put(couleurs[n], new Integer(iMin));
 				}
 			}
 			System.out.println("N="+N+" "+distanceTotale);
-			if(finished) break;
-			
+			if(distanceTotale>=lastDistance) break;
+			lastDistance=distanceTotale;
+
 			//on fait la moyenne pour les nouvelles graines
 			int[] numbers= new int[k];
 			for(int i=0;i<k;i++){
@@ -65,14 +66,17 @@ public class kMeans {
 				seed.y+=pt.y;
 				seed.z+=pt.z;
 			}
+			int totalNumbers=0;
 			for(int i=0;i<k;i++){
+				totalNumbers+=numbers[i];
 				Point3d seed=colorMap[i];
 				seed.x/=numbers[i];
 				seed.y/=numbers[i];
 				seed.z/=numbers[i];
 			}
+			assert(totalNumbers==w*h);
 		}
-		
+
 		//coloriage
 		for(int j=0;j<h;j++){
 			for(int i=0;i<w;i++){
@@ -82,7 +86,8 @@ public class kMeans {
 				in.setBlue(i, j,(int) (pt.z*255));
 			}
 		}
-		
+
+		PointsDrawer.drawSet(colorMap);
 		new ImageViewer(in);
 	}
 
