@@ -24,8 +24,6 @@ public class Connexion {
 		received = new LinkedList<Message>(); // sans intérêt pour l'instant
 		messageReader = new MessageReader(this, s);
 		messageSender = new MessageSender(this, s);
-		messageReader.start();
-		messageSender.start();
 	}
 	public void init(){};
 	

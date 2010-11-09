@@ -1,29 +1,34 @@
 package connexion;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
-import java.util.LinkedList;
 import message.*;
 
 /**
  * La classe ConnexionManager gère les relations entre les différentes Connexions,
- * comme l'envoi global, les déconnexions et les confirmations de connexions.
+ * comme l'envoi global, les déconnexions et les confirmations de connexions. De plus,
+ * il héberge le thread du serveur recevant les connexions
  * @see Connexion
- * @author Julien, Malik, Benoit X08
+ * @author Benoit
  *
  */
 public class ConnexionManager{
 	static private HashMap<Connexion, Connexion> connexions;
 	static private HashMap<Connexion, Connexion> preConnexions;
-	static private LinkedList<Message> toSend;
 	static private ServerThread thread;
 
 	
-	static public void init() {
+	static public void init(int port) {
 		connexions = new HashMap<Connexion, Connexion>();
-		toSend = new LinkedList<Message>();
 		preConnexions = new HashMap<Connexion, Connexion>();
-		thread = new ServerThread();
-		thread.start();
+		try {
+			thread = new ServerThread(port);
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.err.println("Impossible de créer le ServerSocket");
+		}
 	}
 	
 	//TODO
@@ -37,6 +42,14 @@ public class ConnexionManager{
 	 */
 	static public synchronized void remove(Connexion c){
 		connexions.remove(c);
+	}
+	
+	/**
+	 * Retire une preConnexion, si par exemple le protocole de confirmation a échoué
+	 * @param c la preConnexion a retirer
+	 */
+	static public synchronized void removePreConnexion(Connexion c){
+		preConnexions.remove(c);
 	}
 	
 	/**
@@ -61,17 +74,6 @@ public class ConnexionManager{
 	}
 	
 	/**
-	 * Extrait le premier message de la file d'envoi de manière synchronisée
-	 * @return le message à envoyer
-	 */
-	static private synchronized Message getFirstToSend(){
-		if(toSend.size()>0)
-			return toSend.removeFirst();
-		else 
-			return null;
-	}
-	
-	/**
 	 * Confirme la connexion dans la liste globale
 	 * Si la preConnexion n'existe pas, affiche un message d'erreur
 	 * @param c la connexion à confirmer
@@ -83,34 +85,56 @@ public class ConnexionManager{
 			System.err.println("confirmConnexion : la connexion n'était pas à confirmer...");
 		}
 	}
-	
-	/**
-	 * Retire une preConnexion, si par exemple le protocole de confirmation a échoué
-	 * @param c la preConnexion a retirer
-	 */
-	static public synchronized void removePreConnexion(Connexion c){
-		preConnexions.remove(c);
-	}
 }
 
-
-//TODO
+/**
+ * Classe qui permet de recevoir des nouvelles connexions sur un ServerSocket.
+ * Elle lance son start() toute seule.
+ * @author Benoit
+ */
 class ServerThread extends Thread{
+	private ServerSocket server;
+	private boolean closing;
 	
-	public ServerThread(){
-		
+	/**
+	 * Création du serveur et de son thread d'écoute
+	 * @param port le port sur lequel écouter
+	 * @throws IOException si la création du serveur a échoué
+	 */
+	public ServerThread(int port) throws IOException{
+		super();
+		closing=false;
+		server = new ServerSocket(port);
+		this.start();
 	}
 	
 	
 	public void close() {
-		// TODO Auto-generated method stub
-		
+		closing=true;
+		try {
+			server.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println("Fermeture du server");
 	}
 
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		super.run();
+		while(!closing){
+			Socket s=null;
+			Connexion c=null;
+			try {
+				s=server.accept();
+				c=new Connexion(s);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if(c!=null){
+				System.out.println("Nouvelle connexion :"+s.getInetAddress());
+				ConnexionManager.addConnexion(c);
+			}
+		}
 	}
 }
