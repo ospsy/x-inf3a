@@ -2,84 +2,78 @@ package message;
 
 /**
  * @author Julio
- *
+ *attention les bytes en java sont signés
  */
 public class MessageHeader {
-	private byte[] MessageID;
-	private byte PayloadDescriptor;
-	private byte TTL;
-	private byte Hops;
-	private byte[] PayloadLength;
+	private short[] header;
 	
-	public MessageHeader(){
-		MessageID = new byte[16];
-		PayloadLength = new byte[3];
+	public MessageHeader(int id,TypeMessage type,int ttl, int hops, int payloadLength){
+		header = new short[23];
+		
 	}
+	
+
 
 	/**
-	 * convertit un byte en entier en respectant l'ordre Big endian
-	 *
-	 * @param b
-	 * @return
+	 * extrait l'entier des octets compris entre les indices i et j dans le tableau en respectant l'ordre Big endian
+	 * @param bornes de l'entier dans le header
+	 * @return l'entier correspondant
 	 */
-	private int intOfByte(Byte b){
-		return Byte.valueOf(b);
-	}
-	
-	private int intOfByte(Byte[] b){
+	private int intOfByte(int i, int j){
 		int res = 0;
-		for (int i = 0; i<b.length;i++){
-			res = 255*res+Byte.valueOf(MessageID[i]);
+		for (int k = i ; k<j+1;k++){
+			res = 256*res+(header[k]);
 		}
 		return res;
 	}
 	
-	public int getMessageID() {
-		int res = 0;
-		for (int i = 0; i<16;i++){
-			res = 255*res+Byte.valueOf(MessageID[i]);
+	/**
+	 * 
+	 * @return L'identifiant du message
+	 */
+	public int getMessageID() {return intOfByte(0,15);}
+	/**
+	 * 
+	 * @return Le type du message
+	 */
+	public TypeMessage getMessageType() {
+		switch (header[16]) {
+		case 0:
+			return TypeMessage.PING;
+		case 1:
+			return TypeMessage.PONG;
+		case 64:
+			return TypeMessage.PUSH;
+ 		case 128:
+ 			return TypeMessage.QUERY;
+ 		case 129:
+ 			return TypeMessage.QUERY_HIT;
+		default:
+			break;
 		}
-		return res;
-	}
+		return null;
 
-	public void setMessageID(byte[] messageID) {
-		MessageID = messageID;
 	}
-
-	public byte getPayloadDescriptor() {
-		return PayloadDescriptor;
+	/**
+	 * 
+	 * @return Le TTL
+	 */
+	public int getTTL() {
+		return header[17];
 	}
-
-	public void setPayloadDescriptor(byte payloadDescriptor) {
-		PayloadDescriptor = payloadDescriptor;
+	/**
+	 * 
+	 * @return Le Hops
+	 */
+	public int getHops() {
+		return header[18];
 	}
-
-	public byte getTTL() {
-		return TTL;
+	/**
+	 * 
+	 * @return La taille du message
+	 */
+	public int getPayloadLength() {
+		return intOfByte(19, 22);
 	}
-
-	public void setTTL(byte tTL) {
-		TTL = tTL;
-	}
-
-	public byte getHops() {
-		return Hops;
-	}
-
-	public void setHops(byte hops) {
-		Hops = hops;
-	}
-
-	public byte[] getPayloadLength() {
-		return PayloadLength;
-	}
-
-	public void setPayloadLength(byte[] payloadLength) {
-		PayloadLength = payloadLength;
-	}
-	
-	
-	
-	
 	
 }
