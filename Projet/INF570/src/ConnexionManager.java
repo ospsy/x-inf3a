@@ -9,25 +9,28 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * @author Julien, Malik, Benoit X08
  *
  */
-public class ConnexionManager extends Thread{
-	private HashMap<Connexion, Connexion> connexions;
-	private HashMap<Connexion, Connexion> preConnexions;
-	private LinkedList<Message> toSend;
+public class ConnexionManager{
+	static private HashMap<Connexion, Connexion> connexions;
+	static private HashMap<Connexion, Connexion> preConnexions;
+	static private LinkedList<Message> toSend;
+	static private ConnexionManagerThread thread;
 
 	
-
-	public ConnexionManager() {
-		super();
-		this.connexions = new HashMap<Connexion, Connexion>();
-		this.toSend = new LinkedList<Message>();
-		this.preConnexions = new HashMap<Connexion, Connexion>();
+	static public void init() {
+		connexions = new HashMap<Connexion, Connexion>();
+		toSend = new LinkedList<Message>();
+		preConnexions = new HashMap<Connexion, Connexion>();
+		thread = new ConnexionManagerThread();
+		thread.start();
 	}
+	
+	
 	
 	/**
 	 * Enlève une connexion de la liste des connexions gérées
 	 * @param c la connexion à enlever
 	 */
-	public synchronized void remove(Connexion c){
+	static public synchronized void remove(Connexion c){
 		connexions.remove(c);
 	}
 	
@@ -35,7 +38,7 @@ public class ConnexionManager extends Thread{
 	 * Ajoute une connexion à confirmer à la liste des preConnexions gérées
 	 * @param preConnexion la connexion à confirmer
 	 */
-	public synchronized void addConnexion(Connexion preConnexion){
+	static public synchronized void addConnexion(Connexion preConnexion){
 		preConnexions.put(preConnexion, preConnexion);
 	}
 
@@ -44,7 +47,7 @@ public class ConnexionManager extends Thread{
 	 * @param m le message à envoyer
 	 * @param exclude la connexion à exclure
 	 */
-	public synchronized void sendAll(Message m, Connexion exclude){
+	static public synchronized void sendAll(Message m, Connexion exclude){
 		for(Connexion c : connexions.keySet()){
 			if(c!=exclude){
 				c.send(m);
@@ -56,7 +59,7 @@ public class ConnexionManager extends Thread{
 	 * Extrait le premier message de la file d'envoi de manière synchronisée
 	 * @return le message à envoyer
 	 */
-	private synchronized Message getFirstToSend(){
+	static private synchronized Message getFirstToSend(){
 		if(toSend.size()>0)
 			return toSend.removeFirst();
 		else 
@@ -65,23 +68,26 @@ public class ConnexionManager extends Thread{
 	
 	/**
 	 * Confirme la connexion dans la liste globale
+	 * Si la preConnexion n'existe pas, affiche un message d'erreur
 	 * @param c la connexion à confirmer
 	 */
-	private synchronized void confirmConnexion(Connexion c){
+	static public synchronized void confirmConnexion(Connexion c){
 		if(preConnexions.remove(c)!=null){
 			connexions.put(c, c);
 		}else{//si la connexion n'était pas dans la liste de preConnexion
 			System.err.println("confirmConnexion : la connexion n'était pas à confirmer...");
 		}
-		
 	}
 	
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		super.run();
+	/**
+	 * Retire une preConnexion, si par exemple le protocole de confirmation a échoué
+	 * @param c la preConnexion a retirer
+	 */
+	static public synchronized void removePreConnexion(Connexion c){
+		preConnexions.remove(c);
 	}
-	
-	
+}
 
+class ConnexionManagerThread extends Thread{
+	
 }
