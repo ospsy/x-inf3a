@@ -1,5 +1,6 @@
 package connexion;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.LinkedList;
 import message.*;
@@ -17,7 +18,7 @@ public class Connexion {
 	private MessageReader messageReader;
 	private MessageSender messageSender;
 	
-	Connexion(Socket s) {
+	Connexion(Socket s) throws IOException {
 		this.s = s;
 		toSend = new LinkedList<Message>();
 		received = new LinkedList<Message>(); // sans intérêt pour l'instant
