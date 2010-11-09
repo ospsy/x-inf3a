@@ -14,6 +14,12 @@ public class MessageHeader {
 		PayloadLength = new byte[3];
 	}
 
+	/**
+	 * convertit un byte en entier en respectant l'ordre Big endian
+	 *
+	 * @param b
+	 * @return
+	 */
 	private int intOfByte(Byte b){
 		return Byte.valueOf(b);
 	}
