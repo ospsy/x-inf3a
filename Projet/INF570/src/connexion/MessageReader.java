@@ -1,6 +1,5 @@
 package connexion;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +8,7 @@ import java.net.Socket;
 import message.Message;
 
 /**
- * Classe MessageReader héritant de Thread, qui lit en boucle les messages et les redirige vers la Connexion
+ * Classe MessageReader héritant de Thread, qui lit en boucle les messages et les redirige vers la Connexion.
  * @author Benoit
  *
  */
@@ -20,6 +19,7 @@ public class MessageReader extends Thread {
 	
 	/**
 	 * Constructeur du MessageReader.
+	 * Le constructeur lance le start() du Thread automatiquement.
 	 * @param connexion la connexion vers qui rediriger les msgs
 	 * @param s la socket sur laquelle écouter
 	 * @throws IOException si la création du Reader d'écoute a échoué
@@ -50,7 +50,7 @@ public class MessageReader extends Thread {
 	public void run() {
 		while(!closing){
 			//TODO lire un msg
-			//Message m;
+			Message m;
 			//connexion.processMsg(m);
 		}
 	}

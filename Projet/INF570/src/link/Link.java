@@ -7,12 +7,12 @@ import message.Message;
 
 public class Link {
 
-	static Message readMessage(BufferedReader br){
+	public static Message readMessage(BufferedReader br){
 		//TODO
 		return null;
 	}
 	
-	static void sendMessage(PrintWriter pw, Message m){
+	public static void sendMessage(PrintWriter pw, Message m){
 		//TODO
 	}
 }
