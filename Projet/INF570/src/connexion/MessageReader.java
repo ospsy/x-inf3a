@@ -15,7 +15,6 @@ import message.Message;
  */
 public class MessageReader extends Thread {
 	private Connexion connexion;
-	private Socket s;
 	private BufferedReader br;
 	private boolean closing;
 	
@@ -26,10 +25,11 @@ public class MessageReader extends Thread {
 	 * @throws IOException si la création du Reader d'écoute a échoué
 	 */
 	public MessageReader(Connexion connexion, Socket s) throws IOException {
+		super();
 		closing=false;
 		this.connexion=connexion;
-		this.s=s;
 		br=new BufferedReader(new InputStreamReader(s.getInputStream()));
+		this.start();
 	}
 	
 	/**
@@ -50,8 +50,8 @@ public class MessageReader extends Thread {
 	public void run() {
 		while(!closing){
 			//TODO lire un msg
-			Message m;
-			connexion.processMsg(m);
+			//Message m;
+			//connexion.processMsg(m);
 		}
 	}
 
