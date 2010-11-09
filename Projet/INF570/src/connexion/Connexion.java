@@ -36,6 +36,7 @@ public class Connexion {
 	public synchronized void send(Message m) {
 		toSend.addFirst(m);
 	};
+	
 	/**
 	 * Retire et renvoie le message le plus ancien de la file d'envoi de messages.
 	 * @return Le message le plus ancien de la file d'envoi
@@ -43,6 +44,7 @@ public class Connexion {
 	public synchronized Message getMessageToSend() {
 		return toSend.removeLast();
 	}
+	
 	/**
 	 * Ferme la connexion : appel les fonctions de fermeture des thread de lecture et d'envoi de messages.
 	 */
@@ -50,6 +52,7 @@ public class Connexion {
 		messageReader.close();
 		messageSender.close();
 	};
+	
 	/**
 	 * Traitement d'un message.
 	 * @param m Message à traiter
