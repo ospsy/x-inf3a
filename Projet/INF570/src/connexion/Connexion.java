@@ -1,6 +1,8 @@
+package connexion;
+
 import java.net.Socket;
 import java.util.LinkedList;
-
+import message.*;
 
 public class Connexion {
 	

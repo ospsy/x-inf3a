@@ -1,5 +1,8 @@
+package connexion;
+
 import java.util.HashMap;
 import java.util.LinkedList;
+import message.*;
 
 /**
  * La classe ConnexionManager gère les relations entre les différentes Connexions,
