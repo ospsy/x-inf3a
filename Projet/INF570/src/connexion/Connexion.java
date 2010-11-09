@@ -39,9 +39,10 @@ public class Connexion {
 	
 	/**
 	 * Retire et renvoie le message le plus ancien de la file d'envoi de messages.
-	 * @return Le message le plus ancien de la file d'envoi
+	 * @return Le message le plus ancien de la file d'envoi ou null si la file est vide.
 	 */
 	public synchronized Message getMessageToSend() {
+		if(toSend.isEmpty()) return null;
 		return toSend.removeLast();
 	}
 	
