@@ -15,15 +15,21 @@ public class ConnexionManager{
 	static private HashMap<Connexion, Connexion> connexions;
 	static private HashMap<Connexion, Connexion> preConnexions;
 	static private LinkedList<Message> toSend;
+	static private ServerThread thread;
 
 	
 	static public void init() {
 		connexions = new HashMap<Connexion, Connexion>();
 		toSend = new LinkedList<Message>();
 		preConnexions = new HashMap<Connexion, Connexion>();
+		thread = new ServerThread();
+		thread.start();
 	}
 	
-	
+	//TODO
+	static public void close(){
+		thread.close();
+	}
 	
 	/**
 	 * Enlève une connexion de la liste des connexions gérées
@@ -84,5 +90,27 @@ public class ConnexionManager{
 	 */
 	static public synchronized void removePreConnexion(Connexion c){
 		preConnexions.remove(c);
+	}
+}
+
+
+//TODO
+class ServerThread extends Thread{
+	
+	public ServerThread(){
+		
+	}
+	
+	
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		super.run();
 	}
 }

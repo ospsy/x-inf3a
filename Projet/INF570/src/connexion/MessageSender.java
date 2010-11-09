@@ -44,7 +44,16 @@ public class MessageSender extends Thread {
 	public void run() {
 		while(!closing){
 			//TODO écrire un msg
-			
+			Message m = connexion.getMessageToSend();
+			if(m!=null){
+				
+			}else{
+				try {
+					this.wait(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
