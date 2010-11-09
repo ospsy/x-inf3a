@@ -2,36 +2,32 @@ package message;
 
 /**
  * @author Julio
- *attention les bytes en java sont signés
+ *
  */
 public class MessageHeader {
 	private short[] header;
-	
-	public MessageHeader(int id,TypeMessage type,int ttl, int hops, int payloadLength){
+
+	public MessageHeader(short[] id,TypeMessage type,int ttl, int hops, short[] payloadLength){
 		header = new short[23];
-		
+		setMessageID(id);
+		setTypeMessage(type);
+		setTTL(ttl);
+		setHops(hops);
+		setPayloadLength(payloadLength);
 	}
-	
 
 
-	/**
-	 * extrait l'entier des octets compris entre les indices i et j dans le tableau en respectant l'ordre Big endian
-	 * @param bornes de l'entier dans le header
-	 * @return l'entier correspondant
-	 */
-	private int intOfByte(int i, int j){
-		int res = 0;
-		for (int k = i ; k<j+1;k++){
-			res = 256*res+(header[k]);
-		}
-		return res;
-	}
-	
 	/**
 	 * 
 	 * @return L'identifiant du message
 	 */
-	public int getMessageID() {return intOfByte(0,15);}
+	public short[] getMessageID() {
+		short[] s = new short[16];
+		for (int i = 0; i <16;i++){
+			s[i]=header[i];
+		}
+		return s;
+	}
 	/**
 	 * 
 	 * @return Le type du message
@@ -44,10 +40,10 @@ public class MessageHeader {
 			return TypeMessage.PONG;
 		case 64:
 			return TypeMessage.PUSH;
- 		case 128:
- 			return TypeMessage.QUERY;
- 		case 129:
- 			return TypeMessage.QUERY_HIT;
+		case 128:
+			return TypeMessage.QUERY;
+		case 129:
+			return TypeMessage.QUERY_HIT;
 		default:
 			break;
 		}
@@ -72,8 +68,51 @@ public class MessageHeader {
 	 * 
 	 * @return La taille du message
 	 */
-	public int getPayloadLength() {
-		return intOfByte(19, 22);
+	public short[] getPayloadLength() {
+		short[] s = new short[4];
+		for (int i = 0; i <4;i++){
+			s[i]=header[i+19];
+		}
+		return s;
 	}
-	
+
+	public void setMessageID(short[] s){
+		for (int i = 0; i <16;i++){
+			header[i]=s[i];
+		}
+	}
+	public void setTypeMessage(TypeMessage t){
+		switch (t) {
+		case PING:
+			header[16] = 0;
+			break;
+		case PONG:
+			header[16] = 1;
+			break;
+		case PUSH:
+			header[16] = 64;
+			break;
+		case QUERY:
+			header[16] = 128;
+			break;
+		case QUERY_HIT:
+			header[16] = 129;
+			break;
+
+		default:
+			break;
+		}
+	}
+	public void setTTL(int i) {
+		header[17] = (short) i;
+	}
+	public void setHops(int i) {
+		header[18] = (short) i;
+	}
+	public void setPayloadLength(short[] s) {
+		for (int i = 0; i <4;i++){
+			header[i+19]=s[i];
+		}
+	}
+
 }
