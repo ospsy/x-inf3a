@@ -1,6 +1,5 @@
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 /**
  * La classe ConnexionManager gère les relations entre les différentes Connexions,
@@ -13,15 +12,12 @@ public class ConnexionManager{
 	static private HashMap<Connexion, Connexion> connexions;
 	static private HashMap<Connexion, Connexion> preConnexions;
 	static private LinkedList<Message> toSend;
-	static private ConnexionManagerThread thread;
 
 	
 	static public void init() {
 		connexions = new HashMap<Connexion, Connexion>();
 		toSend = new LinkedList<Message>();
 		preConnexions = new HashMap<Connexion, Connexion>();
-		thread = new ConnexionManagerThread();
-		thread.start();
 	}
 	
 	
@@ -43,7 +39,7 @@ public class ConnexionManager{
 	}
 
 	/**
-	 * Envoit un message à toutes les connexions gérées sauf 
+	 * Envoit un message à toutes les connexions gérées sauf une
 	 * @param m le message à envoyer
 	 * @param exclude la connexion à exclure
 	 */
@@ -86,8 +82,4 @@ public class ConnexionManager{
 	static public synchronized void removePreConnexion(Connexion c){
 		preConnexions.remove(c);
 	}
-}
-
-class ConnexionManagerThread extends Thread{
-	
 }
