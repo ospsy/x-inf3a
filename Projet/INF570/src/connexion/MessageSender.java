@@ -43,10 +43,10 @@ public class MessageSender extends Thread {
 	@Override
 	public void run() {
 		while(!closing){
-			//TODO écrire un msg
 			Message m = connexion.getMessageToSend();
 			if(m!=null){
-				
+				//TODO envoyer
+				pw.flush();
 			}else{
 				try {
 					this.wait(100);
