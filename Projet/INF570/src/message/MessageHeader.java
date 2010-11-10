@@ -15,8 +15,24 @@ public class MessageHeader {
 		setHops(hops);
 		setPayloadLength(payloadLength);
 	}
+	
+	/**
+	 * ce constructeur est à utiliser pour la lecture d'un message
+	 * @param s
+	 */
+	public MessageHeader(short [] s){
+			if (s.length != 23) {
+				System.err.println("Format de header non valide");
+				header = null;
+			}
+			header = s;
+	}
 
 
+	public short[] getHeader(){
+		return header;
+	}
+	
 	/**
 	 * 
 	 * @return L'identifiant du message
@@ -76,12 +92,12 @@ public class MessageHeader {
 		return s;
 	}
 
-	public void setMessageID(short[] s){
+	private void setMessageID(short[] s){
 		for (int i = 0; i <16;i++){
 			header[i]=s[i];
 		}
 	}
-	public void setTypeMessage(TypeMessage t){
+	private void setTypeMessage(TypeMessage t){
 		switch (t) {
 		case PING:
 			header[16] = 0;
@@ -103,16 +119,59 @@ public class MessageHeader {
 			break;
 		}
 	}
-	public void setTTL(int i) {
+	private void setTTL(int i) {
 		header[17] = (short) i;
 	}
-	public void setHops(int i) {
+	private void setHops(int i) {
 		header[18] = (short) i;
 	}
-	public void setPayloadLength(short[] s) {
+	private void setPayloadLength(short[] s) {
 		for (int i = 0; i <4;i++){
 			header[i+19]=s[i];
 		}
 	}
+	
+	private static short[] subTab(short[] t,int i, int j){
+		short[] tab = new short[j-i+1];
+		for(int k = i;k<j+1;k++){
+			tab[k-i] = t[k];
+		}
+		return tab;
+	}
+	
+	/**
+	 * à appeler lors de la lecture d'un message après avois analysé le header
+	 * 
+	 * @param h
+	 * @param payload
+	 * @return	un message de type cohérent avec le header (null sinon)
+	 */
+	public static Message parseMessage(MessageHeader h,short[] payload){
+		switch (h.getMessageType()) {
+		case PING:
+			if (payload!=null) {
+				System.err.println("payload et header incohérents");
+				return null;
+			}
+			return new Ping(h.getMessageID(), h.getTTL(), h.getHops());
+		case PONG:
+			if (payload.length!=14) {
+				System.err.println("payload et header incohérents");
+				return null;
+			}
+			return new Pong(h,subTab(payload, 0, 1),subTab(payload, 2, 5),subTab(payload, 6, 9),subTab(payload, 10, 13));
+		case PUSH:
+			return null;
+		case QUERY:
+			return null;
+		case QUERY_HIT:
+			return null;
+		default:
+			break;
+		}
+		return null;
+	}
+	
+
 
 }
