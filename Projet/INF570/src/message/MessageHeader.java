@@ -131,46 +131,9 @@ public class MessageHeader {
 		}
 	}
 	
-	private static short[] subTab(short[] t,int i, int j){
-		short[] tab = new short[j-i+1];
-		for(int k = i;k<j+1;k++){
-			tab[k-i] = t[k];
-		}
-		return tab;
-	}
+
 	
-	/**
-	 * à appeler lors de la lecture d'un message après avois analysé le header
-	 * 
-	 * @param h
-	 * @param payload
-	 * @return	un message de type cohérent avec le header (null sinon)
-	 */
-	public static Message parseMessage(MessageHeader h,short[] payload){
-		switch (h.getMessageType()) {
-		case PING:
-			if (payload!=null) {
-				System.err.println("payload et header incohérents");
-				return null;
-			}
-			return new Ping(h.getMessageID(), h.getTTL(), h.getHops());
-		case PONG:
-			if (payload.length!=14) {
-				System.err.println("payload et header incohérents");
-				return null;
-			}
-			return new Pong(h,subTab(payload, 0, 1),subTab(payload, 2, 5),subTab(payload, 6, 9),subTab(payload, 10, 13));
-		case PUSH:
-			return null;
-		case QUERY:
-			return null;
-		case QUERY_HIT:
-			return null;
-		default:
-			break;
-		}
-		return null;
-	}
+
 	
 
 
