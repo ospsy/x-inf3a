@@ -22,9 +22,12 @@ public class Main {
 				break;
 			}
 			if(s.equals("PING"))
-				ConnexionManager.sendAll(new Ping(new short[16],4,0), null);
+				ConnexionManager.sendAll(new Ping(4,0), null);
 			String[] ss=s.split(" ");
-			
+			if(ss.length>=3){
+				if(ss[0].equals("CONNECT"))
+					ConnexionManager.connect(ss[1], Integer.parseInt(ss[2]));
+			}
 		}
 		
 	}
