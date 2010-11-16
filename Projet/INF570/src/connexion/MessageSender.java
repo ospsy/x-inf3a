@@ -50,8 +50,8 @@ public class MessageSender extends Thread {
 		while(!closing){
 			Message m;
 			while((m=connexion.getMessageToSend())!=null){
-				Link.sendMessage(out,m);
 				try {
+					Link.sendMessage(out,m);
 					out.flush();
 				} catch (IOException e) {}
 			}
