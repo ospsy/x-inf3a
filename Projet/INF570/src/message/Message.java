@@ -65,33 +65,7 @@ public abstract class Message {
 		}
 		return sip;
 	}
-}
-
-/**
- * Structure de donnée pour les messages Ping 
- * @author Julio
- *
- */
-class Ping extends Message {
-
-	public Ping(short[] id,int ttl,int hops){
-		short[] vide = new short[4];
-		vide[0] = vide[1] = vide[2] = vide[3] = 0;
-		header = new MessageHeader(id, TypeMessage.PING, ttl, hops, vide);
-	}
-
-	@Override
-	public short[] toShortTab() {
-		return header.getHeader();
-	}
-
-	private static short[] subTab(short[] t,int i, int j){
-		short[] tab = new short[j-i+1];
-		for(int k = i;k<j+1;k++){
-			tab[k-i] = t[k];
-		}
-		return tab;
-	}
+	
 	
 	/**
 	 * à appeler lors de la lecture d'un message après avois analysé le header
@@ -126,6 +100,32 @@ class Ping extends Message {
 		return null;
 	}
 	
+	private static short[] subTab(short[] t,int i, int j){
+		short[] tab = new short[j-i+1];
+		for(int k = i;k<j+1;k++){
+			tab[k-i] = t[k];
+		}
+		return tab;
+	}
+}
+
+/**
+ * Structure de donnée pour les messages Ping 
+ * @author Julio
+ *
+ */
+class Ping extends Message {
+
+	public Ping(short[] id,int ttl,int hops){
+		short[] vide = new short[4];
+		vide[0] = vide[1] = vide[2] = vide[3] = 0;
+		header = new MessageHeader(id, TypeMessage.PING, ttl, hops, vide);
+	}
+
+	@Override
+	public short[] toShortTab() {
+		return header.getHeader();
+	}
 }
 
 class Pong extends Message {
@@ -219,5 +219,84 @@ class Pong extends Message {
 	public long getNumberOfKilobytesShared(){
 		return lsharedFilesSize;
 	}
+}
+
+class Push extends Message{
+	
+	private short[] port;
+	private int iport;
+	private short[] ip;
+	private String sip;
+	private short[] serventIdentifier;
+	private short[] fileIndex;
+	private long lfileIndex;
+	
+	public int getPort() {
+		return iport;
+	}
+
+	public String getIp() {
+		return sip;
+	}
+
+	public short[] getServentIdentifier() {
+		return serventIdentifier;
+	}
+
+	public long getLfileIndex() {
+		return lfileIndex;
+	}
+
+	/**
+	 * constructeur en lecture d'un message Push
+	 * @param port
+	 * @param ip
+	 * @param file index
+	 * @param Servent Identifier
+	 */
+	public Push(MessageHeader mh,short[] port, short[] ip, short[] serventId,	short[] fileIndex) {
+		super();
+		this.header = mh;
+		this.port = port;
+		this.iport = port[0]*256+port[1];
+		this.ip = ip;
+		this.sip = stringFromIp(ip);
+		this.serventIdentifier = serventId;
+		this.fileIndex = fileIndex;
+		this.lfileIndex = longFromTab(fileIndex);
+	}
+	
+	/**
+	 * constructeur pour l'écriture d'un message Push
+	 * @param port
+	 * @param ip
+	 * @param file index
+	 * @param Servent Identifier
+	 */
+	public Push(short[] id,int ttl, int hops,int port, String ip, long fileIndex,	short[] serventId) {
+		super();
+		this.header = new MessageHeader(id,TypeMessage.PUSH,ttl,hops,tabFromLong(26));
+		this.iport = port;
+		this.sip = ip;
+		this.lfileIndex = fileIndex;
+
+		
+		short[] bport = new short[2];
+		bport[1]=(short) (port%256);
+		bport[0]= (short) ((port-bport[1])/256);
+		this.port = bport;
+		this.ip = ipFromString(ip);
+		this.fileIndex = tabFromLong(fileIndex);
+		this.serventIdentifier = serventId ;
+	}
+
+	
+	
+	@Override
+	public short[] toShortTab() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
 }
 
