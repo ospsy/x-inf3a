@@ -61,7 +61,6 @@ public class ConnexionManager{
 		try {
 			Socket s = new Socket(ip,port);
 			addPreConnexion(new Connexion(s, false));
-			System.out.println("PreConnexion réussie");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Connexion impossible...");
@@ -73,6 +72,7 @@ public class ConnexionManager{
 	 * @param c la connexion à enlever
 	 */
 	static public synchronized void remove(Connexion c){
+		System.out.println("Connexion "+c.getId()+" retirée");
 		connexions.remove(c);
 	}
 
@@ -81,6 +81,7 @@ public class ConnexionManager{
 	 * @param c la preConnexion a retirer
 	 */
 	static public synchronized void removePreConnexion(Connexion c){
+		System.out.println("Confirmation de la Preconnexion "+c.getId()+" échouée");
 		preConnexions.remove(c);
 	}
 
@@ -89,6 +90,7 @@ public class ConnexionManager{
 	 * @param preConnexion la connexion à confirmer
 	 */
 	static public synchronized void addPreConnexion(Connexion preConnexion){
+		System.out.println("Preconnexion "+preConnexion.getId()+" réussie");
 		preConnexions.put(preConnexion, preConnexion);
 	}
 
@@ -112,6 +114,7 @@ public class ConnexionManager{
 	 */
 	static public synchronized void confirmPreConnexion(Connexion c){
 		if(preConnexions.remove(c)!=null){
+			System.out.println("Preconnexion "+c.getId()+" confirmée");
 			connexions.put(c, c);
 		}else{//si la connexion n'était pas dans la liste de preConnexion
 			System.err.println("confirmConnexion : la connexion n'était pas à confirmer...");
@@ -161,7 +164,7 @@ class ServerThread extends Thread{
 				s=server.accept();
 				c=new Connexion(s,true);
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("Arrêt de l'attente de nouvelles connexions");
 			}
 			if(c!=null){
 				System.out.println("Nouvelle preConnexion :"+s.getInetAddress().getCanonicalHostName());
