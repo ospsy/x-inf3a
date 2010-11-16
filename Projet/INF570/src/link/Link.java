@@ -39,14 +39,14 @@ public class Link {
 	}
 	
 	/**
-	 * Lit sur le flux d'entrée {@code in} le bon nombre d'octet
-	 * pour renvoyer le {@link Message} correspondant.
+	 * Envoie vers le flux de sortie {@code out} le  message {@code m}.
 	 * @param out Le flux de sortie vers lequel on envoie le message.
-	 * @return Le MessageHeader lu.
+	 * @param m Le message à envoyer.
 	 * @throws IOException
 	 */
 	public static void sendMessage(OutputStream out, Message m) throws IOException{
 		out.write(toByteTable(m.toShortTab()));
+		out.flush();
 	}
 	
 	/**
