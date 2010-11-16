@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.LinkedList;
+
+import sharing.SharingManager;
 import message.*;
 /**
  * Chaque connexion contient une file de messages à envoyer, un thread chargé de l'envoi des messages
@@ -115,7 +117,30 @@ public class Connexion {
 	 * @param m Message à traiter
 	 */
 	public void processMsg(Message m) { 
-
+		MessageHeader h=m.getHeader();
+		switch(m.getHeader().getMessageType()){
+		case PING:
+			System.out.println("PING recu");
+			//TODO vérifier le TTL du pong à envoyer
+			send(new Pong(h.getMessageID(), h.getHops(), h.getTTL(), ConnexionManager.getPort(), ConnexionManager.getIP(), SharingManager.getNumberOfSharedFiles(), SharingManager.getSharedFilesSize()));
+			if(h.getTTL()>0){
+				m.decreaseTTL();
+				ConnexionManager.sendAll(m, this);
+			}
+			break;
+		case PONG:
+			System.out.println("PONG recu");
+			break;
+		case QUERY:
+			System.out.println("PING recu");
+			//TODO envoyer un queryHIT
+			//send(new Pong(h.getMessageID(), h.getHops(), h.getTTL(), ConnexionManager.getPort(), ConnexionManager.getIP(), SharingManager.getNumberOfSharedFiles(), SharingManager.getSharedFilesSize()));
+			if(h.getTTL()>0){
+				m.decreaseTTL();
+				ConnexionManager.sendAll(m, this);
+			}
+			break;
+		}
 	}
 
 }

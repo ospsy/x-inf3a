@@ -48,8 +48,13 @@ public class MessageReader extends Thread {
 	@Override
 	public void run() {
 		while(!closing){
-			Message m=Link.readMessage(in);
-			connexion.processMsg(m);
+			try{
+				Message m=Link.readMessage(in);
+				connexion.processMsg(m);
+			}catch(Exception e){
+				close();
+			}
+			
 		}
 	}
 
