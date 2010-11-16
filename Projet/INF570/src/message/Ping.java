@@ -17,4 +17,5 @@ public class Ping extends Message {
 	public short[] toShortTab() {
 		return header.getHeader();
 	}
+	
 }
