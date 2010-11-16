@@ -58,7 +58,7 @@ public class Query extends Message {
 		return res;
 	}
 
-	private static String[] getCriteria(short[]tab,int maxLength){
+	public static String[] getCriteria(short[]tab,int maxLength){
 
 		if((tab.length>maxLength) || (tab[tab.length-1]!=0)){
 			System.err.println("format de payload incorrect");
@@ -67,23 +67,44 @@ public class Query extends Message {
 		ArrayList<String> al = new ArrayList<String>();
 		String s = "";
 		for (int i = 0; i < tab.length; i++) {
-			
-			
-			if((tab[i]==32)&&(!s.equals(""))){
+			if((tab[i]==0)||(tab[i]==32)&&(!s.equals(""))){
 				al.add(s);
 				s = "";
 			}
+			else{
+				if((char)tab[i]!=' ')
+				s = s + (char)tab[i];
+			}
 		}
-		
-		
-		return null;
+		String[] res = new String[al.size()];
+		System.out.println(al.size());
+		for (int i = 0; i < al.size(); i++) {
+			res[i] = al.get(i);
+		}
+
+		return res;
 	}
 
-	private static short[] shortFromCriteria(String[] scriteria2) {
-		// TODO Auto-generated method stub
-		return null;
+	public static short[] shortFromCriteria(String[] scriteria) {
+
+		ArrayList<Short> al = new ArrayList<Short>();
+		for (int i  = 0; i < scriteria.length;i++){
+			for (int j = 0; j < scriteria[i].length(); j++) {
+				al.add((short)scriteria[i].charAt(j));
+			}
+
+			if (i != (scriteria.length-1))al.add((short)' ');
+		}
+		al.add((short)0);
+		short[] res = new short[al.size()];
+
+		for (int i = 0; i < al.size(); i++) {
+			res[i] = al.get(i);
+		}
+
+		return res;
 	}
-	
+
 	public double getMinimumSpeed(){		
 		return dminSpeed;
 	}
