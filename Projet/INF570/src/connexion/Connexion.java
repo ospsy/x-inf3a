@@ -12,7 +12,7 @@ import message.*;
 /**
  * Chaque connexion contient une file de messages à envoyer, un thread chargé de l'envoi des messages
  * et un thread chargé de la lecture et du traitement des messages reçus
- * @author Malik
+ * @author Malik, Benoit
  *
  */
 public class Connexion {
@@ -23,6 +23,8 @@ public class Connexion {
 	private MessageReader messageReader;
 	private MessageSender messageSender;
 
+	private int id;
+	
 	/**
 	 * Crée une nouvelle connexion
 	 * @param s la socket sur laquelle la connexion a lieu
@@ -33,7 +35,8 @@ public class Connexion {
 		toSend = new LinkedList<Message>();
 		//received = new LinkedList<Message>(); // sans intérêt pour l'instant
 		isConnected=false;
-		new Thread(){
+		id=(int)(Math.random()*1024);
+		new Thread("preConnecting-"+id){
 			public void run() {
 				BufferedReader br=null;
 				PrintWriter pw=null;
@@ -41,28 +44,37 @@ public class Connexion {
 					br=new BufferedReader(new InputStreamReader(s.getInputStream()));
 					pw=new PrintWriter(s.getOutputStream());
 					if(isServer){//cote serveur
-						if(!br.readLine().equals("GNUTELLA CONNECT/0.4"))
-							if(!br.readLine().equals("")){
+						if(br.readLine().equals("GNUTELLA CONNECT/0.4"))
+							if(br.readLine().equals("")){
 								pw.print("GNUTELLA OK\n\n");
+								pw.flush();
 								init();
 							}
 					}else{//cote client
 						pw.print("GNUTELLA CONNECT/0.4\n\n");
-						if(!br.readLine().equals("GNUTELLA OK\n\n"))
-							if(!br.readLine().equals("")){
+						if(br.readLine().equals("GNUTELLA OK\n\n"))
+							if(br.readLine().equals("")){
 								init();
 							}
 					}
 				} catch (IOException e) {
 					close();
 				}
-				if(br!=null)
+				/*if(br!=null)
 					try {
 						br.close();
 					} catch (IOException e) {}
-				if(pw!=null) pw.close();
+				if(pw!=null) pw.close();*/
 			}
-		};
+		}.start();
+	}
+	
+	/**
+	 * Un entier généré aléatoirement pour repérer les connexions (rien n'assure qu'il soit unique)
+	 * @return l'identifiant de la connexion
+	 */
+	public int getId(){
+		return id;
 	}
 
 	/**
@@ -71,11 +83,13 @@ public class Connexion {
 	 */
 	private void init(){
 		try{
-			messageReader = new MessageReader(this, s.getInputStream());
 			messageSender = new MessageSender(this, s.getOutputStream());
+			messageReader = new MessageReader(this, s.getInputStream());
 			isConnected=true;
-			ConnexionManager.confirmConnexion(this);
+			ConnexionManager.confirmPreConnexion(this);
 		}catch(Exception e){
+			e.printStackTrace();
+			System.err.println("Problème à Connexion.init()...closing.");
 			close();
 		}
 	}
@@ -101,10 +115,14 @@ public class Connexion {
 	 * Ferme la connexion : appel les fonctions de fermeture des thread de lecture et d'envoi de messages.
 	 */
 	public void close() {
+		System.out.println("Closing connexion");
 		if(messageReader!=null)
 			messageReader.close();
 		if(messageSender!=null)
 			messageSender.close();
+		try {
+			s.close();
+		} catch (IOException e) {	}
 		if(isConnected){
 			ConnexionManager.remove(this);
 		}else{

@@ -67,7 +67,7 @@ public class ConnexionManager{
 	 * Ajoute une connexion à confirmer à la liste des preConnexions gérées
 	 * @param preConnexion la connexion à confirmer
 	 */
-	static public synchronized void addConnexion(Connexion preConnexion){
+	static public synchronized void addPreConnexion(Connexion preConnexion){
 		preConnexions.put(preConnexion, preConnexion);
 	}
 
@@ -89,7 +89,7 @@ public class ConnexionManager{
 	 * Si la preConnexion n'existe pas, affiche un message d'erreur
 	 * @param c la connexion à confirmer
 	 */
-	static public synchronized void confirmConnexion(Connexion c){
+	static public synchronized void confirmPreConnexion(Connexion c){
 		if(preConnexions.remove(c)!=null){
 			connexions.put(c, c);
 		}else{//si la connexion n'était pas dans la liste de preConnexion
@@ -143,8 +143,8 @@ class ServerThread extends Thread{
 				e.printStackTrace();
 			}
 			if(c!=null){
-				System.out.println("Nouvelle connexion :"+s.getInetAddress());
-				ConnexionManager.addConnexion(c);
+				System.out.println("Nouvelle preConnexion :"+s.getInetAddress().getCanonicalHostName());
+				ConnexionManager.addPreConnexion(c);
 			}
 		}
 	}

@@ -23,7 +23,7 @@ public class MessageSender extends Thread {
 	 * @throws IOException si la création du PrintWriter d'écriture a échoué
 	 */
 	public MessageSender(Connexion connexion, OutputStream out) throws IOException {
-		super();
+		super("MessageSender-"+connexion.getId());
 		closing=false;
 		this.connexion=connexion;
 		this.out=out;
@@ -35,6 +35,7 @@ public class MessageSender extends Thread {
 	 * TODO à vérifier le comportement
 	 */
 	public void close(){
+		System.out.println("Closing MessageSender-"+connexion.getId());
 		closing=true;
 		try {
 			out.close();
@@ -55,7 +56,7 @@ public class MessageSender extends Thread {
 				} catch (IOException e) {}
 			}
 			try {
-				this.wait(100);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
