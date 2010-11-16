@@ -89,7 +89,11 @@ public abstract class Message {
 			}
 			return new Pong(h,subTab(payload, 0, 1),subTab(payload, 2, 5),subTab(payload, 6, 9),subTab(payload, 10, 13));
 		case PUSH:
-			return null;
+			if (payload.length!=26) {
+				System.err.println("payload et header incohérents");
+				return null;
+			}
+			return new Push(h,subTab(payload, 24, 25),subTab(payload, 20, 23),subTab(payload, 0, 15),subTab(payload, 16, 19));
 		case QUERY:
 			return null;
 		case QUERY_HIT:
@@ -243,7 +247,7 @@ class Push extends Message{
 		return serventIdentifier;
 	}
 
-	public long getLfileIndex() {
+	public long getFileIndex() {
 		return lfileIndex;
 	}
 
@@ -294,8 +298,24 @@ class Push extends Message{
 	
 	@Override
 	public short[] toShortTab() {
-		// TODO Auto-generated method stub
-		return null;
+		short[] res = new short[49];
+		for (int i = 0; i<23;i++){
+			res[i] = header.getHeader()[i];
+		}
+		
+		for (int i = 0; i<16;i++){
+			res[i+23] = serventIdentifier[i];
+		}
+		for (int i = 0; i<4;i++){
+			res[i+23+16] = fileIndex[i];
+		}
+		for (int i = 0; i<4;i++){
+			res[i+23+20] = ip[i];
+		}
+		for (int i = 0; i<2;i++){
+			res[i+23+24] = port[i];
+		}
+		return res;
 	}
 	
 }
