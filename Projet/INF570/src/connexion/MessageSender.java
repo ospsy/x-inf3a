@@ -52,7 +52,6 @@ public class MessageSender extends Thread {
 			while((m=connexion.getMessageToSend())!=null){
 				try {
 					Link.sendMessage(out,m);
-					out.flush();
 				} catch (IOException e) {}
 			}
 			try {
