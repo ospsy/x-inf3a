@@ -1,18 +1,18 @@
 package link;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import message.Message;
 
 public class Link {
 
-	public static Message readMessage(BufferedReader br){
+	public static Message readMessage(InputStream in){
 		//TODO
 		return null;
 	}
 	
-	public static void sendMessage(PrintWriter pw, Message m){
+	public static void sendMessage(OutputStream out, Message m){
 		//TODO
 	}
 }
