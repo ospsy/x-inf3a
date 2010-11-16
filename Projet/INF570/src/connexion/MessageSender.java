@@ -35,13 +35,16 @@ public class MessageSender extends Thread {
 	 * TODO à vérifier le comportement
 	 */
 	public void close(){
-		System.out.println("Closing MessageSender-"+connexion.getId());
-		closing=true;
-		try {
-			out.close();
-		} catch (IOException e) {
-			System.err.println("MessageSender : erreur à close().");
-			e.printStackTrace();
+		if(!closing){
+			System.out.println("Closing MessageSender-"+connexion.getId());
+			closing=true;
+			try {
+				out.close();
+			} catch (IOException e) {
+				System.err.println("MessageSender : erreur à close().");
+				e.printStackTrace();
+			}
+			connexion.close();
 		}
 	}
 

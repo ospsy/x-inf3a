@@ -36,13 +36,16 @@ public class MessageReader extends Thread {
 	 * TODO à vérifier le comportement
 	 */
 	public void close(){
-		System.out.println("Closing MessageReader-"+connexion.getId());
-		closing=true;
-		try {
-			in.close();
-		} catch (IOException e) {
-			System.err.println("MessageReader : erreur à close().");
-			e.printStackTrace();
+		if(!closing){
+			System.out.println("Closing MessageReader-"+connexion.getId());
+			closing=true;
+			try {
+				in.close();
+			} catch (IOException e) {
+				System.err.println("MessageReader : erreur à close().");
+				e.printStackTrace();
+			}
+			connexion.close();
 		}
 	}
 	

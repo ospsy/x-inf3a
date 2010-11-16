@@ -20,33 +20,54 @@ public class ConnexionManager{
 	static private HashMap<Connexion, Connexion> preConnexions;
 	static private ServerThread thread;
 
-	
+
 	static public void init(int ServerPort) {
 		port=ServerPort;
 		connexions = new HashMap<Connexion, Connexion>();
 		preConnexions = new HashMap<Connexion, Connexion>();
-		try {
-			thread = new ServerThread(port);
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.err.println("Impossible de créer le ServerSocket");
+		boolean serverCreated=false;
+		while(!serverCreated){
+			try {
+				System.out.println("Tentative de création de serveur sur le port "+port);
+				thread = new ServerThread(port);
+				serverCreated=true;
+				System.out.println("Serveur créé sur le port "+port);
+			} catch (IOException e) {
+				System.err.println("Impossible de créer le ServerSocket");
+				port++;
+			}
 		}
 	}
-	
+
 	static public int getPort(){
 		return port;
 	}
-	
+
 	static public String getIP(){
 		//TODO
 		return "";
 	}
-	
+
 	//TODO
 	static public void close(){
 		thread.close();
+		for(Connexion c : connexions.keySet())
+			c.close();
+		for(Connexion c : preConnexions.keySet())
+			c.close();
 	}
 	
+	static public void connect(String ip, int port){
+		try {
+			Socket s = new Socket(ip,port);
+			addPreConnexion(new Connexion(s, false));
+			System.out.println("PreConnexion réussie");
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Connexion impossible...");
+		}
+	}
+
 	/**
 	 * Enlève une connexion de la liste des connexions gérées
 	 * @param c la connexion à enlever
@@ -54,7 +75,7 @@ public class ConnexionManager{
 	static public synchronized void remove(Connexion c){
 		connexions.remove(c);
 	}
-	
+
 	/**
 	 * Retire une preConnexion, si par exemple le protocole de confirmation a échoué
 	 * @param c la preConnexion a retirer
@@ -62,7 +83,7 @@ public class ConnexionManager{
 	static public synchronized void removePreConnexion(Connexion c){
 		preConnexions.remove(c);
 	}
-	
+
 	/**
 	 * Ajoute une connexion à confirmer à la liste des preConnexions gérées
 	 * @param preConnexion la connexion à confirmer
@@ -83,7 +104,7 @@ public class ConnexionManager{
 			}
 		}
 	}
-	
+
 	/**
 	 * Confirme la connexion dans la liste globale
 	 * Si la preConnexion n'existe pas, affiche un message d'erreur
@@ -106,7 +127,7 @@ public class ConnexionManager{
 class ServerThread extends Thread{
 	private ServerSocket server;
 	private boolean closing;
-	
+
 	/**
 	 * Création du serveur et de son thread d'écoute
 	 * @param port le port sur lequel écouter
@@ -118,8 +139,8 @@ class ServerThread extends Thread{
 		server = new ServerSocket(port);
 		this.start();
 	}
-	
-	
+
+
 	public void close() {
 		closing=true;
 		try {

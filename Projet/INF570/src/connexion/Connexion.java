@@ -17,23 +17,23 @@ import message.*;
  */
 public class Connexion {
 	private boolean isConnected;
+	private boolean closing;
 	private Socket s;
 	private LinkedList<Message> toSend;
-	//private LinkedList<Message> received; // sans intérêt pour l'instant
 	private MessageReader messageReader;
 	private MessageSender messageSender;
 
 	private int id;
-	
+
 	/**
 	 * Crée une nouvelle connexion
 	 * @param s la socket sur laquelle la connexion a lieu
-	 * @param isServer TRUE si on a recu la connexion, FALSE si on l'a créée
+	 * @param isServer TRUE si on a recu la connexion, FALSE si on l'a créée (c'est nous qui nous sommes connecté)
 	 */
 	Connexion(Socket socket, final boolean isServer){
 		s = socket;
 		toSend = new LinkedList<Message>();
-		//received = new LinkedList<Message>(); // sans intérêt pour l'instant
+		closing=false;
 		isConnected=false;
 		id=(int)(Math.random()*1024);
 		new Thread("preConnecting-"+id){
@@ -60,15 +60,17 @@ public class Connexion {
 				} catch (IOException e) {
 					close();
 				}
-				/*if(br!=null)
-					try {
-						br.close();
-					} catch (IOException e) {}
-				if(pw!=null) pw.close();*/
+				if(!isConnected){
+					if(pw!=null) pw.close();
+					if(br!=null)
+						try {
+							br.close();
+						} catch (IOException e) {}
+				}
 			}
 		}.start();
 	}
-	
+
 	/**
 	 * Un entier généré aléatoirement pour repérer les connexions (rien n'assure qu'il soit unique)
 	 * @return l'identifiant de la connexion
@@ -115,18 +117,21 @@ public class Connexion {
 	 * Ferme la connexion : appel les fonctions de fermeture des thread de lecture et d'envoi de messages.
 	 */
 	public void close() {
-		System.out.println("Closing connexion");
-		if(messageReader!=null)
-			messageReader.close();
-		if(messageSender!=null)
-			messageSender.close();
-		try {
-			s.close();
-		} catch (IOException e) {	}
-		if(isConnected){
-			ConnexionManager.remove(this);
-		}else{
-			ConnexionManager.removePreConnexion(this);
+		if(!closing){
+			closing=true;
+			System.out.println("Closing connexion");
+			if(messageReader!=null)
+				messageReader.close();
+			if(messageSender!=null)
+				messageSender.close();
+			try {
+				s.close();
+			} catch (IOException e) {	}
+			if(isConnected){
+				ConnexionManager.remove(this);
+			}else{
+				ConnexionManager.removePreConnexion(this);
+			}
 		}
 	}
 
