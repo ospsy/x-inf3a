@@ -58,8 +58,13 @@ public class Query extends Message {
 
 	private static String[] getCriteria(short[]tab,int maxLength){
 
-		//TODO
-
+		if((tab.length>maxLength) || (tab[tab.length-1]!=0)){
+			System.err.println("format de payload incorrect");
+			return null;
+		}
+	//	String[
+		
+		
 		return null;
 	}
 
