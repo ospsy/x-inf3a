@@ -25,11 +25,11 @@ public class Query extends Message {
 	}
 
 	/**
-	 * constructeur pour l'écriture d'un message Query
+	 * constructeur pour l'Ã©criture d'un message Query
 	 * @param minSpeed
 	 * @param searchCriteria
 	 */
-	public Query(short[] id,int ttl, int hops, String[] searchCriteria,	int minSpeed) {
+	public Query(int ttl, int hops, String[] searchCriteria,	int minSpeed) {
 		super();
 
 		this.scriteria = searchCriteria;
@@ -38,7 +38,7 @@ public class Query extends Message {
 		this.dminSpeed = minSpeed;
 		this.minSpeed = tabFromLong(minSpeed);
 
-		this.header = new MessageHeader(id,TypeMessage.QUERY,ttl,hops,2+this.criteria.length);
+		this.header = new MessageHeader(getRandomId(),TypeMessage.QUERY,ttl,hops,2+this.criteria.length);
 
 	}
 

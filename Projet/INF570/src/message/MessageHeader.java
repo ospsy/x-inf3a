@@ -8,7 +8,7 @@ public class MessageHeader {
 	private short[] header;
 	public static final int STANDARD_SIZE = 23;
 	
-	public MessageHeader(short[] id,TypeMessage type,int ttl, int hops, int payloadLength){
+	protected MessageHeader(short[] id,TypeMessage type,int ttl, int hops, int payloadLength){
 		header = new short[23];
 		setMessageID(id);
 		setTypeMessage(type);

@@ -76,7 +76,7 @@ public class QueryHit extends Message{
 	
 	
 	/**
-	 * constructeur pour l'écriture d'un message Push
+	 * constructeur pour l'Ã©criture d'un message Push
 	 * @param port
 	 * @param ip
 	 * @param speed
