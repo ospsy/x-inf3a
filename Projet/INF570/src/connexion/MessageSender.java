@@ -1,8 +1,7 @@
 package connexion;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.io.OutputStream;
 
 import link.Link;
 import message.Message;
@@ -14,20 +13,20 @@ import message.Message;
  */
 public class MessageSender extends Thread {
 	private Connexion connexion;
-	private PrintWriter pw;
+	private OutputStream out;
 	private boolean closing;
 
 	/**
 	 * Constructeur du MessageSender.
 	 * @param connexion la connexion où aller chercher les messages à envoyer
-	 * @param s la socket sur laquelle écrire
+	 * @param out le flux sur lequel écrire
 	 * @throws IOException si la création du PrintWriter d'écriture a échoué
 	 */
-	public MessageSender(Connexion connexion, Socket s) throws IOException {
+	public MessageSender(Connexion connexion, OutputStream out) throws IOException {
 		super();
 		closing=false;
 		this.connexion=connexion;
-		pw=new PrintWriter(s.getOutputStream());
+		this.out=out;
 		this.start();
 	}
 
@@ -37,8 +36,12 @@ public class MessageSender extends Thread {
 	 */
 	public void close(){
 		closing=true;
-		pw.close();
-		System.out.println("Fermeture MessageSender");
+		try {
+			out.close();
+		} catch (IOException e) {
+			System.err.println("MessageSender : erreur à close().");
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -46,8 +49,10 @@ public class MessageSender extends Thread {
 		while(!closing){
 			Message m;
 			while((m=connexion.getMessageToSend())!=null){
-				Link.sendMessage(pw,m);
-				pw.flush();
+				Link.sendMessage(out,m);
+				try {
+					out.flush();
+				} catch (IOException e) {}
 			}
 			try {
 				this.wait(100);

@@ -127,7 +127,7 @@ class ServerThread extends Thread{
 			Connexion c=null;
 			try {
 				s=server.accept();
-				c=new Connexion(s);
+				c=new Connexion(s,true);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
