@@ -1,12 +1,14 @@
 package message;
 
+import java.util.Random;
+
 
 public abstract class Message {
 	protected MessageHeader header;
 
 	/**
 	 * renvoie la version aplatie d'un message
-	 * @return	le short[] qu'il faut envoyer à travers la socket
+	 * @return	le short[] qu'il faut envoyer ï¿½ travers la socket
 	 */
 	public abstract short[] toShortTab();
 
@@ -15,7 +17,7 @@ public abstract class Message {
 	}
 
 	/**
-	 * parse une ip à partir d'un tableau de short
+	 * parse une ip ï¿½ partir d'un tableau de short
 	 * @param s
 	 * @return l'ip sous forme de string
 	 */
@@ -34,7 +36,7 @@ public abstract class Message {
 	/**
 	 * transforme une ip sous forme de string en tableau de short
 	 * @param ip
-	 * @return	le tableau de short associé
+	 * @return	le tableau de short associï¿½
 	 */
 	protected static short[] ipFromString(String ip) {
 		String s[] = ip.split(".");
@@ -47,7 +49,7 @@ public abstract class Message {
 
 
 	/**
-	 * parse des long pour coder des short[] à 4 emplacement donc < 256^5-1
+	 * parse des long pour coder des short[] Ã  l'emplacement donc < 256^5-1
 	 * @param n
 	 * @return un short[] qui code n
 	 */
@@ -81,37 +83,45 @@ public abstract class Message {
 		return res;
 	}
 
-
+	protected static short[] getRandomId(){
+		Random ran = new Random();
+		short[] res = new short[16];
+		for (int i = 0; i < res.length; i++) {
+			res[i] = (short) ran.nextInt(256);
+		}
+		return res;
+	}
+	
 	/**
-	 * à appeler lors de la lecture d'un message après avois analysé le header
+	 * Ã  appeler lors de la lecture d'un message aprÃ¨s avois analysï¿½ le header
 	 * 
 	 * @param h
 	 * @param payload
-	 * @return	un message de type cohérent avec le header (null sinon)
+	 * @return	un message de type cohÃ©rent avec le header (null sinon)
 	 */
 	public static Message parseMessage(MessageHeader h,short[] payload){
 		switch (h.getMessageType()) {
 		case PING:
 			if (payload!=null) {
-				System.err.println("payload et header incohérents");
+				System.err.println("payload et header incohÃ©rents");
 				return null;
 			}
-			return new Ping(h.getMessageID(), h.getTTL(), h.getHops());
+			return new Ping(h.getTTL(), h.getHops());
 		case PONG:
 			if (payload.length!=14) {
-				System.err.println("payload et header incohérents");
+				System.err.println("payload et header incohÃ©rents");
 				return null;
 			}
 			return new Pong(h,subTab(payload, 0, 1),subTab(payload, 2, 5),subTab(payload, 6, 9),subTab(payload, 10, 13));
 		case PUSH:
 			if (payload.length!=26) {
-				System.err.println("payload et header incohérents");
+				System.err.println("payload et header incohÃ©rents");
 				return null;
 			}
 			return new Push(h,subTab(payload, 24, 25),subTab(payload, 20, 23),subTab(payload, 0, 15),subTab(payload, 16, 19));
 		case QUERY:
 			if (payload.length<=3) {
-				System.err.println("pas de critères de recherche");
+				System.err.println("pas de critÃ¨res de recherche");
 				return null;
 			}
 			return new Query(h,subTab(payload, 0, 1),subTab(payload, 2, payload.length-1));
