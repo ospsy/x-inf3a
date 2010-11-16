@@ -52,7 +52,8 @@ public class Connexion {
 							}
 					}else{//cote client
 						pw.print("GNUTELLA CONNECT/0.4\n\n");
-						if(br.readLine().equals("GNUTELLA OK\n\n"))
+						pw.flush();
+						if(br.readLine().equals("GNUTELLA OK"))
 							if(br.readLine().equals("")){
 								init();
 							}
