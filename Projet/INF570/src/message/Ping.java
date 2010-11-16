@@ -8,9 +8,7 @@ package message;
 public class Ping extends Message {
 
 	public Ping(short[] id,int ttl,int hops){
-		short[] vide = new short[4];
-		vide[0] = vide[1] = vide[2] = vide[3] = 0;
-		header = new MessageHeader(id, TypeMessage.PING, ttl, hops, vide);
+		header = new MessageHeader(id, TypeMessage.PING, ttl, hops, 0);
 	}
 
 	@Override

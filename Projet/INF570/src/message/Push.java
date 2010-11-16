@@ -54,7 +54,7 @@ public class Push extends Message{
 	 */
 	public Push(short[] id,int ttl, int hops,int port, String ip, long fileIndex,	short[] serventId) {
 		super();
-		this.header = new MessageHeader(id,TypeMessage.PUSH,ttl,hops,tabFromLong(26));
+		this.header = new MessageHeader(id,TypeMessage.PUSH,ttl,hops,26);
 		this.iport = port;
 		this.sip = ip;
 		this.lfileIndex = fileIndex;

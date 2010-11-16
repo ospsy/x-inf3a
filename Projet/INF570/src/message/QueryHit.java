@@ -68,6 +68,13 @@ public class QueryHit extends Message{
 		return null;
 	}
 
+
+	private short[] tabResultSet(Result[] resultSet) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
 	/**
 	 * constructeur pour l'écriture d'un message Push
 	 * @param port
@@ -85,7 +92,7 @@ public class QueryHit extends Message{
 		this.inumberOfHits = resultSet.length;
 		this.dSpeed = speed;
 
-		this.header = new MessageHeader(id,TypeMessage.QUERY_HIT,ttl,hops,tabFromLong(50+resultSet.length));
+		this.header = new MessageHeader(id,TypeMessage.QUERY_HIT,ttl,hops,50+resultSet.length);
 
 		this.resultSet = tabResultSet(resultSet);
 		short[] bport = new short[2];
@@ -100,10 +107,6 @@ public class QueryHit extends Message{
 
 
 
-	private short[] tabResultSet(Result[] resultSet) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public short[] toShortTab() {

@@ -1,5 +1,10 @@
 package message;
 
 public class Result {
-//TODO
+/**
+ * Cette structure formate les résultats d'une recherche.
+ * 
+ */
+
+	
 }
