@@ -15,12 +15,14 @@ import message.*;
  *
  */
 public class ConnexionManager{
+	static private int port;
 	static private HashMap<Connexion, Connexion> connexions;
 	static private HashMap<Connexion, Connexion> preConnexions;
 	static private ServerThread thread;
 
 	
-	static public void init(int port) {
+	static public void init(int ServerPort) {
+		port=ServerPort;
 		connexions = new HashMap<Connexion, Connexion>();
 		preConnexions = new HashMap<Connexion, Connexion>();
 		try {
@@ -29,6 +31,15 @@ public class ConnexionManager{
 			e.printStackTrace();
 			System.err.println("Impossible de créer le ServerSocket");
 		}
+	}
+	
+	static public int getPort(){
+		return port;
+	}
+	
+	static public String getIP(){
+		//TODO
+		return "";
 	}
 	
 	//TODO
