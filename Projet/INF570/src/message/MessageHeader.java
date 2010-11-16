@@ -84,12 +84,13 @@ public class MessageHeader {
 	 * 
 	 * @return La taille du message
 	 */
-	public short[] getPayloadLength() {
-		short[] s = new short[4];
-		for (int i = 0; i <4;i++){
-			s[i]=header[i+19];
+	public int getPayloadLength() {
+		int res = 0;
+		for (int i = 0;i<4;i++){
+			res = (res*256 + header[i+19]);
 		}
-		return s;
+		return res;
+		
 	}
 
 	private void setMessageID(short[] s){
