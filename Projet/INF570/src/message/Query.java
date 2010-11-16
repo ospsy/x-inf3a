@@ -38,7 +38,7 @@ public class Query extends Message {
 		this.dminSpeed = minSpeed;
 		this.minSpeed = tabFromLong(minSpeed);
 
-		this.header = new MessageHeader(id,TypeMessage.QUERY,ttl,hops,tabFromLong(2+this.criteria.length));
+		this.header = new MessageHeader(id,TypeMessage.QUERY,ttl,hops,2+this.criteria.length);
 
 	}
 

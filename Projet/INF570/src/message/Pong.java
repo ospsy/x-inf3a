@@ -42,7 +42,7 @@ public class Pong extends Message {
 	 */
 	public Pong(short[] id,int ttl, int hops,int port, String ip, long numberOfSharedFiles,	long sharedFilesSize) {
 		super();
-		this.header = new MessageHeader(id,TypeMessage.PONG,ttl,hops,tabFromLong(14));
+		this.header = new MessageHeader(id,TypeMessage.PONG,ttl,hops,14);
 		this.iport = port;
 		this.sip = ip;
 		this.lnumberOfSharedFiles = numberOfSharedFiles;
