@@ -27,6 +27,10 @@ public abstract class Message {
 		return (s[0]+"."+s[1]+"."+s[2]+"."+s[3]);
 	}
 	
+	public void decreaseTTL(){
+		header.decreaseTTL();
+	}
+	
 	/**
 	 * transforme une ip sous forme de string en tableau de short
 	 * @param ip

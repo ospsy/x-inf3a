@@ -132,6 +132,16 @@ public class MessageHeader {
 			header[i+19]=s[i];
 		}
 	}
+
+	protected void decreaseTTL() {
+		if(getTTL()==0){
+			System.err.println("Le ttl est déjà nul, vous ne pouvez pas le décrémenter");
+			return;
+		}
+		setTTL(getTTL()-1);
+		setHops(getHops()+1);
+		
+	}
 	
 
 	

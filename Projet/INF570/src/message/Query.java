@@ -1,5 +1,7 @@
 package message;
 
+import java.util.ArrayList;
+
 
 public class Query extends Message {
 	private short[] minSpeed;
@@ -62,7 +64,16 @@ public class Query extends Message {
 			System.err.println("format de payload incorrect");
 			return null;
 		}
-	//	String[
+		ArrayList<String> al = new ArrayList<String>();
+		String s = "";
+		for (int i = 0; i < tab.length; i++) {
+			
+			
+			if((tab[i]==32)&&(!s.equals(""))){
+				al.add(s);
+				s = "";
+			}
+		}
 		
 		
 		return null;
