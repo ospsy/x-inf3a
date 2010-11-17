@@ -63,15 +63,39 @@ public class QueryHit extends Message{
 		this.sresultSet = getResults(resultSet, resultSet.length);
 	}
 
-	private Result[] getResults(short[] resultSet, int length) {
-		// TODO Auto-generated method stub
-		return null;
+	protected static Result[] getResults(short[] resultSet, int length) {
+		int offset = 0;
+		Result[] res = new Result[length];
+		int i = 0;
+		for (i = 0; i < res.length; i++) {
+			short[] temp = subTab(resultSet,8+offset, -1);
+			short[] temp2 = subTab(resultSet,offset+9+temp.length, -1);
+			res[i] = new Result(subTab(resultSet,0+offset, 3+offset), subTab(resultSet,4+offset, 7+offset), temp, temp2);
+			offset = offset + temp.length + temp2.length + 8+2;
+		}
+		
+		return res;
 	}
 
 
-	private short[] tabResultSet(Result[] resultSet) {
-		// TODO Auto-generated method stub
-		return null;
+	protected static short[] tabResultSet(Result[] resultSet) {
+		
+		int l = 0;
+		for (int i = 0; i < resultSet.length; i++) {
+			l += resultSet[i].length();
+		}
+		
+		short[] res = new short[l];
+		int offset = 0;
+		for (int i = 0; i < resultSet.length; i++) {
+			short[] temp = resultSet[i].toShortTab();
+			for (int j = 0; j < temp.length; j++) {
+				res[j+offset] = temp[j];
+			}
+			offset += temp.length;
+		}
+		
+		return res;
 	}
 	
 	
@@ -132,6 +156,11 @@ public class QueryHit extends Message{
 			res[i+23+1+2+4+4+resultSet.length] = serventIdentifier[i];
 		}
 		return res;
+	}
+	
+	@Override
+	public String toString() {
+		return header+"\n--payload--\nnumber of hits:" +getNumberOfHits()+"\nport: "+getPort()+"\nip: "+getIp()+"\nspeed: "+getSpeed()+"kB/s\nresults: "+stringFromResultTab(getResultSet())+"\nservent id: "+Message.stringOfTab(getServentIdentifier())+"\n---end---\n";
 	}
 
 }

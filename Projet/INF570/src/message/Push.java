@@ -46,7 +46,7 @@ public class Push extends Message{
 	}
 
 	/**
-	 * constructeur pour l'écriture d'un message Push
+	 * constructeur pour l'Ã©criture d'un message Push
 	 * @param port
 	 * @param ip
 	 * @param file index
@@ -93,5 +93,13 @@ public class Push extends Message{
 		return res;
 	}
 
+	
+	public String toString() {
+		return header+"\n--payload--\nservent id: "+
+		Message.stringOfTab(getServentIdentifier())+
+		"\nfile index: "+getFileIndex()+
+		"\nip: "+getIp()+"\nport: "+getPort()+"\n---end---\n";
+	}
+	
 }
 

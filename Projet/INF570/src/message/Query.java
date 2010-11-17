@@ -12,6 +12,8 @@ public class Query extends Message {
 
 	/**
 	 * constructeur en lecture d'un message Query
+	 * 
+	 * 
 	 * @param minSpeed
 	 * @param searchCriteria
 	 */
@@ -58,7 +60,7 @@ public class Query extends Message {
 		return res;
 	}
 
-	public static String[] getCriteria(short[]tab,int maxLength){
+	protected static String[] getCriteria(short[]tab,int maxLength){
 
 		if((tab.length>maxLength) || (tab[tab.length-1]!=0)){
 			System.err.println("format de payload incorrect");
@@ -85,7 +87,7 @@ public class Query extends Message {
 		return res;
 	}
 
-	public static short[] shortFromCriteria(String[] scriteria) {
+	protected static short[] shortFromCriteria(String[] scriteria) {
 
 		ArrayList<Short> al = new ArrayList<Short>();
 		for (int i  = 0; i < scriteria.length;i++){
@@ -105,11 +107,16 @@ public class Query extends Message {
 		return res;
 	}
 
-	public double getMinimumSpeed(){		
+	public int getMinimumSpeed(){		
 		return dminSpeed;
 	}
 
 	public String[] getCriteria(){
 		return scriteria;
+	}
+	
+	@Override
+	public String toString() {
+		return header+"\n--payload--\nminimum speed: "+getMinimumSpeed()+"kB/s\ncriteria: "+stringFromStringTab(getCriteria(criteria, criteria.length))+"\n---end---\n";
 	}
 }

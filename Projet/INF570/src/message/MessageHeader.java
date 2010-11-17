@@ -18,7 +18,7 @@ public class MessageHeader {
 	}
 	
 	/**
-	 * ce constructeur est à utiliser pour la lecture d'un message
+	 * ce constructeur est ï¿½ utiliser pour la lecture d'un message
 	 * @param s
 	 */
 	public MessageHeader(short [] s){
@@ -135,7 +135,7 @@ public class MessageHeader {
 
 	protected void decreaseTTL() {
 		if(getTTL()==0){
-			System.err.println("Le ttl est déjà nul, vous ne pouvez pas le décrémenter");
+			System.err.println("Le ttl est dï¿½jï¿½ nul, vous ne pouvez pas le dï¿½crï¿½menter");
 			return;
 		}
 		setTTL(getTTL()-1);
@@ -144,9 +144,8 @@ public class MessageHeader {
 	}
 	
 
-	
-
-	
-
+	public String toString(){
+		return "--header--\nid: "+Message.stringOfTab(getMessageID())+"\ntype: "+getMessageType()+"\nTTL: "+getTTL()+"\nHops: "+getHops()+"\npayload length: "+getPayloadLength();
+	}
 
 }
