@@ -35,6 +35,19 @@ public class Pong extends Message {
 
 	/**
 	 * constructeur pour l'écriture d'un message Pong
+	 * <p><i><b>exemple :</b> new Pong(Message.getRandomId(),5,2,8080,"129.104.227.1",2,520);</i></br>
+	 * <br><b>--header--</b>
+	 * <br><i>id:</i> 4A 5E 9D AA E5 6A 09 3C 14 6C 6E 43 95 B8 D4 F4
+	 * <br><i>type:</i> PONG
+	 * <br><i>TTL:</i> 5
+	 * <br><i>Hops:</i> 2
+	 * <br><i>payload length:</i> 14
+	 * <br><b>--payload--</b>
+	 * <br><i>port:</i> 8080 
+	 * <br><i>ip:</i> 129.104.227.1
+	 * <br><i>number of shared files:</i> 2
+	 * <br><i>number of kilobytes shared:</i> 520
+	 * <br><b>--end--</b></br>
 	 * @param port
 	 * @param ip
 	 * @param numberOfSharedFiles
