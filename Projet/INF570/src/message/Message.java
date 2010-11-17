@@ -96,7 +96,7 @@ public abstract class Message {
 	}
 	
 	/**
-	 * à appeler lors de la lecture d'un message après avois analys� le header
+	 * à appeler lors de la lecture d'un message après avoir analysé le header
 	 * 
 	 * @param h
 	 * @param payload
