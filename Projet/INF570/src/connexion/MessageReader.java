@@ -55,8 +55,10 @@ public class MessageReader extends Thread {
 			try{
 				Message m=Link.readMessage(in);
 				connexion.processMsg(m);
-			}catch(Exception e){
+			}catch(IOException e){//détection de déconnexion
 				close();
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 			
 		}

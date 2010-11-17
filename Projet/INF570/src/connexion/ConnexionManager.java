@@ -18,7 +18,7 @@ public class ConnexionManager{
 	static private int port;
 	static private HashMap<Connexion, Connexion> connexions;
 	static private HashMap<Connexion, Connexion> preConnexions;
-	static private ServerThread thread;
+	static private ServerThread server;
 
 
 	static public void init(int ServerPort) {
@@ -29,11 +29,11 @@ public class ConnexionManager{
 		while(!serverCreated){
 			try {
 				System.out.println("Tentative de création de serveur sur le port "+port);
-				thread = new ServerThread(port);
+				server = new ServerThread(port);
 				serverCreated=true;
 				System.out.println("Serveur créé sur le port "+port);
 			} catch (IOException e) {
-				System.err.println("Impossible de créer le ServerSocket");
+				System.out.println("Impossible de créer le ServerSocket");
 				port++;
 			}
 		}
@@ -44,13 +44,12 @@ public class ConnexionManager{
 	}
 
 	static public String getIP(){
-		//TODO
-		return "";
+		return server.getIP();
 	}
 
 	//TODO
 	static public void close(){
-		thread.close();
+		server.close();
 		for(Connexion c : connexions.keySet())
 			c.close();
 		for(Connexion c : preConnexions.keySet())
@@ -143,6 +142,9 @@ class ServerThread extends Thread{
 		this.start();
 	}
 
+	public String getIP(){
+		return server.getInetAddress().getHostAddress();
+	}
 
 	public void close() {
 		closing=true;

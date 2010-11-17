@@ -17,6 +17,10 @@ public class Main {
 		
 		while(true){
 			String s=Keyboard.readString();
+			if(s==null){
+				ConnexionManager.close();
+				break;
+			}
 			if(s.equals("EXIT")){
 				ConnexionManager.close();
 				break;

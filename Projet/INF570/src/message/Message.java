@@ -105,7 +105,7 @@ public abstract class Message {
 	public static Message parseMessage(MessageHeader h,short[] payload){
 		switch (h.getMessageType()) {
 		case PING:
-			if (payload!=null) {
+			if (payload.length!=0) {
 				System.err.println("payload et header incohérents");
 				return null;
 			}
