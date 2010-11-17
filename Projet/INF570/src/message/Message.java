@@ -1,5 +1,6 @@
 package message;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 
@@ -8,16 +9,18 @@ public abstract class Message {
 
 	/**
 	 * renvoie la version aplatie d'un message
-	 * @return	le short[] qu'il faut envoyer � travers la socket
+	 * @return	le short[] qu'il faut envoyer à travers la socket
 	 */
 	public abstract short[] toShortTab();
+	
+	public abstract String toString();
 
 	public MessageHeader getHeader(){
 		return header;
 	}
 
 	/**
-	 * parse une ip � partir d'un tableau de short
+	 * parse une ip à partir d'un tableau de short
 	 * @param s
 	 * @return l'ip sous forme de string
 	 */
@@ -36,10 +39,10 @@ public abstract class Message {
 	/**
 	 * transforme une ip sous forme de string en tableau de short
 	 * @param ip
-	 * @return	le tableau de short associ�
+	 * @return	le tableau de short associé
 	 */
 	protected static short[] ipFromString(String ip) {
-		String s[] = ip.split(".");
+		String s[] = ip.split("\\p{Punct}");
 		short[] sip = new short[4];
 		for (int i = 0;i<4;i++){
 			sip[i] = (short) Integer.parseInt(s[i]);
@@ -137,12 +140,97 @@ public abstract class Message {
 		return null;
 	}
 
-	private static short[] subTab(short[] t,int i, int j){
-		short[] tab = new short[j-i+1];
-		for(int k = i;k<j+1;k++){
-			tab[k-i] = t[k];
+	protected static short[] subTab(short[] t,int i, int j){
+		if (j == -1){
+			ArrayList<Short> al = new ArrayList<Short>();
+			int k = i;
+			
+			while (t[k]!=0){
+				al.add(t[k]);
+				k++;
+			}
+			
+			short[] tab = new short[k-i];
+			
+			for (int k2 = 0; k2 < al.size(); k2++) {
+				tab[k2] = al.get(k2);
+			}
+			
+			return tab;
 		}
-		return tab;
+		else{
+			short[] tab = new short[j-i+1];
+			for(int k = i;k<j+1;k++){
+				tab[k-i] = t[k];
+			}
+			return tab;
+		}
 	}
 
+	protected static String stringFromTab(short[] tab) {
+		String res = "";
+		for (int i = 0; i < tab.length; i++) {
+			res = res + (char)tab[i];
+		}
+		return res;
+	}
+	
+	protected static short[] tabFromString(String s) {
+		short[] res = new short[s.length()];
+		for (int i = 0; i < s.length(); i++) {
+			res[i] = (short) s.charAt(i);
+		}
+		return res;
+	}
+	
+	protected static String stringFromStringTab(String[] s){
+		String res = "";
+		for (int i = 0; i < s.length; i++) {
+			res = res +s[i]+" ";
+		}
+		return res;
+	}
+	
+	protected static String stringFromResultTab(Result[] s){
+		String res = "";
+		for (int i = 0; i < s.length; i++) {
+			res = res +s[i]+" ";
+		}
+		return res;
+	}
+	
+	protected static String stringOfTab(short[] tab){
+		String s= "";
+		for (int i = 0; i < tab.length; i++) {
+			s = s + hexa(tab[i])+" ";
+		}
+		return s;
+	}
+	
+	private static String hexa(short i){
+		int q = i/16;
+		String s = hexFromInt(q);
+		s = s+hexFromInt(i%16);
+		return s;
+	}
+
+	private static String hexFromInt(int i){
+		switch (i) {
+		case 10:
+			return "A";
+		case 11:
+			return "B";
+		case 12:
+			return "C";
+		case 13:
+			return "D";
+		case 14:
+			return "E";
+		case 15:
+			return "F";
+			
+		default:
+			return ""+i;
+		}
+	}
 }

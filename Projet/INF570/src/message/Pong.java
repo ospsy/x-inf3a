@@ -34,7 +34,7 @@ public class Pong extends Message {
 	}
 
 	/**
-	 * constructeur pour l'écriture d'un message Pong
+	 * constructeur pour l'Ã©criture d'un message Pong
 	 * @param port
 	 * @param ip
 	 * @param numberOfSharedFiles
@@ -93,5 +93,10 @@ public class Pong extends Message {
 
 	public long getNumberOfKilobytesShared(){
 		return lsharedFilesSize;
+	}
+
+	@Override
+	public String toString() {
+		return header+"\n--payload--\nport: "+getPort()+"\nip: "+getIp()+"\nnumber of shared files: "+getNumberOfSharedFiles()+"\nnumber of kilobytes shared: "+getNumberOfKilobytesShared()+"\n---end---\n";
 	}
 }
