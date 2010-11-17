@@ -1,10 +1,16 @@
 package message;
-
-public class Result {
 /**
- * Cette structure formate les résultats d'une recherche.
- * 
+ * Cette structure de données sert pour les résultats d'une requête
+ * <p><i><b>exemple :</b> new Result(11, 512, "toto.txt", Message.getRandomId());</i></br>
+ * <br><b>-----------</b>
+ * <br><i>index:</i> 11
+ * <br><i>size:</i> 512kB 
+ * <br><i>name:</i> toto.txt 
+ * <br><i>optionalData:</i> 64 28 41 06 0F E5 47 6D DB 16 9C 90 A9 27 82 02  
+ * <br><b>----------</b></br>
  */
+public class Result {
+
 
 	private short[] _fileIndex;
 	private short[] _fileSize;

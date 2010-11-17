@@ -12,8 +12,17 @@ public class Query extends Message {
 
 	/**
 	 * constructeur en lecture d'un message Query
-	 * 
-	 * 
+	 * <p><i><b>exemple :</b> new Query(5, 6, "banane jaune   singe".split(" "), 1000);</i></br>
+	 * <br><b>--header--</b>
+	 * <br><i>id:</i> 52 4A A4 1E 83 B4 D5 F9 9B 33 91 B8 65 6F 3A 4B 
+	 * <br><i>type:</i> QUERY
+	 * <br><i>TTL:</i> 5
+	 * <br><i>Hops:</i> 6
+	 * <br><i>payload length:</i> 23
+	 * <br><b>--payload--</b>
+	 * <br><i>minimum speed:</i> 1000kB/s
+	 * <br><i>criteria:</i> banane jaune singe 
+	 * <br><b>--end--</b></br>
 	 * @param minSpeed
 	 * @param searchCriteria
 	 */
