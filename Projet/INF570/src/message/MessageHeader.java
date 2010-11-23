@@ -8,7 +8,7 @@ public class MessageHeader {
 	private short[] header;
 	public static final int STANDARD_SIZE = 23;
 	
-	protected MessageHeader(short[] id,TypeMessage type,int ttl, int hops, int payloadLength){
+	protected MessageHeader(Identifiant id,TypeMessage type,int ttl, int hops, int payloadLength){
 		header = new short[23];
 		setMessageID(id);
 		setTypeMessage(type);
@@ -18,8 +18,8 @@ public class MessageHeader {
 	}
 	
 	/**
-	 * ce constructeur està utiliser pour la lecture d'un message
-	 * @param s
+	 * ce constructeur est à utiliser pour la lecture d'un message
+	 * @param s 
 	 */
 	public MessageHeader(short [] s){
 			if (s.length != 23) {
@@ -38,12 +38,12 @@ public class MessageHeader {
 	 * 
 	 * @return L'identifiant du message
 	 */
-	public String getMessageID() {
-		char[] s = new char[16];
+	public Identifiant getMessageID() {
+		short[] s = new short[16];
 		for (int i = 0; i <16;i++){
-			s[i]=(char) header[i];
+			s[i]=header[i];
 		}
-		return s.toString();
+		return new Identifiant(s);
 	}
 	/**
 	 * 
@@ -94,9 +94,9 @@ public class MessageHeader {
 		
 	}
 
-	private void setMessageID(short[] s){
+	private void setMessageID(Identifiant s){
 		for (int i = 0; i <16;i++){
-			header[i]=s[i];
+			header[i]=s.getData()[i];
 		}
 	}
 	private void setTypeMessage(TypeMessage t){
@@ -135,7 +135,7 @@ public class MessageHeader {
 
 	protected void decreaseTTL() {
 		if(getTTL()==0){
-			System.err.println("Le ttl est déjà nul, vous ne pouvez pas le d�cr�menter");
+			System.err.println("Le ttl est déjà nul, vous ne pouvez pas le décrémenter");
 			return;
 		}
 		setTTL(getTTL()-1);

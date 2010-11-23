@@ -6,7 +6,7 @@ public class Push extends Message{
 	private int iport;
 	private short[] ip;
 	private String sip;
-	private short[] serventIdentifier;
+	private Identifiant serventIdentifier;
 	private short[] fileIndex;
 	private long lfileIndex;
 
@@ -18,7 +18,7 @@ public class Push extends Message{
 		return sip;
 	}
 
-	public short[] getServentIdentifier() {
+	public Identifiant getServentIdentifier() {
 		return serventIdentifier;
 	}
 
@@ -53,7 +53,7 @@ public class Push extends Message{
 		this.iport = port[0]*256+port[1];
 		this.ip = ip;
 		this.sip = stringFromIp(ip);
-		this.serventIdentifier = serventId;
+		this.serventIdentifier = new Identifiant(serventId);
 		this.fileIndex = fileIndex;
 		this.lfileIndex = longFromTab(fileIndex);
 	}
@@ -65,7 +65,7 @@ public class Push extends Message{
 	 * @param file index
 	 * @param Servent Identifier
 	 */
-	public Push(short[] id,int ttl, int hops,int port, String ip, long fileIndex,	short[] serventId) {
+	public Push(Identifiant id,int ttl, int hops,int port, String ip, long fileIndex,	Identifiant serventId) {
 		super();
 		this.header = new MessageHeader(id,TypeMessage.PUSH,ttl,hops,26);
 		this.iport = port;
@@ -92,7 +92,7 @@ public class Push extends Message{
 		}
 
 		for (int i = 0; i<16;i++){
-			res[i+23] = serventIdentifier[i];
+			res[i+23] = serventIdentifier.getData()[i];
 		}
 		for (int i = 0; i<4;i++){
 			res[i+23+16] = fileIndex[i];
@@ -109,7 +109,7 @@ public class Push extends Message{
 	
 	public String toString() {
 		return header+"\n--payload--\nservent id: "+
-		Message.stringOfTab(getServentIdentifier())+
+		getServentIdentifier()+
 		"\nfile index: "+getFileIndex()+
 		"\nip: "+getIp()+"\nport: "+getPort()+"\n---end---\n";
 	}

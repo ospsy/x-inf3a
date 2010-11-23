@@ -53,7 +53,7 @@ public class Pong extends Message {
 	 * @param numberOfSharedFiles
 	 * @param sharedFilesSize
 	 */
-	public Pong(short[] id,int ttl, int hops,int port, String ip, long numberOfSharedFiles,	long sharedFilesSize) {
+	public Pong(Identifiant id,int ttl, int hops,int port, String ip, long numberOfSharedFiles,	long sharedFilesSize) {
 		super();
 		this.header = new MessageHeader(id,TypeMessage.PONG,ttl,hops,14);
 		this.iport = port;

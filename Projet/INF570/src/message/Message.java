@@ -86,7 +86,16 @@ public abstract class Message {
 		return res;
 	}
 
-	protected static short[] getRandomId(){
+	protected static Identifiant getRandomId(){
+		Random ran = new Random();
+		short[] res = new short[16];
+		for (int i = 0; i < res.length; i++) {
+			res[i] = (short) ran.nextInt(256);
+		}
+		return new Identifiant(res);
+	}
+	
+	protected static short[] getRandomShortTab(){
 		Random ran = new Random();
 		short[] res = new short[16];
 		for (int i = 0; i < res.length; i++) {

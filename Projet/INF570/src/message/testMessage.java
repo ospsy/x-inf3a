@@ -5,7 +5,7 @@ public class testMessage {
 	
 	public static void main(String[] args) {
 		Result[] resultSet = new Result[2];
-		Result r1 = new Result(11, 512, "toto.txt", Message.getRandomId());
+		Result r1 = new Result(11, 512, "toto.txt", Message.getRandomShortTab());
 		Result r2 = new Result(22, 3512, "panda.mp3");
 		resultSet[0] = r1;
 		resultSet[1] = r2;

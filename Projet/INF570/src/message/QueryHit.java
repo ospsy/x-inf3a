@@ -15,7 +15,7 @@ public class QueryHit extends Message{
 	private short[] resultSet;
 	private Result[] sresultSet;
 
-	private short[] serventIdentifier;
+	private Identifiant serventIdentifier;
 
 	public int getPort() {
 		return iport;
@@ -25,7 +25,7 @@ public class QueryHit extends Message{
 		return sip;
 	}
 
-	public short[] getServentIdentifier() {
+	public Identifiant getServentIdentifier() {
 		return serventIdentifier;
 	}
 
@@ -72,7 +72,7 @@ public class QueryHit extends Message{
 		this.iport = port[0]*256+port[1];
 		this.ip = ip;
 		this.sip = stringFromIp(ip);
-		this.serventIdentifier = serventId;
+		this.serventIdentifier = new Identifiant(serventId);
 		this.speed = speed;
 		this.dSpeed = longFromTab(speed);
 		this.resultSet = resultSet;
@@ -123,7 +123,7 @@ public class QueryHit extends Message{
 	 * @param Result_Set
 	 * @param Servent_Identifier
 	 */
-	public QueryHit(short[] id,int ttl, int hops,int port, String ip, long speed, Result[] resultSet, short[] serventId) {
+	public QueryHit(Identifiant id,int ttl, int hops,int port, String ip, long speed, Result[] resultSet, Identifiant serventId) {
 		super();
 		this.iport = port;
 		this.sip = ip;
@@ -169,14 +169,14 @@ public class QueryHit extends Message{
 		}
 
 		for (int i = 0; i<16;i++){
-			res[i+23+1+2+4+4+resultSet.length] = serventIdentifier[i];
+			res[i+23+1+2+4+4+resultSet.length] = serventIdentifier.getData()[i];
 		}
 		return res;
 	}
 	
 	@Override
 	public String toString() {
-		return header+"\n--payload--\nnumber of hits: " +getNumberOfHits()+"\nport: "+getPort()+"\nip: "+getIp()+"\nspeed: "+getSpeed()+"kB/s\nresults: "+stringFromResultTab(getResultSet())+"\nservent id: "+Message.stringOfTab(getServentIdentifier())+"\n---end---\n";
+		return header+"\n--payload--\nnumber of hits: " +getNumberOfHits()+"\nport: "+getPort()+"\nip: "+getIp()+"\nspeed: "+getSpeed()+"kB/s\nresults: "+stringFromResultTab(getResultSet())+"\nservent id: "+getServentIdentifier()+"\n---end---\n";
 	}
 
 }
