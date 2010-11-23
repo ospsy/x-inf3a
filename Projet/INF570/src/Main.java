@@ -32,7 +32,7 @@ public class Main {
 				break;
 			}
 			if(s.equals("PING"))
-				ConnexionManager.sendAll(new Ping(4,0), null);
+				ConnexionManager.ping();
 			String[] ss=s.split(" ");
 			if(ss.length>=3){
 				if(ss[0].equals("CONNECT"))
