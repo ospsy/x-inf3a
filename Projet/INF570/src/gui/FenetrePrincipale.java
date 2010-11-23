@@ -15,9 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
-import principal.Entree;
-
-import connexion.ConnexionManager;
+import kernel.Main;
 
 
 
@@ -219,7 +217,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 
 
 	private void close() {
-		Entree.close();
+		Main.close();
 	}
 	
 	@Override
