@@ -1,4 +1,4 @@
-package principal;
+package kernel;
 import gui.FenetrePrincipale;
 import gui.Input;
 
@@ -8,7 +8,7 @@ import config.Settings;
 import connexion.ConnexionManager;
 
 
-public class Entree {
+public class Main {
 	
 	public static void close(){
 		ConnexionManager.close();
@@ -19,12 +19,8 @@ public class Entree {
 		return Settings.load();
 	}
 	
-	/**
-	 * @param args
-	 * @throws IOException 
-	 * @throws InterruptedException 
-	 */
-	public static void main(String[] args) throws IOException, InterruptedException {
+
+	public static void main(String[] args){
 		loadSettings();
 		ConnexionManager.init(7777);
 		FenetrePrincipale.launch();
