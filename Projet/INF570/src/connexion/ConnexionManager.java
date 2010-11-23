@@ -131,7 +131,7 @@ public class ConnexionManager{
 	/**
 	 * Envoit un PING à tout le monde
 	 */
-	static public void ping(){
+	static synchronized public void ping(){
 		neighbours = new LinkedList<Neighbour>();
 		Message m=new Ping(Settings.getMaxTTL(), 0);
 		sendAll(m, null);

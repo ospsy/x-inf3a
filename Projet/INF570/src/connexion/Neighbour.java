@@ -4,6 +4,17 @@ import message.Message;
 import message.Pong;
 import message.TypeMessage;
 
+/**
+ * Cette classe n'est qu'une petite classe pour indexer les voisins détectés avec les PONG.
+ * Les champs accessibles sont :
+ * numberOfKilobytesShared
+ * numberOfSharedFiles
+ * IP
+ * port
+ * distance;
+ * @author Benoit
+ *
+ */
 public class Neighbour {
 	long numberOfKilobytesShared;
 	long numberOfSharedFiles;
