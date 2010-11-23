@@ -122,10 +122,17 @@ public class ConnexionManager{
 	 */
 	static public void ping(){
 		Message m=new Ping(Settings.getMaxTTL(), 0);
-		System.out.println(m);
 		sendAll(m, null);
 	}
 
+	/**
+	 * Envoit un QUERY à tout le monde
+	 */
+	static public void query(){
+		Message m=new Query(Settings.getMaxTTL(), 0,null,0);
+		sendAll(m, null);
+	}
+	
 	/**
 	 * Enlève une connexion de la liste des connexions gérées
 	 * @param c la connexion à enlever
@@ -176,10 +183,10 @@ public class ConnexionManager{
 	 */
 	static protected synchronized void forward(Message m){
 		Identifiant id=m.getHeader().getMessageID();
-		if(forwarding.containsKey(id)){
+		/*if(!forwarding.containsKey(id)){
 			System.err.println("Impossible de forwarder...");
 			return;
-		}
+		}*/
 		Connexion c=forwarding.get(id);
 		if(c!=null && m.getHeader().getTTL()>0){//je transfère
 			m.decreaseTTL();

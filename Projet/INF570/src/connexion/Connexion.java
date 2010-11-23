@@ -104,6 +104,7 @@ public class Connexion {
 	 * @param m Le message à ajouter à la file d'envoi
 	 */
 	public synchronized void send(Message m) {
+		System.out.println(m);
 		toSend.addFirst(m);
 	}
 
@@ -143,6 +144,7 @@ public class Connexion {
 	 * @param m Message à traiter
 	 */
 	public void processMsg(Message m) { 
+		System.out.println(m);
 		MessageHeader h=m.getHeader();
 		switch(m.getHeader().getMessageType()){
 		case PING:
@@ -158,12 +160,15 @@ public class Connexion {
 			break;
 		case QUERY:
 			System.out.println("QUERY recu");
-			//TODO envoyer un queryHIT
-			//send(new Pong(h.getMessageID(), h.getHops(), h.getTTL(), ConnexionManager.getPort(), ConnexionManager.getIP(), SharingManager.getNumberOfSharedFiles(), SharingManager.getSharedFilesSize()));
+			//TODO envoyer un vrai queryHIT
+			send(new QueryHit(h.getMessageID(), Settings.getMaxTTL(), 0, 0, "0.0.0.0", 100, null , h.getMessageID()));
 			if(h.getTTL()>0){
 				m.decreaseTTL();
 				ConnexionManager.sendAll(m, this);
 			}
+			break;
+		case QUERY_HIT:
+			ConnexionManager.forward(m);
 			break;
 		}
 	}
