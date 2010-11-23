@@ -3,30 +3,35 @@ package message;
 public class Identifiant {
 	private short[] tab;
 
-	protected Identifiant(short[] tab) {
+	public Identifiant(short[] tab) {
 		this.tab = tab;
 	}
-	
+
 	public int hashCode(){
-		
+
 		return this.toString().hashCode();
 	}
-	
-	public boolean equals(Identifiant id){
-		boolean b = true;
-		for (int i = 0; i < tab.length; i++) {
-			b = b && (id.getData()[i]==tab[i]);
+
+	public boolean equals(Object o){
+		if(o instanceof Identifiant){
+			Identifiant id = (Identifiant)o;
+			boolean b = true;
+			for (int i = 0; i < tab.length; i++) {
+				b = b && (id.getData()[i]==tab[i]);
+			}
+			return b;
+		}else{
+			return false;
 		}
-		return b;
 	}
-	
+
 	public String toString(){
-		
+
 		return Message.stringOfTab(tab);
 	}
 
 	protected short[] getData() {
 		return tab;
 	}
-	
+
 }

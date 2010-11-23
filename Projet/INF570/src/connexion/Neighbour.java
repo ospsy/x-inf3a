@@ -9,6 +9,7 @@ public class Neighbour {
 	long numberOfSharedFiles;
 	String IP;
 	int port;
+	int distance;
 	
 	Neighbour(Message m){
 		if(m.getHeader().getMessageType()!=TypeMessage.PONG)
@@ -18,6 +19,11 @@ public class Neighbour {
 		numberOfSharedFiles=p.getNumberOfSharedFiles();
 		IP=p.getIp();
 		port=p.getPort();
+		distance=p.getHeader().getTTL()+1;
+	}
+
+	public int getDistance() {
+		return distance;
 	}
 
 	public long getNumberOfKilobytesShared() {
