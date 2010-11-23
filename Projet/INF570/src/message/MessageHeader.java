@@ -18,7 +18,7 @@ public class MessageHeader {
 	}
 	
 	/**
-	 * ce constructeur est � utiliser pour la lecture d'un message
+	 * ce constructeur està utiliser pour la lecture d'un message
 	 * @param s
 	 */
 	public MessageHeader(short [] s){
@@ -38,12 +38,12 @@ public class MessageHeader {
 	 * 
 	 * @return L'identifiant du message
 	 */
-	public short[] getMessageID() {
-		short[] s = new short[16];
+	public String getMessageID() {
+		char[] s = new char[16];
 		for (int i = 0; i <16;i++){
-			s[i]=header[i];
+			s[i]=(char) header[i];
 		}
-		return s;
+		return s.toString();
 	}
 	/**
 	 * 
@@ -135,7 +135,7 @@ public class MessageHeader {
 
 	protected void decreaseTTL() {
 		if(getTTL()==0){
-			System.err.println("Le ttl est d�j� nul, vous ne pouvez pas le d�cr�menter");
+			System.err.println("Le ttl est déjà nul, vous ne pouvez pas le d�cr�menter");
 			return;
 		}
 		setTTL(getTTL()-1);
@@ -145,7 +145,7 @@ public class MessageHeader {
 	
 
 	public String toString(){
-		return "--header--\nid: "+Message.stringOfTab(getMessageID())+"\ntype: "+getMessageType()+"\nTTL: "+getTTL()+"\nHops: "+getHops()+"\npayload length: "+getPayloadLength();
+		return "--header--\nid: "+getMessageID()+"\ntype: "+getMessageType()+"\nTTL: "+getTTL()+"\nHops: "+getHops()+"\npayload length: "+getPayloadLength();
 	}
 
 }
