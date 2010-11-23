@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+
+import config.Settings;
 import message.*;
 
 /**
@@ -20,6 +22,7 @@ public class ConnexionManager{
 	static private HashMap<Connexion, Connexion> connexions;
 	static private HashMap<Connexion, Connexion> preConnexions;
 	static private ServerThread server;
+	static private Thread sweepingThread;
 	static private HashMap<Identifiant, Connexion> forwarding;
 	static private HashMap<Identifiant, Long> lastTimeId;
 
@@ -49,7 +52,7 @@ public class ConnexionManager{
 			}
 		}
 		//Thread du sweep des forwarding
-		new Thread("forwarding-sweep"){
+		sweepingThread = new Thread("forwarding-sweep"){
 			public void run() {
 				while(!closing){
 					synchronized (this) {
@@ -66,7 +69,8 @@ public class ConnexionManager{
 					}
 				}
 			};
-		}.start();
+		};
+		sweepingThread.start();
 	}
 
 	/**
@@ -89,7 +93,8 @@ public class ConnexionManager{
 	 * Ferme toutes les connexions et le server d'écoute
 	 */
 	static public void close(){
-
+		closing=true;
+		sweepingThread.interrupt();
 		server.close();
 		for(Connexion c : connexions.keySet())
 			c.close();
@@ -111,12 +116,21 @@ public class ConnexionManager{
 			System.out.println("Connexion impossible...");
 		}
 	}
+	
+	/**
+	 * Envoit un PING à tout le monde
+	 */
+	static public void ping(){
+		Message m=new Ping(Settings.getMaxTTL(), 0);
+		System.out.println(m);
+		sendAll(m, null);
+	}
 
 	/**
 	 * Enlève une connexion de la liste des connexions gérées
 	 * @param c la connexion à enlever
 	 */
-	static public synchronized void remove(Connexion c){
+	static protected synchronized void remove(Connexion c){
 		System.out.println("Connexion "+c.getId()+" retirée");
 		connexions.remove(c);
 	}
@@ -125,7 +139,7 @@ public class ConnexionManager{
 	 * Retire une preConnexion, si par exemple le protocole de confirmation a échoué
 	 * @param c la preConnexion a retirer
 	 */
-	static public synchronized void removePreConnexion(Connexion c){
+	static protected synchronized void removePreConnexion(Connexion c){
 		System.out.println("Confirmation de la Preconnexion "+c.getId()+" échouée");
 		preConnexions.remove(c);
 	}
@@ -134,7 +148,7 @@ public class ConnexionManager{
 	 * Ajoute une connexion à confirmer à la liste des preConnexions gérées
 	 * @param preConnexion la connexion à confirmer
 	 */
-	static public synchronized void addPreConnexion(Connexion preConnexion){
+	static protected synchronized void addPreConnexion(Connexion preConnexion){
 		System.out.println("Preconnexion "+preConnexion.getId()+" réussie");
 		preConnexions.put(preConnexion, preConnexion);
 	}
@@ -144,8 +158,8 @@ public class ConnexionManager{
 	 * @param m le message à envoyer
 	 * @param exclude la connexion à exclure
 	 */
-	static public synchronized void sendAll(Message m, Connexion exclude){
-		if(forwarding.get(m.getHeader().getMessageID())!=null){//si on a pas encore inondé
+	static protected synchronized void sendAll(Message m, Connexion exclude){
+		if(!forwarding.containsKey(m.getHeader().getMessageID())){//si on a pas encore inondé
 			forwarding.put(m.getHeader().getMessageID(), exclude);
 			lastTimeId.put(m.getHeader().getMessageID(), new Long(System.currentTimeMillis()));
 			for(Connexion c : connexions.keySet()){
@@ -155,17 +169,23 @@ public class ConnexionManager{
 			}
 		}
 	}
-
+	
 	/**
 	 * Demande de faire remonter un message de réponse (i.e. dont l'identifiant est déjà passé
 	 * @param m le message à faire remonter
 	 */
-	static public synchronized void forward(Message m){
-		Connexion c=forwarding.get(m.getHeader().getMessageID());
-		if(c!=null){
+	static protected synchronized void forward(Message m){
+		Identifiant id=m.getHeader().getMessageID();
+		if(forwarding.containsKey(id)){
+			System.err.println("Impossible de forwarder...");
+			return;
+		}
+		Connexion c=forwarding.get(id);
+		if(c!=null && m.getHeader().getTTL()>0){//je transfère
+			m.decreaseTTL();
 			c.send(m);
-		}else{
-			System.err.println("Impossible de faire remonter le message...");
+		}else{//il est pour moi
+			System.out.println(m);
 		}
 	}
 
@@ -174,7 +194,7 @@ public class ConnexionManager{
 	 * Si la preConnexion n'existe pas, affiche un message d'erreur
 	 * @param c la connexion à confirmer
 	 */
-	static public synchronized void confirmPreConnexion(Connexion c){
+	static protected synchronized void confirmPreConnexion(Connexion c){
 		if(preConnexions.remove(c)!=null){
 			System.out.println("Preconnexion "+c.getId()+" confirmée");
 			connexions.put(c, c);

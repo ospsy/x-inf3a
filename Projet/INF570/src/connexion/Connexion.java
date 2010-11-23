@@ -147,7 +147,6 @@ public class Connexion {
 		switch(m.getHeader().getMessageType()){
 		case PING:
 			System.out.println("PING recu");
-			//TODO vérifier le TTL du pong à envoyer
 			send(new Pong(h.getMessageID(), Settings.getMaxTTL(), 0, ConnexionManager.getPort(), ConnexionManager.getIP(), SharingManager.getNumberOfSharedFiles(), SharingManager.getSharedFilesSize()));
 			if(h.getTTL()>0){
 				m.decreaseTTL();
@@ -155,7 +154,7 @@ public class Connexion {
 			}
 			break;
 		case PONG:
-			System.out.println("PONG recu");
+			ConnexionManager.forward(m);
 			break;
 		case QUERY:
 			System.out.println("QUERY recu");

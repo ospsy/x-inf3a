@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 public class Settings {
 	static private double version;
 	static private String sharePath;
-	static private String configPath="bin/config/conf";
+	static private String configPath="config/conf";
 	static private int maxTTL=5;
 	
 
