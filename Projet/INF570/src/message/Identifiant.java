@@ -4,18 +4,20 @@ public class Identifiant {
 	private short[] tab;
 
 	protected Identifiant(short[] tab) {
-		super();
 		this.tab = tab;
 	}
 	
 	public int hashCode(){
 		
-		return 0;
+		return this.toString().hashCode();
 	}
 	
 	public boolean equals(Identifiant id){
-		
-		return false;
+		boolean b = true;
+		for (int i = 0; i < tab.length; i++) {
+			b = b && (id.getData()[i]==tab[i]);
+		}
+		return b;
 	}
 	
 	public String toString(){
