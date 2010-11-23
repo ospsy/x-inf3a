@@ -154,6 +154,7 @@ public class Connexion {
 			}
 			break;
 		case PONG:
+		case QUERY_HIT:
 			ConnexionManager.forward(m);
 			break;
 		case QUERY:
@@ -164,9 +165,6 @@ public class Connexion {
 				m.decreaseTTL();
 				ConnexionManager.sendAll(m, this);
 			}
-			break;
-		case QUERY_HIT:
-			ConnexionManager.forward(m);
 			break;
 		}
 	}

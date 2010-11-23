@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 import config.Settings;
 import message.*;
@@ -25,6 +26,7 @@ public class ConnexionManager{
 	static private Thread sweepingThread;
 	static private HashMap<Identifiant, Connexion> forwarding;
 	static private HashMap<Identifiant, Long> lastTimeId;
+	static private LinkedList<Neighbour> neighbours;
 
 	/**
 	 * Initialise le ConnexionManager, il faut IMPERATIVEMENT appeler cette fonction avant de faire
@@ -88,6 +90,15 @@ public class ConnexionManager{
 	static public String getIP(){
 		return server.getIP();
 	}
+	
+	/**
+	 * Renvoit la liste décrivant les voisins découvert par le dernier PING
+	 * @return la liste des voisins
+	 */
+	@SuppressWarnings("unchecked")
+	static synchronized public LinkedList<Message> getNeighbours(){
+		return (LinkedList<Message>) neighbours.clone();
+	}
 
 	/**
 	 * Ferme toutes les connexions et le server d'écoute
@@ -121,6 +132,7 @@ public class ConnexionManager{
 	 * Envoit un PING à tout le monde
 	 */
 	static public void ping(){
+		neighbours = new LinkedList<Neighbour>();
 		Message m=new Ping(Settings.getMaxTTL(), 0);
 		sendAll(m, null);
 	}
@@ -183,16 +195,31 @@ public class ConnexionManager{
 	 */
 	static protected synchronized void forward(Message m){
 		Identifiant id=m.getHeader().getMessageID();
-		/*if(!forwarding.containsKey(id)){
+		if(!forwarding.containsKey(id)){
 			System.err.println("Impossible de forwarder...");
 			return;
-		}*/
+		}
 		Connexion c=forwarding.get(id);
 		if(c!=null && m.getHeader().getTTL()>0){//je transfère
 			m.decreaseTTL();
 			c.send(m);
 		}else{//il est pour moi
-			System.out.println(m);
+			processMsg(m);
+		}
+	}
+	
+	/**
+	 * Cette fonction traite les messages qui nous sont destinés
+	 * @param m le message à traiter
+	 */
+	static synchronized private void processMsg(Message m){
+		System.out.println(m);
+		switch(m.getHeader().getMessageType()){
+		case PONG:
+			neighbours.add(new Neighbour(m));
+			break;
+		case QUERY_HIT:
+			break;
 		}
 	}
 
