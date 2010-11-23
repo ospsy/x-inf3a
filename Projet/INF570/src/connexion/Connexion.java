@@ -7,6 +7,8 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.LinkedList;
 
+import config.Settings;
+
 import sharing.SharingManager;
 import message.*;
 /**
@@ -117,7 +119,7 @@ public class Connexion {
 	/**
 	 * Ferme la connexion : appel les fonctions de fermeture des thread de lecture et d'envoi de messages.
 	 */
-	public void close() {
+	public synchronized void close() {
 		if(!closing){
 			closing=true;
 			System.out.println("Closing connexion");
@@ -146,7 +148,7 @@ public class Connexion {
 		case PING:
 			System.out.println("PING recu");
 			//TODO vérifier le TTL du pong à envoyer
-			send(new Pong(h.getMessageID(), h.getHops(), h.getTTL(), ConnexionManager.getPort(), ConnexionManager.getIP(), SharingManager.getNumberOfSharedFiles(), SharingManager.getSharedFilesSize()));
+			send(new Pong(h.getMessageID(), Settings.getMaxTTL(), 0, ConnexionManager.getPort(), ConnexionManager.getIP(), SharingManager.getNumberOfSharedFiles(), SharingManager.getSharedFilesSize()));
 			if(h.getTTL()>0){
 				m.decreaseTTL();
 				ConnexionManager.sendAll(m, this);
@@ -156,7 +158,7 @@ public class Connexion {
 			System.out.println("PONG recu");
 			break;
 		case QUERY:
-			System.out.println("PING recu");
+			System.out.println("QUERY recu");
 			//TODO envoyer un queryHIT
 			//send(new Pong(h.getMessageID(), h.getHops(), h.getTTL(), ConnexionManager.getPort(), ConnexionManager.getIP(), SharingManager.getNumberOfSharedFiles(), SharingManager.getSharedFilesSize()));
 			if(h.getTTL()>0){

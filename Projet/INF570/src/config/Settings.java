@@ -11,20 +11,25 @@ import java.io.PrintWriter;
 
 
 public class Settings {
-	private double version;
-	private String sharePath;
-	private String configPath="bin/config/conf";
+	static private double version;
+	static private String sharePath;
+	static private String configPath="bin/config/conf";
+	static private int maxTTL=5;
 	
 
-	public double getVersion() {
+	static public double getVersion() {
 		return version;
 	}
 
-	public String getSharePath() {
+	static public String getSharePath() {
 		return sharePath;
 	}
+	
+	static public int getMaxTTL() {
+		return maxTTL;
+	}
 
-	public boolean load(){
+	static public boolean load(){
 		File fconf = new File(configPath);
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(fconf));
@@ -44,7 +49,7 @@ public class Settings {
 		return true;	
 	}
 	
-	public boolean save(){
+	static public boolean save(){
 		File fconf = new File(configPath);		
 		
 		fconf.delete();
@@ -55,7 +60,7 @@ public class Settings {
 			
 			write.println("version: "+version);
 			write.println("sharePath: "+sharePath);
-			
+			write.println("maxTTL: "+maxTTL);
 		
 			write.flush();
 		} catch (FileNotFoundException e) {
@@ -67,9 +72,10 @@ public class Settings {
 		return true;	
 	}
 	
-	private void handle(String[] value){//le premier élément de value est le nom du paramètre
+	static private void handle(String[] value){//le premier élément de value est le nom du paramètre
 		if(value[0].equals("version:"))version=Double.parseDouble(value[1]);
 		else if(value[0].equals("sharePath:"))sharePath = value[1];
+		else if(value[0].equals("maxTTL:"))maxTTL = Integer.parseInt(value[1]);
 	}
 	
 }
