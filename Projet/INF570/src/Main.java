@@ -2,11 +2,18 @@ import java.io.IOException;
 
 import message.Ping;
 
+import config.Settings;
 import connexion.ConnexionManager;
 
 
 public class Main {
-
+	public static Settings settings;
+	
+	public static boolean loadSettings(){
+		
+		return false;
+	}
+	
 	/**
 	 * @param args
 	 * @throws IOException 
