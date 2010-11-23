@@ -32,7 +32,7 @@ public class MessageSender extends Thread {
 
 	/**
 	 * Ferme le Thread d'écriture
-	 * TODO à vérifier le comportement
+	 * TODO vérifier le comportement
 	 */
 	public void close(){
 		if(!closing){

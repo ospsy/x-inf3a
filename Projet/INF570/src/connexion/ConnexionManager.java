@@ -9,22 +9,33 @@ import message.*;
 /**
  * La classe ConnexionManager gère les relations entre les différentes Connexions,
  * comme l'envoi global, les déconnexions et les confirmations de connexions. De plus,
- * il héberge le thread du serveur recevant les connexions
+ * il héberge le thread du serveur recevant les connexions. Il faut l'initialiser avec <code>init(ServerPort)</code>
  * @see Connexion
  * @author Benoit
  *
  */
 public class ConnexionManager{
+	static private boolean closing;
 	static private int port;
 	static private HashMap<Connexion, Connexion> connexions;
 	static private HashMap<Connexion, Connexion> preConnexions;
 	static private ServerThread server;
+	static private HashMap<Identifiant, Connexion> forwarding;
+	static private HashMap<Identifiant, Long> lastTimeId;
 
-
+	/**
+	 * Initialise le ConnexionManager, il faut IMPERATIVEMENT appeler cette fonction avant de faire
+	 * quoi que ce soit. Cette fonction crée aussi le serverSocket d'écoute avec le premier port libre
+	 * trouvé à partir de <code>ServerPort</code>
+	 * @param ServerPort le port sur lequel il faut essayer d'écouter.
+	 */
 	static public void init(int ServerPort) {
+		closing=false;
 		port=ServerPort;
 		connexions = new HashMap<Connexion, Connexion>();
 		preConnexions = new HashMap<Connexion, Connexion>();
+		forwarding = new HashMap<Identifiant, Connexion>();
+		lastTimeId = new HashMap<Identifiant, Long>();
 		boolean serverCreated=false;
 		while(!serverCreated){
 			try {
@@ -37,25 +48,60 @@ public class ConnexionManager{
 				port++;
 			}
 		}
+		//Thread du sweep des forwarding
+		new Thread("forwarding-sweep"){
+			public void run() {
+				while(!closing){
+					synchronized (this) {
+						for (Identifiant id : lastTimeId.keySet()) {
+							if(System.currentTimeMillis()-lastTimeId.get(id)>20000){
+								lastTimeId.remove(id);
+								forwarding.remove(id);
+							}
+						}
+					}
+					try {
+						Thread.sleep(2000);
+					} catch (Exception e) {
+					}
+				}
+			};
+		}.start();
 	}
 
+	/**
+	 * Renvoit le port d'écoute actuel du serveur
+	 * @return le numéro de port
+	 */
 	static public int getPort(){
 		return port;
 	}
 
+	/**
+	 * Renvoit l'adresse IP d'écoute actuelle du serveur
+	 * @return l'adresse IP en format String
+	 */
 	static public String getIP(){
 		return server.getIP();
 	}
 
-	//TODO
+	/**
+	 * Ferme toutes les connexions et le server d'écoute
+	 */
 	static public void close(){
+
 		server.close();
 		for(Connexion c : connexions.keySet())
 			c.close();
 		for(Connexion c : preConnexions.keySet())
 			c.close();
 	}
-	
+
+	/**
+	 * Crée une connexion vers le pair spécifié
+	 * @param ip l'adresse IP du pair
+	 * @param port le port du pair
+	 */
 	static public void connect(String ip, int port){
 		try {
 			Socket s = new Socket(ip,port);
@@ -99,10 +145,27 @@ public class ConnexionManager{
 	 * @param exclude la connexion à exclure
 	 */
 	static public synchronized void sendAll(Message m, Connexion exclude){
-		for(Connexion c : connexions.keySet()){
-			if(c!=exclude){
-				c.send(m);
+		if(forwarding.get(m.getHeader().getMessageID())!=null){//si on a pas encore inondé
+			forwarding.put(m.getHeader().getMessageID(), exclude);
+			lastTimeId.put(m.getHeader().getMessageID(), new Long(System.currentTimeMillis()));
+			for(Connexion c : connexions.keySet()){
+				if(c!=exclude){
+					c.send(m);
+				}
 			}
+		}
+	}
+
+	/**
+	 * Demande de faire remonter un message de réponse (i.e. dont l'identifiant est déjà passé
+	 * @param m le message à faire remonter
+	 */
+	static public synchronized void forward(Message m){
+		Connexion c=forwarding.get(m.getHeader().getMessageID());
+		if(c!=null){
+			c.send(m);
+		}else{
+			System.err.println("Impossible de faire remonter le message...");
 		}
 	}
 

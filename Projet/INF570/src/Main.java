@@ -7,11 +7,9 @@ import connexion.ConnexionManager;
 
 
 public class Main {
-	public static Settings settings;
 	
 	public static boolean loadSettings(){
-		settings  = new Settings();
-		return settings.load();
+		return Settings.load();
 	}
 	
 	/**
