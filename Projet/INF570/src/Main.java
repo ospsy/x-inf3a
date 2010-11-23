@@ -10,8 +10,8 @@ public class Main {
 	public static Settings settings;
 	
 	public static boolean loadSettings(){
-		
-		return false;
+		settings  = new Settings();
+		return settings.load();
 	}
 	
 	/**
@@ -20,6 +20,7 @@ public class Main {
 	 * @throws InterruptedException 
 	 */
 	public static void main(String[] args) throws IOException, InterruptedException {
+		loadSettings();
 		ConnexionManager.init(7777);
 		
 		while(true){
