@@ -1,4 +1,4 @@
-package principal;
+package kernel;
 
 
 import java.io.BufferedReader;
