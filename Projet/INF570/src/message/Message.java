@@ -118,7 +118,7 @@ public abstract class Message {
 				System.err.println("payload et header incohérents");
 				return null;
 			}
-			return new Ping(h.getTTL(), h.getHops());
+			return new Ping(h);
 		case PONG:
 			if (payload.length!=14) {
 				System.err.println("payload et header incohérents");

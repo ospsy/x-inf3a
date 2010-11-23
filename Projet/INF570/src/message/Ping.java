@@ -23,6 +23,11 @@ public class Ping extends Message {
 	public Ping(int ttl,int hops){
 		header = new MessageHeader(getRandomId(), TypeMessage.PING, ttl, hops, 0);
 	}
+	
+	
+	protected Ping(MessageHeader mh){
+		header = mh;
+	}
 
 	@Override
 	public short[] toShortTab() {
