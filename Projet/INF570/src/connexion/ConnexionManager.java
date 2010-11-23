@@ -129,7 +129,7 @@ public class ConnexionManager{
 	 * Envoit un QUERY à tout le monde
 	 */
 	static public void query(){
-		Message m=new Query(Settings.getMaxTTL(), 0,null,0);
+		Message m=new Query(Settings.getMaxTTL(), 0,new String[] {"s"},0);
 		sendAll(m, null);
 	}
 	

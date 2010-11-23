@@ -104,7 +104,6 @@ public class Connexion {
 	 * @param m Le message à ajouter à la file d'envoi
 	 */
 	public synchronized void send(Message m) {
-		System.out.println(m);
 		toSend.addFirst(m);
 	}
 
@@ -144,7 +143,6 @@ public class Connexion {
 	 * @param m Message à traiter
 	 */
 	public void processMsg(Message m) { 
-		System.out.println(m);
 		MessageHeader h=m.getHeader();
 		switch(m.getHeader().getMessageType()){
 		case PING:
