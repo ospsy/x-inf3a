@@ -1,3 +1,5 @@
+import gui.FenetrePrincipale;
+
 import java.io.IOException;
 
 import message.Ping;
@@ -20,7 +22,7 @@ public class Main {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		loadSettings();
 		ConnexionManager.init(7777);
-		
+		FenetrePrincipale.launch();
 		while(true){
 			String s=Keyboard.readString();
 			if(s==null){
