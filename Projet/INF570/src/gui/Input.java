@@ -16,6 +16,7 @@ public class Input {
 
 	public static void send(String text) {
 		try {
+			FenetrePrincipale.display(text);
 			buffer.put(text);
 		} catch (InterruptedException e) {
 			e.printStackTrace();

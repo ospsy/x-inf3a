@@ -1,9 +1,6 @@
 package kernel;
 import gui.FenetrePrincipale;
 import gui.Input;
-
-import java.io.IOException;
-
 import config.Settings;
 import connexion.ConnexionManager;
 

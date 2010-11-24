@@ -5,6 +5,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -16,6 +19,7 @@ import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 import kernel.Main;
+import connexion.ConnexionManager;
 
 
 
@@ -33,14 +37,39 @@ import kernel.Main;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class FenetrePrincipale extends javax.swing.JFrame implements WindowListener {
+
+	{
+		//Set Look & Feel
+		try {
+			javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JMenuBar Menu;
 	private JPanel Console;
 	private JTabbedPane Multitab;
 	private JScrollPane jScrollPane1;
+	private AbstractAction connect;
+	private JButton jButton1;
+	private JButton Connect;
+	private AbstractAction pingClicked;
+	private JButton Query;
+	private JPanel Buttons;
+	private JPanel jPanel2;
+	private AbstractAction query;
+	private JButton QUERY;
+	private JButton PING;
+	private JPanel ButtonsContainer;
 	private AbstractAction saisieClavier;
 	private JTextField Saisie;
 	private JPanel jPanel1;
-	private JTextPane Sortie;
+	private static JTextPane Sortie;
 	private JPanel ConsoleReceiver;
 	private JScrollPane Principal;
 	private JMenuItem jMenuItem1;
@@ -49,20 +78,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JMenu Peers;
 	private JMenu jMenu1;
 
-	/**
-	* Auto-generated main method to display this JFrame
-	*/
-	public static void main(String[] args) {
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				FenetrePrincipale inst = new FenetrePrincipale();
-				inst.setLocationRelativeTo(null);
-				inst.setVisible(true);
-			}
-		});
-	}
-	
+
 	
 	
 	public FenetrePrincipale() {
@@ -106,6 +122,11 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private AbstractAction getExitAction() {
 		if(ExitAction == null) {
 			ExitAction = new AbstractAction("Exit", null) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent evt) {
 					close();
 				}
@@ -123,8 +144,13 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	}
 
 	public static void launch() {
-		main(null);
-		
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				FenetrePrincipale inst = new FenetrePrincipale();
+				inst.setLocationRelativeTo(null);
+				inst.setVisible(true);
+			}
+		});
 	}
 	
 	private JScrollPane getPrincipal() {
@@ -140,7 +166,10 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			ConsoleReceiver = new JPanel();
 			ConsoleReceiver.setPreferredSize(new java.awt.Dimension(784, 311));
 			ConsoleReceiver.setLayout(null);
+			ConsoleReceiver.setBackground(new java.awt.Color(224,224,224));
 			ConsoleReceiver.add(getMultitab());
+			ConsoleReceiver.add(getJPanel1());
+			ConsoleReceiver.add(getJPanel2());
 		}
 		return ConsoleReceiver;
 	}
@@ -150,6 +179,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			Sortie = new JTextPane();
 			Sortie.setText("");
 			Sortie.setBounds(37, -4, 528, 138);
+			Sortie.setPreferredSize(new java.awt.Dimension(617, 152));
 			Sortie.setEditable(false);
 		}
 		return Sortie;
@@ -158,7 +188,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JScrollPane getJScrollPane1() {
 		if(jScrollPane1 == null) {
 			jScrollPane1 = new JScrollPane();
-			jScrollPane1.setBounds(29, 24, 530, 140);
+			jScrollPane1.setBounds(12, 24, 623, 161);
 			jScrollPane1.setViewportView(getSortie());
 		}
 		return jScrollPane1;
@@ -167,9 +197,11 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JTabbedPane getMultitab() {
 		if(Multitab == null) {
 			Multitab = new JTabbedPane();
-			Multitab.setBounds(58, 242, 648, 257);
+			Multitab.setBounds(11, 243, 765, 287);
+			Multitab.setBorder(BorderFactory.createTitledBorder(""));
+			Multitab.setBackground(new java.awt.Color(224,224,224));
+			Multitab.setOpaque(true);
 			Multitab.addTab("Console", null, getConsole(), null);
-			Multitab.addTab("Peers", null, getJPanel1(), null);
 		}
 		return Multitab;
 	}
@@ -178,8 +210,13 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		if(Console == null) {
 			Console = new JPanel();
 			Console.setLayout(null);
+			Console.setBounds(48, 302, 702, 240);
+			Console.setPreferredSize(new java.awt.Dimension(740, 229));
+			Console.setBackground(new java.awt.Color(224,224,224));
 			Console.add(getJScrollPane1());
 			Console.add(getSaisie());
+			Console.add(getButtonsContainer());
+			Console.add(getButtons());
 		}
 		return Console;
 	}
@@ -187,6 +224,9 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JPanel getJPanel1() {
 		if(jPanel1 == null) {
 			jPanel1 = new JPanel();
+			jPanel1.setBackground(new java.awt.Color(224,224,224));
+			jPanel1.setBounds(490, 6, 286, 231);
+			jPanel1.setBorder(BorderFactory.createTitledBorder(""));
 		}
 		return jPanel1;
 	}
@@ -194,7 +234,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JTextField getSaisie() {
 		if(Saisie == null) {
 			Saisie = new JTextField();
-			Saisie.setBounds(29, 184, 530, 26);
+			Saisie.setBounds(12, 197, 623, 27);
 			Saisie.setAction(getSaisieClavier());
 		}
 		return Saisie;
@@ -204,6 +244,11 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		if(saisieClavier == null) {
 			saisieClavier = new AbstractAction("saisieClavier", null) {
 				
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent evt) {
 					
 					Input.send(Saisie.getText());
@@ -214,7 +259,9 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		return saisieClavier;
 	}
 
-
+	protected static void display(String s){
+		Sortie.setText(Sortie.getText()+'\n'+s);
+	}
 
 	private void close() {
 		Main.close();
@@ -237,5 +284,146 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	@Override
 	public void windowOpened(WindowEvent e) {}
 	
+	private JPanel getButtonsContainer() {
+		if(ButtonsContainer == null) {
+			ButtonsContainer = new JPanel();
+			BoxLayout ButtonsContainerLayout = new BoxLayout(ButtonsContainer, javax.swing.BoxLayout.Y_AXIS);
+			ButtonsContainer.setLayout(ButtonsContainerLayout);
+			ButtonsContainer.setBounds(641, 27, 87, 200);
+			ButtonsContainer.setBackground(new java.awt.Color(224,224,224));
+			ButtonsContainer.setLocation(new java.awt.Point(0, 0));
+			ButtonsContainer.setVisible(false);
+			ButtonsContainer.add(getPING());
+			ButtonsContainer.add(getQUERY());
+		}
+		return ButtonsContainer;
+	}
+	
+	private JButton getPING() {
+		if(PING == null) {
+			PING = new JButton();
+			BoxLayout PINGLayout = new BoxLayout(PING, javax.swing.BoxLayout.Y_AXIS);
+			PING.setLayout(PINGLayout);
+			PING.setText("PING");
+			PING.setPreferredSize(new java.awt.Dimension(72, 28));
+		}
+		return PING;
+	}
+
+	private JButton getQUERY() {
+		if(QUERY == null) {
+			QUERY = new JButton();
+			BoxLayout QUERYLayout = new BoxLayout(QUERY, javax.swing.BoxLayout.Y_AXIS);
+			QUERY.setLayout(QUERYLayout);
+			QUERY.setText("QUERY");
+		}
+		return QUERY;
+	}
+	
+	private JPanel getButtons() {
+		if(Buttons == null) {
+			Buttons = new JPanel();
+			Buttons.setBounds(646, 24, 90, 199);
+			Buttons.setBackground(new java.awt.Color(224,224,224));
+			Buttons.add(getJButton1());
+			Buttons.add(getQuery());
+			Buttons.add(getConnect());
+		}
+		return Buttons;
+	}
+
+	private JButton getQuery() {
+		if(Query == null) {
+			Query = new JButton();
+			Query.setText("QUERY");
+			Query.setPreferredSize(new java.awt.Dimension(70, 70));
+			Query.setAction(getQueryx());
+		}
+		return Query;
+	}
+
+	private AbstractAction getPingClicked() {
+		if(pingClicked == null) {
+			pingClicked = new AbstractAction("PING", null) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				public void actionPerformed(ActionEvent evt) {
+					GUIHandler.printInConsole("Envoi d'un message PING ...");
+					ConnexionManager.ping();
+				}
+			};
+		}
+		return pingClicked;
+	}
+	
+	private JButton getConnect() {
+		if(Connect == null) {
+			Connect = new JButton();
+			Connect.setText("Connect");
+			Connect.setPreferredSize(new java.awt.Dimension(78, 44));
+			Connect.setAction(getConnectx());
+		}
+		return Connect;
+	}
+	
+	private JButton getJButton1() {
+		if(jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setText("PING");
+			jButton1.setPreferredSize(new java.awt.Dimension(70, 70));
+			jButton1.setAction(getPingClicked());
+		}
+		return jButton1;
+	}
+	
+	private AbstractAction getConnectx() {
+		if(connect == null) {
+			connect = new AbstractAction("Connect", null) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				public void actionPerformed(ActionEvent evt) {
+					display("Nouvelle connexion ...");
+					ConnexionForm form= new ConnexionForm();
+					form.setVisible(true);
+					
+				}
+			};
+		}
+		return connect;
+	}
+	
+	private AbstractAction getQueryx() {
+		if(query == null) {
+			query = new AbstractAction("QUERY", null) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				public void actionPerformed(ActionEvent evt) {
+					display("Nouvelle requête ...");
+					QueryForm form= new QueryForm();
+					form.setVisible(true);
+				}
+			};
+		}
+		return query;
+	}
+	
+	private JPanel getJPanel2() {
+		if(jPanel2 == null) {
+			jPanel2 = new JPanel();
+			jPanel2.setBackground(new java.awt.Color(224,224,224));
+			jPanel2.setBorder(BorderFactory.createTitledBorder(""));
+			jPanel2.setBounds(11, 6, 473, 231);
+		}
+		return jPanel2;
+	}
 
 }
