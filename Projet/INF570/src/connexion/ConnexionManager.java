@@ -144,6 +144,10 @@ public class ConnexionManager{
 		Message m=new Query(Settings.getMaxTTL(), 0,new String[] {"s"},0);
 		sendAll(m, null);
 	}
+	public static void query(String[] criteria) {
+		Message m=new Query(Settings.getMaxTTL(), 0,criteria,0);
+		sendAll(m, null);
+	}
 	
 	/**
 	 * Enlève une connexion de la liste des connexions gérées
@@ -236,6 +240,8 @@ public class ConnexionManager{
 			System.err.println("confirmConnexion : la connexion n'était pas à confirmer...");
 		}
 	}
+
+
 }
 
 /**

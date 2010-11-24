@@ -7,10 +7,12 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.LinkedList;
 
-import config.Settings;
-
+import message.Message;
+import message.MessageHeader;
+import message.Pong;
+import message.QueryHit;
 import sharing.SharingManager;
-import message.*;
+import config.Settings;
 /**
  * Chaque connexion contient une file de messages à envoyer, un thread chargé de l'envoi des messages
  * et un thread chargé de la lecture et du traitement des messages reçus
