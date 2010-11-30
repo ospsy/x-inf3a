@@ -19,8 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
+
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -122,6 +121,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 				}
 			}
 			pack();
+			getSortie();
 			this.setSize(809, 600);
 			this.setResizable(false);
 		} catch (Exception e) {
@@ -155,13 +155,9 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	}
 
 	public static void launch() {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
 				FenetrePrincipale inst = new FenetrePrincipale();
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
-			}
-		});
 	}
 	
 	private JScrollPane getPrincipal() {
