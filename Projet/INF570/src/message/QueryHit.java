@@ -41,30 +41,6 @@ public class QueryHit extends Message{
 		return sresultSet;
 	}
 
-	/**
-	 * constructeur en lecture d'un message QueryHit
-	 * <p><i><b>exemple :</b> new QueryHit(Message.getRandomId(), 5, 6, 8080, "129.104.127.1", 1000, resultSet, Message.getRandomId());</i></br>
-	 * <br><b>--header--</b>
-	 * <br><i>id:</i> D6 55 0B F2 89 AE C2 64 A9 6D E7 5D 0B 99 7D BB 
-	 * <br><i>type:</i> QUERY_HIT
-	 * <br><i>TTL:</i> 5
-	 * <br><i>Hops:</i> 6
-	 * <br><i>payload length:</i> 52
-	 * <br><b>--payload--</b>
-	 * <br><i>number of hits:</i> 2
-	 * <br><i>port:</i> 8080
-	 * <br><i>ip:</i> 129.104.127.1
-	 * <br><i>speed:</i> 1000kB/s
-	 * <br><i>results:</i> {index:[11] size:[512kB] name:[toto.txt] optionalData:[64 28 41 06 0F E5 47 6D DB 16 9C 90 A9 27 82 02 ]} {index:[22] size:[3512kB] name:[panda.mp3] optionalData:[]} 
-	 * <br><i>servent id:</i> AB DA 28 0E E4 B6 F0 0D AF 10 5D BE D2 74 9B 94
-	 * <br><b>--end--</b></br>
-	 * @see {@link Result}
-	 * @param port
-	 * @param ip
-	 * @param speed
-	 * @param Servent_Identifier
-	 * @param Result_Set
-	 */
 	protected QueryHit(MessageHeader mh,short[] port, short[] ip, short[] speed, short[] resultSet, short[] serventId) {
 		super();
 		this.header = mh;
@@ -116,19 +92,34 @@ public class QueryHit extends Message{
 	
 	
 	/**
-	 * constructeur pour l'écriture d'un message Push
+	 * constructeur en lecture d'un message QueryHit
+	 * <p><i><b>exemple :</b> new QueryHit(Message.getRandomId(), 5, 6, 8080, "129.104.127.1", 1000, resultSet, Message.getRandomId());</i></br>
+	 * <br><b>--header--</b>
+	 * <br><i>id:</i> D6 55 0B F2 89 AE C2 64 A9 6D E7 5D 0B 99 7D BB 
+	 * <br><i>type:</i> QUERY_HIT
+	 * <br><i>TTL:</i> 5
+	 * <br><i>Hops:</i> 6
+	 * <br><i>payload length:</i> 52
+	 * <br><b>--payload--</b>
+	 * <br><i>number of hits:</i> 2
+	 * <br><i>port:</i> 8080
+	 * <br><i>ip:</i> 129.104.127.1
+	 * <br><i>speed:</i> 1000kB/s
+	 * <br><i>results:</i> {index:[11] size:[512kB] name:[toto.txt] optionalData:[64 28 41 06 0F E5 47 6D DB 16 9C 90 A9 27 82 02 ]} {index:[22] size:[3512kB] name:[panda.mp3] optionalData:[]} 
+	 * <br><i>servent id:</i> AB DA 28 0E E4 B6 F0 0D AF 10 5D BE D2 74 9B 94
+	 * <br><b>--end--</b></br>
+	 * @see {@link Result}
 	 * @param port
 	 * @param ip
 	 * @param speed
 	 * @param Result_Set
-	 * @param Servent_Identifier
 	 */
-	public QueryHit(Identifiant id,int ttl, int hops,int port, String ip, long speed, Result[] resultSet, Identifiant serventId) {
+	public QueryHit(Identifiant id,int ttl, int hops,int port, String ip, long speed, Result[] resultSet) {
 		super();
 		this.iport = port;
 		this.sip = ip;
 		this.sresultSet = resultSet;
-		this.serventIdentifier = serventId;
+		this.serventIdentifier = Message.getRandomId();
 		this.inumberOfHits = resultSet.length;
 		this.dSpeed = speed;
 

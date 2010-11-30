@@ -13,7 +13,7 @@ public class testMessage {
 		Message m1 = new Ping(5, 6);
 		Message m2 = new Pong(Message.getRandomId(),5,2,8080,"129.104.227.1",2,520);
 		Message m3 = new Query(5, 6, "banane jaune   singe".split(" "), 1000);
-		Message m4 = new QueryHit(Message.getRandomId(), 5, 6, 8080, "129.104.127.1", 1000, resultSet, Message.getRandomId());
+		Message m4 = new QueryHit(Message.getRandomId(), 5, 6, 8080, "129.104.127.1", 1000, resultSet);
 		Message m5 = new Push(Message.getRandomId(), 5, 6, 8080, "129.104.127.1", 2, Message.getRandomId());
 		
 		System.out.println(m1);
