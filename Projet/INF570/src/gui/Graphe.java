@@ -53,7 +53,11 @@ public class Graphe extends JPanel {
 		int maxR = (int) (w*0.4);
 		int disc = set.keySet().size();
 		int k = disc;
+		LinkedList<Integer> indices = new LinkedList<Integer>();
 		for(int i : set.keySet()){
+			indices.addFirst(i);
+		}
+		for(int i : indices){
 			int r = (int) (k*maxR*1./disc);
 			drawDisk(r,colors.get(i), g);
 			drawOnDisk(r, set.get(i), g);
