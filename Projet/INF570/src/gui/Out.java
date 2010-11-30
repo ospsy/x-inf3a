@@ -15,9 +15,10 @@ public class Out {
 	}
 	
 	public static void displayResult(Result[] tab) {
+		oc.displayResult(tab);
 	}
 	
 	public static void displayVoisin(){
-		
+		oc.displayVoisin();
 	}
 }
