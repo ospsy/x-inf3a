@@ -36,8 +36,9 @@ public class Main {
 			}
 			if(s.equals("PING"))
 				ConnexionManager.ping();
-			if(s.equals("QUERY"))
-				ConnexionManager.query();
+			if(s.equals("QUERY")){
+				//ConnexionManager.query();
+			}
 			String[] ss=s.split(" ");
 			if(ss.length>=3){
 				if(ss[0].equals("CONNECT"))

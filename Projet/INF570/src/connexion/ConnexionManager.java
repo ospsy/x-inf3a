@@ -142,10 +142,6 @@ public class ConnexionManager{
 	/**
 	 * Envoit un QUERY à tout le monde
 	 */
-	static public void query(){
-		Message m=new Query(Settings.getMaxTTL(), 0,new String[] {"s"},0);
-		sendAll(m, null);
-	}
 	public static void query(String[] criteria) {
 		Message m=new Query(Settings.getMaxTTL(), 0,criteria,0);
 		sendAll(m, null);

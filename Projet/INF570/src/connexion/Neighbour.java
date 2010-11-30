@@ -52,4 +52,13 @@ public class Neighbour {
 	public int getPort() {
 		return port;
 	}
+	
+	@Override
+	public String toString() {
+		String s=IP;
+		s+=":"+port;
+		s+=", dist="+distance;
+		s+=" | "+numberOfSharedFiles+" fichiers, "+numberOfKilobytesShared+"Kb";
+		return s;
+	}
 }

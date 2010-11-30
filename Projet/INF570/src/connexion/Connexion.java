@@ -11,6 +11,7 @@ import message.Message;
 import message.MessageHeader;
 import message.Pong;
 import message.QueryHit;
+import message.Result;
 import sharing.SharingManager;
 import config.Settings;
 /**
@@ -162,7 +163,7 @@ public class Connexion {
 		case QUERY:
 			System.out.println("QUERY recu");
 			//TODO envoyer un vrai queryHIT
-			send(new QueryHit(h.getMessageID(), Settings.getMaxTTL(), 0, 0, "0.0.0.0", 100, null , h.getMessageID()));
+			send(new QueryHit(h.getMessageID(), Settings.getMaxTTL(), 0, ConnexionManager.getPort(), ConnexionManager.getIP(), Settings.getSpeed() ,new Result[3]));
 			if(h.getTTL()>0){
 				m.decreaseTTL();
 				ConnexionManager.sendAll(m, this);

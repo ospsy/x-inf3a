@@ -15,6 +15,7 @@ public class Settings {
 	static private String sharePath;
 	static private String configPath="config/conf";
 	static private int maxTTL=5;
+	static private long speed=5;
 	
 
 	static public double getVersion() {
@@ -27,6 +28,10 @@ public class Settings {
 	
 	static public int getMaxTTL() {
 		return maxTTL;
+	}
+	
+	static public long getSpeed() {
+		return speed;
 	}
 
 	static public boolean load(){
@@ -61,6 +66,7 @@ public class Settings {
 			write.println("version: "+version);
 			write.println("sharePath: "+sharePath);
 			write.println("maxTTL: "+maxTTL);
+			write.println("speed: "+speed);
 		
 			write.flush();
 		} catch (FileNotFoundException e) {
@@ -76,6 +82,7 @@ public class Settings {
 		if(value[0].equals("version:"))version=Double.parseDouble(value[1]);
 		else if(value[0].equals("sharePath:"))sharePath = value[1];
 		else if(value[0].equals("maxTTL:"))maxTTL = Integer.parseInt(value[1]);
+		else if(value[0].equals("speed:"))speed = Long.parseLong(value[1]);
 	}
 	
 }
