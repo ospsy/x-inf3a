@@ -60,7 +60,7 @@ public class ConnexionManager{
 		sweepingThread = new Thread("forwarding-sweep"){
 			public void run() {
 				while(!closing){
-					synchronized (this) {
+					synchronized (ConnexionManager.class) {
 						for (Identifiant id : lastTimeId.keySet()) {
 							if(System.currentTimeMillis()-lastTimeId.get(id)>20000){
 								lastTimeId.remove(id);
@@ -69,7 +69,7 @@ public class ConnexionManager{
 						}
 					}
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(5000);
 					} catch (Exception e) {
 					}
 				}
@@ -93,7 +93,7 @@ public class ConnexionManager{
 	static public String getIP(){
 		return server.getIP();
 	}
-	
+
 	/**
 	 * Renvoit la liste décrivant les voisins découverts par le dernier PING
 	 * @return la liste des voisins
@@ -102,7 +102,7 @@ public class ConnexionManager{
 	static synchronized public LinkedList<Neighbour> getNeighbours(){
 		return (LinkedList<Neighbour>) neighbours.clone();
 	}
-	
+
 	/**
 	 * Renvoit la liste décrivant les résultats de recherches découverts par le dernier QUERY
 	 * @return la liste des voisins
@@ -139,7 +139,7 @@ public class ConnexionManager{
 			Out.println("Connexion impossible...");
 		}
 	}
-	
+
 	/**
 	 * Envoit un PING à tout le monde
 	 */
@@ -157,7 +157,7 @@ public class ConnexionManager{
 		Message m=new Query(Settings.getMaxTTL(), 0,criteria,0);
 		sendAll(m, null);
 	}
-	
+
 	/**
 	 * Enlève une connexion de la liste des connexions gérées
 	 * @param c la connexion à enlever
@@ -201,26 +201,28 @@ public class ConnexionManager{
 			}
 		}
 	}
-	
+
 	/**
 	 * Demande de faire remonter un message de réponse (i.e. dont l'identifiant est déjà passé
 	 * @param m le message à faire remonter
 	 */
-	static protected synchronized void forward(Message m){
-		Identifiant id=m.getHeader().getMessageID();
-		if(!forwarding.containsKey(id)){
-			System.err.println("Impossible de forwarder...");
-			return;
-		}
-		Connexion c=forwarding.get(id);
-		if(c!=null && m.getHeader().getTTL()>0){//je transfère
-			m.decreaseTTL();
-			c.send(m);
-		}else{//il est pour moi
-			processMsg(m);
+	static protected void forward(Message m){
+		synchronized (forwarding) {
+			Identifiant id=m.getHeader().getMessageID();
+			if(!forwarding.containsKey(id)){
+				System.err.println("Impossible de forwarder...");
+				return;
+			}
+			Connexion c=forwarding.get(id);
+			if(c!=null && m.getHeader().getTTL()>0){//je transfère
+				m.decreaseTTL();
+				c.send(m);
+			}else{//il est pour moi
+				processMsg(m);
+			}
 		}
 	}
-	
+
 	/**
 	 * Cette fonction traite les messages qui nous sont destinés
 	 * @param m le message à traiter
@@ -238,6 +240,7 @@ public class ConnexionManager{
 			for(int i=0;i<results.length;i++){
 				queryResults.add(new QueryResult(qh.getIp(), qh.getPort(), qh.getSpeed(), results[i], qh.getServentIdentifier()));
 			}
+
 			break;
 		}
 	}
