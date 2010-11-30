@@ -43,6 +43,8 @@ public class GUIHandler implements OutputControler{
 			model.addRow(new Object[]{b.getIP(),b.getPort(),b.getDistance(),b.getNumberOfSharedFiles(),b.getNumberOfKilobytesShared()});;
 		}
 	
+		FenetrePrincipale.thi.getGraphe().setNeighbour(list);
+		
 	}
 
 }

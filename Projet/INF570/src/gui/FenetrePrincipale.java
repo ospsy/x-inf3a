@@ -74,6 +74,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private AbstractAction pingClicked;
 	private JButton Query;
 	private JPanel Buttons;
+	private Graphe graphe;
 	private JScrollPane jScrollPane4;
 	private JTree shared;
 	private JPanel sharedFiles;
@@ -84,7 +85,6 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JScrollPane jScrollPane2;
 	private JLabel peerLabel;
 	private JTable tabPeer;
-	private JTabbedPane graphPeerVisu;
 	private JTabbedPane peerVisualisation;
 	private JPanel jPanel2;
 	private AbstractAction query;
@@ -470,19 +470,12 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		if(peerVisualisation == null) {
 			peerVisualisation = new JTabbedPane();
 			peerVisualisation.setBounds(3, 1, 280, 225);
-			peerVisualisation.addTab("Graphe", null, getGraphPeerVisu(), null);
+			peerVisualisation.addTab("Graphe", null, getGraphe(), null);
 			peerVisualisation.addTab("Tableau", null, getJScrollPane2(), null);
 		}
 		return peerVisualisation;
 	}
 
-	private JTabbedPane getGraphPeerVisu() {
-		if(graphPeerVisu == null) {
-			graphPeerVisu = new JTabbedPane();
-		}
-		return graphPeerVisu;
-	}
-	
 	public JTable getTabPeer() {
 		if(tabPeer == null) {
 			
@@ -595,6 +588,15 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			jScrollPane4.setViewportView(getShared());
 		}
 		return jScrollPane4;
+	}
+	
+	public Graphe getGraphe() {
+		if(graphe == null) {
+			graphe = new Graphe(280,195);
+			
+		}
+		
+		return graphe;
 	}
 
 }
