@@ -30,7 +30,7 @@ public class Neighbour {
 		numberOfSharedFiles=p.getNumberOfSharedFiles();
 		IP=p.getIp();
 		port=p.getPort();
-		distance=p.getHeader().getTTL()+1;
+		distance=p.getHeader().getHops()+1;
 	}
 
 	public int getDistance() {
