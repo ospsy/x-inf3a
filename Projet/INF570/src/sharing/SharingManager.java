@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import message.Result;
+
 /**
  * Gère le dossier de partage.
  * On peut définir le chemin du dossier de partage par la méthode statique {@link #setSharedDirPath}
@@ -11,6 +13,7 @@ import java.util.TimerTask;
  *
  */
 public class SharingManager {
+	
 	private static String sharedDirPath;
 	
 	private static int numberOfSharedFiles = 0;
@@ -62,6 +65,16 @@ public class SharingManager {
 	
 	public synchronized static String getSharedDirPath() {
 		return sharedDirPath;
+	}
+	
+	/**
+	 * renvoie le tableau de {@link Result} correspondant aux critères de recherche spécifiés en argument.
+	 * @param criteria : critères de recherche
+	 * @return
+	 */
+	public synchronized static Result[] search(String[] criteria) {
+		
+		return null;
 	}
 }
 
