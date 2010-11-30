@@ -8,15 +8,21 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import kernel.Main;
 import connexion.ConnexionManager;
@@ -61,6 +67,10 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private AbstractAction pingClicked;
 	private JButton Query;
 	private JPanel Buttons;
+	private JLabel peerLabel;
+	private JTable tabPeer;
+	private JTabbedPane graphPeerVisu;
+	private JTabbedPane peerVisualisation;
 	private JPanel jPanel2;
 	private AbstractAction query;
 	private JButton QUERY;
@@ -113,6 +123,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			}
 			pack();
 			this.setSize(809, 600);
+			this.setResizable(false);
 		} catch (Exception e) {
 		    //add your error handling code here
 			e.printStackTrace();
@@ -224,9 +235,12 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JPanel getJPanel1() {
 		if(jPanel1 == null) {
 			jPanel1 = new JPanel();
+			jPanel1.setLayout(null);
 			jPanel1.setBackground(new java.awt.Color(224,224,224));
 			jPanel1.setBounds(490, 6, 286, 231);
 			jPanel1.setBorder(BorderFactory.createTitledBorder(""));
+			jPanel1.add(getPeerVisualisation());
+			jPanel1.add(getPeerLabel());
 		}
 		return jPanel1;
 	}
@@ -423,6 +437,50 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			jPanel2.setBounds(11, 6, 473, 231);
 		}
 		return jPanel2;
+	}
+	
+	private JTabbedPane getPeerVisualisation() {
+		if(peerVisualisation == null) {
+			peerVisualisation = new JTabbedPane();
+			peerVisualisation.setBounds(3, 1, 280, 225);
+			peerVisualisation.addTab("Graphe", null, getGraphPeerVisu(), null);
+			peerVisualisation.addTab("Tableau", null, getTabPeer(), null);
+		}
+		return peerVisualisation;
+	}
+
+	private JTabbedPane getGraphPeerVisu() {
+		if(graphPeerVisu == null) {
+			graphPeerVisu = new JTabbedPane();
+		}
+		return graphPeerVisu;
+	}
+	
+	private JTable getTabPeer() {
+		if(tabPeer == null) {
+			TableModel tabPeerModel = 
+				new DefaultTableModel(
+						new String[][] { { "One", "Two" }, { "Three", "Four" } },
+						new String[] { "Column 1", "Column 2" });
+			tabPeer = new JTable();
+			tabPeer.setModel(tabPeerModel);
+			tabPeer.setRowSelectionAllowed(false);
+			tabPeer.setAutoCreateRowSorter(true);
+			tabPeer.setGridColor(new java.awt.Color(217,209,155));
+		}
+		return tabPeer;
+	}
+	
+	private JLabel getPeerLabel() {
+		if(peerLabel == null) {
+			peerLabel = new JLabel();
+			peerLabel.setText("Peers");
+			peerLabel.setBounds(228, 5, 50, 19);
+			peerLabel.setFont(new java.awt.Font("SansSerif",1,14));
+			peerLabel.setAlignmentX(0.5f);
+			peerLabel.setForeground(new java.awt.Color(0,0,128));
+		}
+		return peerLabel;
 	}
 
 }
