@@ -18,10 +18,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.SwingUtilities;
-
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import kernel.Main;
 import connexion.ConnexionManager;
@@ -66,6 +63,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private AbstractAction pingClicked;
 	private JButton Query;
 	private JPanel Buttons;
+	private JScrollPane jScrollPane2;
 	private JLabel peerLabel;
 	private JTable tabPeer;
 	private JTabbedPane graphPeerVisu;
@@ -86,12 +84,14 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JMenuItem Settings;
 	private JMenu Peers;
 	private JMenu jMenu1;
+	protected static FenetrePrincipale thi;
 
 
 	
 	
 	public FenetrePrincipale() {
 		super();
+		thi = this;
 		initGUI();
 	}
 	
@@ -415,7 +415,6 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 				private static final long serialVersionUID = 1L;
 
 				public void actionPerformed(ActionEvent evt) {
-					display("Nouvelle requête ...");
 					QueryForm form= new QueryForm();
 					form.setVisible(true);
 				}
@@ -439,7 +438,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			peerVisualisation = new JTabbedPane();
 			peerVisualisation.setBounds(3, 1, 280, 225);
 			peerVisualisation.addTab("Graphe", null, getGraphPeerVisu(), null);
-			peerVisualisation.addTab("Tableau", null, getTabPeer(), null);
+			peerVisualisation.addTab("Tableau", null, getJScrollPane2(), null);
 		}
 		return peerVisualisation;
 	}
@@ -451,20 +450,26 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		return graphPeerVisu;
 	}
 	
-	private JTable getTabPeer() {
+	public JTable getTabPeer() {
 		if(tabPeer == null) {
-			TableModel tabPeerModel = 
+			
+			DefaultTableModel model = 
 				new DefaultTableModel(
-						new String[][] { { "One", "Two" }, { "Three", "Four" } },
-						new String[] { "Column 1", "Column 2" });
+						new String[][]{},
+						new String[] { "ip","port", "dist","number of files", "total size (kB)" });
 			tabPeer = new JTable();
-			tabPeer.setModel(tabPeerModel);
+			tabPeer.setModel(model);
+			tabPeer.setDragEnabled(false);
 			tabPeer.setRowSelectionAllowed(false);
-			tabPeer.setAutoCreateRowSorter(true);
+		 	tabPeer.setAutoCreateRowSorter(true);
 			tabPeer.setGridColor(new java.awt.Color(217,209,155));
+			
 		}
 		return tabPeer;
 	}
+	
+	
+	
 	
 	private JLabel getPeerLabel() {
 		if(peerLabel == null) {
@@ -476,6 +481,16 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			peerLabel.setForeground(new java.awt.Color(0,0,128));
 		}
 		return peerLabel;
+	}
+	
+	private JScrollPane getJScrollPane2() {
+		if(jScrollPane2 == null) {
+			jScrollPane2 = new JScrollPane();
+			jScrollPane2.setPreferredSize(new java.awt.Dimension(280, 195));
+			jScrollPane2.setViewportView(getTabPeer());
+			
+		}
+		return jScrollPane2;
 	}
 
 }

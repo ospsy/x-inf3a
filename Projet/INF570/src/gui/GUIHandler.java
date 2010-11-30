@@ -1,5 +1,13 @@
 package gui;
 
+import java.util.LinkedList;
+
+import javax.swing.table.DefaultTableModel;
+
+
+
+import connexion.ConnexionManager;
+import connexion.Neighbour;
 import message.Result;
 
 public class GUIHandler implements OutputControler{
@@ -15,9 +23,18 @@ public class GUIHandler implements OutputControler{
 	}
 
 	@Override
-	public void displayVoisin() {
-		// TODO Auto-generated method stub
+	public synchronized void displayVoisin() {
+		LinkedList<Neighbour> list = ConnexionManager.getNeighbours();
+		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getTabPeer().getModel();
 		
+		while (model.getRowCount()>0) {//vide l'affichage
+			model.removeRow(0);
+		}
+		
+		for(Neighbour b : list ){
+			model.addRow(new Object[]{b.getIP(),b.getPort(),b.getDistance(),b.getNumberOfSharedFiles(),b.getNumberOfKilobytesShared()});;
+		}
+	
 	}
 
 }
