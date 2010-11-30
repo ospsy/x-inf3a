@@ -1,6 +1,7 @@
 package sharing;
 
 import java.io.File;
+import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -73,9 +74,59 @@ public class SharingManager {
 	 * @return
 	 */
 	public synchronized static Result[] search(String[] criteria) {
+		LinkedList<Result> results = new LinkedList<Result>();
 		
-		return null;
+		File sharedDir = new File(SharingManager.getSharedDirPath());
+		if(!sharedDir.exists()) {
+			System.err.println("Echec de la mise à jour : Le chemin spécifié pour le dossier de partage n'existe pas");
+			return null;
+		}
+		if(!sharedDir.isDirectory()) {
+			System.err.println("Echec de la mise à jour : Le chemin spécifié pour le dossier de partage ne correspond pas à un répertoire");
+			return null;
+		}
+		
+		String[] loweredCriteria = new String[criteria.length];
+		
+		for(int i=0; i<criteria.length; i++) {
+			loweredCriteria[i] = criteria[i].toLowerCase();
+		}
+		parcoursRecherche(sharedDir, loweredCriteria, results, new Integer(0));
+		
+		int resultsNb = results.size();
+		Result[] resultsArray = new Result[resultsNb];
+		int compteur = 0;
+		for(Result res : results) {
+			resultsArray[compteur++] = res;
+		}
+		
+		return resultsArray;
 	}
+	
+	private static void parcoursRecherche(File dir, String[] criteria, 
+			LinkedList<Result> results, Integer currentIndex) {
+		File[] fileList = dir.listFiles();
+		File f;
+		for(int i=0; i<fileList.length; i++) {
+			f = fileList[i];
+			if(f.isDirectory()) parcoursRecherche(f, criteria, results, currentIndex);
+			else if(f.isFile()) {
+				boolean matchCriteria = false;
+				String fileName = f.getName().toLowerCase();
+				for(int j=0; j<criteria.length; j++) {
+					if(fileName.matches(".*" + criteria[j] + ".*")) {
+						matchCriteria = true;
+						break;
+					}
+				}
+				if(matchCriteria) {
+					results.addLast(new Result(currentIndex, f.length(), f.getName()));
+				}
+				currentIndex++;
+			}
+		}
+	}
+	
 }
 
 /**
