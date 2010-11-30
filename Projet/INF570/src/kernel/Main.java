@@ -21,9 +21,11 @@ public class Main {
 
 	public static void main(String[] args){
 		loadSettings();
-		ConnexionManager.init(7777);
-		Out.init(new GUIHandler());
 		FenetrePrincipale.launch();
+		
+		
+		Out.init(new GUIHandler());
+		ConnexionManager.init(7777);
 		while(true){
 			String s=Input.readString();
 			if(s==null){
