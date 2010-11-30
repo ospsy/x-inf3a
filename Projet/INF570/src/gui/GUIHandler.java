@@ -18,8 +18,16 @@ public class GUIHandler implements OutputControler{
 
 	@Override
 	public void displayResult(Result[] tab) {
-		// TODO Auto-generated method stub
+	
+		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getResultats().getModel();
 		
+		while (model.getRowCount()>0) {//vide l'affichage
+			model.removeRow(0);
+		}
+		
+		for(Result b : tab ){
+			model.addRow(new Object[]{b.getSharedFileName(),b.getFileSize(),"peer"});;
+		}
 	}
 
 	@Override
