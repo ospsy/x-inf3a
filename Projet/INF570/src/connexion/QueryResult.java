@@ -46,6 +46,6 @@ public class QueryResult {
 	
 	@Override
 	public String toString() {
-		return name+", "+size+"Kb, index="+index+" | "+IP+":"+port+", speed="+speed+"Kb/s | serventId="+serventId;
+		return name+", "+size+" bytes, index="+index+" | "+IP+":"+port+", speed="+speed+"Kb/s | serventId="+serventId;
 	}
 }
