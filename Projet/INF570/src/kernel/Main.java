@@ -1,6 +1,8 @@
 package kernel;
 import gui.FenetrePrincipale;
+import gui.GUIHandler;
 import gui.Input;
+import gui.Out;
 import config.Settings;
 import connexion.ConnexionManager;
 
@@ -20,6 +22,7 @@ public class Main {
 	public static void main(String[] args){
 		loadSettings();
 		ConnexionManager.init(7777);
+		Out.init(new GUIHandler());
 		FenetrePrincipale.launch();
 		while(true){
 			String s=Input.readString();
