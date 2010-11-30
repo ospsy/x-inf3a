@@ -29,6 +29,7 @@ public class ConnexionManager{
 	static private HashMap<Identifiant, Connexion> forwarding;
 	static private HashMap<Identifiant, Long> lastTimeId;
 	static private LinkedList<Neighbour> neighbours;
+	static private LinkedList<QueryResult> queryResults;
 
 	/**
 	 * Initialise le ConnexionManager, il faut IMPERATIVEMENT appeler cette fonction avant de faire
@@ -94,12 +95,21 @@ public class ConnexionManager{
 	}
 	
 	/**
-	 * Renvoit la liste décrivant les voisins découvert par le dernier PING
+	 * Renvoit la liste décrivant les voisins découverts par le dernier PING
 	 * @return la liste des voisins
 	 */
 	@SuppressWarnings("unchecked")
 	static synchronized public LinkedList<Neighbour> getNeighbours(){
 		return (LinkedList<Neighbour>) neighbours.clone();
+	}
+	
+	/**
+	 * Renvoit la liste décrivant les résultats de recherches découverts par le dernier QUERY
+	 * @return la liste des voisins
+	 */
+	@SuppressWarnings("unchecked")
+	static synchronized public LinkedList<QueryResult> getQueryResults(){
+		return (LinkedList<QueryResult>) queryResults.clone();
 	}
 
 	/**
@@ -143,6 +153,7 @@ public class ConnexionManager{
 	 * Envoit un QUERY à tout le monde
 	 */
 	public static void query(String[] criteria) {
+		queryResults=new LinkedList<QueryResult>();
 		Message m=new Query(Settings.getMaxTTL(), 0,criteria,0);
 		sendAll(m, null);
 	}
@@ -219,8 +230,14 @@ public class ConnexionManager{
 		switch(m.getHeader().getMessageType()){
 		case PONG:
 			neighbours.add(new Neighbour(m));
+			Out.displayVoisin();
 			break;
 		case QUERY_HIT:
+			QueryHit qh = (QueryHit)m;
+			Result[] results = qh.getResultSet();
+			for(int i=0;i<results.length;i++){
+				queryResults.add(new QueryResult(qh.getIp(), qh.getPort(), qh.getSpeed(), results[i], qh.getServentIdentifier()));
+			}
 			break;
 		}
 	}
