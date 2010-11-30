@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.JTree;
+
 import message.Result;
 
 /**
@@ -125,6 +127,10 @@ public class SharingManager {
 				currentIndex++;
 			}
 		}
+	}
+	public static JTree getJTree() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
