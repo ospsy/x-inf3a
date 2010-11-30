@@ -4,13 +4,10 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-
-import com.cloudgarden.layout.AnchorLayout;
 
 import connexion.ConnexionManager;
 
@@ -92,7 +89,7 @@ public class QueryForm extends javax.swing.JDialog {
 						}
 						{
 							ok = new JButton();
-							AnchorLayout okLayout = new AnchorLayout();
+							BorderLayout okLayout = new BorderLayout();
 							ok.setLayout(okLayout);
 							jPanel2.add(ok, BorderLayout.WEST);
 							ok.setText("Go");

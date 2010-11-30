@@ -1,8 +1,8 @@
 package gui;
 
-public class GUIHandler {
+public class GUIHandler implements OutputControler{
 
-	public static void printInConsole(String s) {
+	public void printInConsole(String s) {
 		FenetrePrincipale.display(s);
 	}
 
