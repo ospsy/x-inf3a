@@ -1,5 +1,7 @@
 package connexion;
 
+import gui.Out;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -47,7 +49,7 @@ public class ConnexionManager{
 				System.out.println("Tentative de création de serveur sur le port "+port);
 				server = new ServerThread(port);
 				serverCreated=true;
-				System.out.println("Serveur créé sur le port "+port);
+				Out.println("Serveur créé sur le port "+port);
 			} catch (IOException e) {
 				System.out.println("Impossible de créer le ServerSocket");
 				port++;
@@ -96,8 +98,8 @@ public class ConnexionManager{
 	 * @return la liste des voisins
 	 */
 	@SuppressWarnings("unchecked")
-	static synchronized public LinkedList<Message> getNeighbours(){
-		return (LinkedList<Message>) neighbours.clone();
+	static synchronized public LinkedList<Neighbour> getNeighbours(){
+		return (LinkedList<Neighbour>) neighbours.clone();
 	}
 
 	/**
@@ -124,7 +126,7 @@ public class ConnexionManager{
 			addPreConnexion(new Connexion(s, false));
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Connexion impossible...");
+			Out.println("Connexion impossible...");
 		}
 	}
 	
@@ -154,7 +156,7 @@ public class ConnexionManager{
 	 * @param c la connexion à enlever
 	 */
 	static protected synchronized void remove(Connexion c){
-		System.out.println("Connexion "+c.getId()+" retirée");
+		Out.println("Connexion "+c.getId()+" retirée");
 		connexions.remove(c);
 	}
 
@@ -163,7 +165,7 @@ public class ConnexionManager{
 	 * @param c la preConnexion a retirer
 	 */
 	static protected synchronized void removePreConnexion(Connexion c){
-		System.out.println("Confirmation de la Preconnexion "+c.getId()+" échouée");
+		Out.println("Confirmation de la Preconnexion "+c.getId()+" échouée");
 		preConnexions.remove(c);
 	}
 
@@ -235,6 +237,7 @@ public class ConnexionManager{
 	static protected synchronized void confirmPreConnexion(Connexion c){
 		if(preConnexions.remove(c)!=null){
 			System.out.println("Preconnexion "+c.getId()+" confirmée");
+			Out.println("Connexion "+c.getId()+" ajoutée");
 			connexions.put(c, c);
 		}else{//si la connexion n'était pas dans la liste de preConnexion
 			System.err.println("confirmConnexion : la connexion n'était pas à confirmer...");
