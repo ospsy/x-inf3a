@@ -1,4 +1,6 @@
 package kernel;
+import message.Message;
+import message.Result;
 import gui.FenetrePrincipale;
 import gui.GUIHandler;
 import gui.Input;
@@ -26,6 +28,16 @@ public class Main {
 		
 		Out.init(new GUIHandler());
 		ConnexionManager.init(7777);
+		
+		//test pour l'affichage des résultats
+		Result[] resultSet = new Result[2];
+		Result r1 = new Result(11, 512, "toto.txt");
+		Result r2 = new Result(22, 3512, "panda.mp3");
+		resultSet[0] = r1;
+		resultSet[1] = r2;
+		Out.displayResult(resultSet);
+		//-------------------------------------
+		
 		while(true){
 			String s=Input.readString();
 			if(s==null){

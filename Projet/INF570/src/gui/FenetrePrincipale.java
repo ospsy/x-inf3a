@@ -8,17 +8,26 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.JTree;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.tree.TreePath;
+
+import message.Result;
 
 import kernel.Main;
 import connexion.ConnexionManager;
@@ -63,6 +72,13 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private AbstractAction pingClicked;
 	private JButton Query;
 	private JPanel Buttons;
+	private JScrollPane jScrollPane4;
+	private JTree shared;
+	private JPanel sharedFiles;
+	private JLabel critereslabel;
+	private JTextField criteria;
+	private JScrollPane jScrollPane3;
+	private JTable resultats;
 	private JScrollPane jScrollPane2;
 	private JLabel peerLabel;
 	private JTable tabPeer;
@@ -209,6 +225,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			Multitab.setBackground(new java.awt.Color(224,224,224));
 			Multitab.setOpaque(true);
 			Multitab.addTab("Console", null, getConsole(), null);
+			Multitab.addTab("Files", null, getSharedFiles(), null);
 		}
 		return Multitab;
 	}
@@ -333,11 +350,12 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JPanel getButtons() {
 		if(Buttons == null) {
 			Buttons = new JPanel();
+			BorderLayout ButtonsLayout = new BorderLayout();
+			Buttons.setLayout(ButtonsLayout);
 			Buttons.setBounds(646, 24, 90, 199);
 			Buttons.setBackground(new java.awt.Color(224,224,224));
-			Buttons.add(getJButton1());
-			Buttons.add(getQuery());
-			Buttons.add(getConnect());
+			Buttons.add(getJButton1(), BorderLayout.NORTH);
+			Buttons.add(getConnect(), BorderLayout.SOUTH);
 		}
 		return Buttons;
 	}
@@ -345,9 +363,9 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JButton getQuery() {
 		if(Query == null) {
 			Query = new JButton();
-			Query.setText("QUERY");
-			Query.setPreferredSize(new java.awt.Dimension(70, 70));
+			Query.setText("GO !");
 			Query.setAction(getQueryx());
+			Query.setBounds(407, 2, 63, 23);
 		}
 		return Query;
 	}
@@ -372,7 +390,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		if(Connect == null) {
 			Connect = new JButton();
 			Connect.setText("Connect");
-			Connect.setPreferredSize(new java.awt.Dimension(78, 44));
+			Connect.setPreferredSize(new java.awt.Dimension(90, 90));
 			Connect.setAction(getConnectx());
 		}
 		return Connect;
@@ -382,7 +400,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		if(jButton1 == null) {
 			jButton1 = new JButton();
 			jButton1.setText("PING");
-			jButton1.setPreferredSize(new java.awt.Dimension(70, 70));
+			jButton1.setPreferredSize(new java.awt.Dimension(90, 90));
 			jButton1.setAction(getPingClicked());
 		}
 		return jButton1;
@@ -408,15 +426,23 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	
 	private AbstractAction getQueryx() {
 		if(query == null) {
-			query = new AbstractAction("QUERY", null) {
+			query = new AbstractAction("GO !", null) {
 				/**
-				 * 
-				 */
+				* 
+				*/
 				private static final long serialVersionUID = 1L;
-
+				
 				public void actionPerformed(ActionEvent evt) {
-					QueryForm form= new QueryForm();
-					form.setVisible(true);
+					if (criteria.getText().length() == 0){
+						JOptionPane.showMessageDialog(new JFrame(), "Veuiller entrer au moins un critère","Erreur",JOptionPane.ERROR_MESSAGE);
+					}
+					String[] criter = criteria.getText().split(" ");
+					if (criter.length == 0){
+						JOptionPane.showMessageDialog(new JFrame(), "Veuiller entrer au moins un critère","Erreur",JOptionPane.ERROR_MESSAGE);
+					}
+					else{
+						ConnexionManager.query(criter);
+					}
 				}
 			};
 		}
@@ -426,9 +452,14 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JPanel getJPanel2() {
 		if(jPanel2 == null) {
 			jPanel2 = new JPanel();
+			jPanel2.setLayout(null);
 			jPanel2.setBackground(new java.awt.Color(224,224,224));
 			jPanel2.setBorder(BorderFactory.createTitledBorder(""));
 			jPanel2.setBounds(11, 6, 473, 231);
+			jPanel2.add(getJScrollPane3());
+			jPanel2.add(getQuery());
+			jPanel2.add(getCriteria());
+			jPanel2.add(getCritereslabel());
 		}
 		return jPanel2;
 	}
@@ -491,6 +522,78 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			
 		}
 		return jScrollPane2;
+	}
+	
+	public JTable getResultats() {
+		if(resultats == null) {			
+			TableModel resultatsModel = 
+				new DefaultTableModel(
+						new String[][] {  },
+						new String[] { "nom", "taille" , "peer" });
+			resultats = new JTable();
+			resultats.setModel(resultatsModel);
+			resultats.setDragEnabled(false);
+			resultats.setRowSelectionAllowed(false);
+			resultats.setAutoCreateRowSorter(true);
+			resultats.setGridColor(new java.awt.Color(217,209,155));
+		
+		}
+		return resultats;
+	}
+	
+	private JScrollPane getJScrollPane3() {
+		if(jScrollPane3 == null) {
+			jScrollPane3 = new JScrollPane();
+			jScrollPane3.setBounds(3, 24, 467, 202);
+			jScrollPane3.setViewportView(getResultats());
+		}
+		return jScrollPane3;
+	}
+	
+	private JTextField getCriteria() {
+		if(criteria == null) {
+			criteria = new JTextField();
+			criteria.setBounds(153, 2, 254, 23);
+		}
+		return criteria;
+	}
+	
+	private JLabel getCritereslabel() {
+		if(critereslabel == null) {
+			critereslabel = new JLabel();
+			critereslabel.setText("Nouvelle recherche");
+			critereslabel.setBounds(9, 5, 144, 16);
+			critereslabel.setFont(new java.awt.Font("SansSerif",1,14));
+			critereslabel.setForeground(new java.awt.Color(0,0,128));
+		}
+		return critereslabel;
+	}
+	
+	private JPanel getSharedFiles() {
+		if(sharedFiles == null) {
+			sharedFiles = new JPanel();
+			BorderLayout sharedFilesLayout = new BorderLayout();
+			sharedFiles.setLayout(sharedFilesLayout);
+			sharedFiles.add(getJScrollPane4(), BorderLayout.CENTER);
+		}
+		return sharedFiles;
+	}
+	
+	private JTree getShared() {
+		if(shared == null) {
+			shared = new JTree();
+		}
+//		shared.addSelectionPath(new TreePath(config.Settings.getSharePath()));
+		return shared;
+	}
+	
+	private JScrollPane getJScrollPane4() {
+		if(jScrollPane4 == null) {
+			jScrollPane4 = new JScrollPane();
+			jScrollPane4.setPreferredSize(new java.awt.Dimension(737, 229));
+			jScrollPane4.setViewportView(getShared());
+		}
+		return jScrollPane4;
 	}
 
 }
