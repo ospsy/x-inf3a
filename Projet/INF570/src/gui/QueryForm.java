@@ -24,6 +24,10 @@ import connexion.ConnexionManager;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class QueryForm extends javax.swing.JDialog {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JButton ok;
 	private JPanel jPanel1;
 	private AbstractAction abstractAction1;

@@ -74,13 +74,13 @@ public class ConnexionForm extends javax.swing.JDialog {
 						{
 							port = new JTextField();
 							jPanel3.add(port, BorderLayout.EAST);
-							port.setText("Port");
+							port.setText("7777");
 							port.setPreferredSize(new java.awt.Dimension(47, 29));
 						}
 						{
 							ip = new JTextField();
 							jPanel3.add(ip, BorderLayout.WEST);
-							ip.setText("Adresse Ip");
+							ip.setText("localhost");
 							ip.setPreferredSize(new java.awt.Dimension(137, 35));
 						}
 					}
