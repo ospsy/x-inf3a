@@ -10,6 +10,16 @@ public class Query extends Message {
 	private String[] scriteria;
 
 
+	
+	protected Query(MessageHeader mh, short[] minSpeed,	short[] criteria) {
+		super();
+		this.header = mh;
+		this.minSpeed = minSpeed;
+		this.dminSpeed = minSpeed[0]*256+minSpeed[1];
+		this.criteria = criteria;
+		this.scriteria = getCriteria(criteria, mh.getPayloadLength()-2);
+	}
+
 	/**
 	 * constructeur en lecture d'un message Query
 	 * <p><i><b>exemple :</b> new Query(5, 6, "banane jaune   singe".split(" "), 1000);</i></br>
@@ -23,24 +33,12 @@ public class Query extends Message {
 	 * <br><i>minimum speed:</i> 1000kB/s
 	 * <br><i>criteria:</i> banane jaune singe 
 	 * <br><b>--end--</b></br>
-	 * @param minSpeed
+	 * @param ttl
+	 * @param hops
 	 * @param searchCriteria
-	 */
-	protected Query(MessageHeader mh, short[] minSpeed,	short[] criteria) {
-		super();
-		this.header = mh;
-		this.minSpeed = minSpeed;
-		this.dminSpeed = minSpeed[0]*256+minSpeed[1];
-		this.criteria = criteria;
-		this.scriteria = getCriteria(criteria, mh.getPayloadLength()-2);
-	}
-
-	/**
-	 * constructeur pour l'écriture d'un message Query
 	 * @param minSpeed
-	 * @param searchCriteria
 	 */
-	public Query(int ttl, int hops, String[] searchCriteria,	int minSpeed) {
+	public Query(int ttl, int hops, String[] searchCriteria, int minSpeed) {
 		super();
 
 		this.scriteria = searchCriteria;

@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import message.Message;
 import message.MessageHeader;
 import message.Pong;
+import message.Query;
 import message.QueryHit;
 import message.Result;
 import sharing.SharingManager;
@@ -162,9 +163,11 @@ public class Connexion {
 			break;
 		case QUERY:
 			System.out.println("QUERY recu");
-			//TODO envoyer un vrai queryHIT
-			send(new QueryHit(h.getMessageID(), Settings.getMaxTTL(), 0, ConnexionManager.getPort(), ConnexionManager.getIP(), Settings.getSpeed() ,new Result[3]));
-			if(h.getTTL()>0){
+			Query q = (Query)m;
+			Result[] results=SharingManager.search(q.getCriteria());
+			if(results.length>0 && q.getMinimumSpeed()<=Settings.getSpeed())
+				send(new QueryHit(h.getMessageID(), Settings.getMaxTTL(), 0, ConnexionManager.getPort(), ConnexionManager.getIP(), Settings.getSpeed() ,results));
+			if(h.getTTL()>0){//inondation
 				m.decreaseTTL();
 				ConnexionManager.sendAll(m, this);
 			}
