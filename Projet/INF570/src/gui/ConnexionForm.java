@@ -61,7 +61,7 @@ public class ConnexionForm extends javax.swing.JDialog {
 				{
 					jPanel1 = new JPanel();
 					getContentPane().add(jPanel1, BorderLayout.CENTER);
-					jPanel1.setPreferredSize(new java.awt.Dimension(267, 163));
+					jPanel1.setPreferredSize(new java.awt.Dimension(269, 163));
 					jPanel1.setLayout(null);
 					jPanel1.setBackground(new java.awt.Color(224,224,224));
 					{
@@ -69,7 +69,7 @@ public class ConnexionForm extends javax.swing.JDialog {
 						jPanel1.add(jPanel3, "North");
 						BorderLayout jPanel3Layout = new BorderLayout();
 						jPanel3.setLayout(jPanel3Layout);
-						jPanel3.setBounds(37, 76, 207, 29);
+						jPanel3.setBounds(36, 41, 204, 31);
 						jPanel3.setBackground(new java.awt.Color(224,224,224));
 						{
 							port = new JTextField();
@@ -81,7 +81,7 @@ public class ConnexionForm extends javax.swing.JDialog {
 							ip = new JTextField();
 							jPanel3.add(ip, BorderLayout.WEST);
 							ip.setText("localhost");
-							ip.setPreferredSize(new java.awt.Dimension(137, 35));
+							ip.setPreferredSize(new java.awt.Dimension(137, 29));
 						}
 					}
 					{
@@ -89,13 +89,13 @@ public class ConnexionForm extends javax.swing.JDialog {
 						BorderLayout jPanel2Layout = new BorderLayout();
 						jPanel2.setLayout(jPanel2Layout);
 						jPanel1.add(jPanel2, "South");
-						jPanel2.setBounds(88, 129, 169, 23);
+						jPanel2.setBounds(70, 83, 170, 26);
 						jPanel2.setBackground(new java.awt.Color(224,224,224));
 						{
 							Annuler = new JButton();
 							jPanel2.add(Annuler, BorderLayout.EAST);
 							Annuler.setText("Annuler");
-							Annuler.setPreferredSize(new java.awt.Dimension(81, 26));
+							Annuler.setPreferredSize(new java.awt.Dimension(81, 23));
 							Annuler.setAction(getCancel());
 						}
 						{
@@ -104,7 +104,7 @@ public class ConnexionForm extends javax.swing.JDialog {
 							ok.setLayout(okLayout);
 							jPanel2.add(ok, BorderLayout.WEST);
 							ok.setText("Ok");
-							ok.setPreferredSize(new java.awt.Dimension(70, 26));
+							ok.setPreferredSize(new java.awt.Dimension(70, 23));
 							ok.setAction(getAbstractAction1());
 						}
 					}
@@ -112,12 +112,13 @@ public class ConnexionForm extends javax.swing.JDialog {
 						Title = new JLabel();
 						jPanel1.add(Title);
 						Title.setText("Nouvelle connexion :");
-						Title.setBounds(27, 11, 233, 14);
-						Title.setFont(new java.awt.Font("Tahoma",0,11));
+						Title.setBounds(26, 0, 233, 35);
+						Title.setFont(new java.awt.Font("Tahoma",1,12));
+						Title.setForeground(new java.awt.Color(0,0,128));
 					}
 				}
 			}
-			this.setSize(285, 199);
+			this.setSize(272, 164);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
