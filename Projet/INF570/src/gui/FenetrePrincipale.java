@@ -397,7 +397,6 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 				private static final long serialVersionUID = 1L;
 
 				public void actionPerformed(ActionEvent evt) {
-					display("Nouvelle connexion ...");
 					ConnexionForm form= new ConnexionForm();
 					form.setVisible(true);
 					
