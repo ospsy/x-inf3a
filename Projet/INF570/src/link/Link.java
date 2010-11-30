@@ -27,9 +27,12 @@ public class Link {
 		int l = msgH.getPayloadLength();
 		
 		int n=0;
+		int readBytesNb;
 		byte[] bTab = new byte[l];
 		while(n!=l) {
-			n += in.read(bTab, n, l - n);
+			readBytesNb = in.read(bTab, n, l - n);
+			if(readBytesNb==-1) throw new IOException();
+			n += readBytesNb;
 		}
 		short[] sTab = toShortTable(bTab);
 		
@@ -59,9 +62,12 @@ public class Link {
 	private static MessageHeader readMessageHeader(InputStream in) throws IOException {
 		
 		int n=0;
+		int readBytesNb;
 		byte[] bTab = new byte[MessageHeader.STANDARD_SIZE];
 		while(n!=MessageHeader.STANDARD_SIZE) {
-			n += in.read(bTab, n, MessageHeader.STANDARD_SIZE - n);
+			readBytesNb = in.read(bTab, n, MessageHeader.STANDARD_SIZE - n);
+			if(readBytesNb==-1) throw new IOException();
+			n += readBytesNb;
 		}
 		short[] sTab = toShortTable(bTab);
 		MessageHeader msgH = new MessageHeader(sTab);
