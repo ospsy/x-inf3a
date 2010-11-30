@@ -27,6 +27,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.tree.TreePath;
 
+import sharing.SharingManager;
+
 import message.Result;
 
 import kernel.Main;
@@ -581,9 +583,8 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	
 	private JTree getShared() {
 		if(shared == null) {
-			shared = new JTree();
+			shared = SharingManager.getJTree();
 		}
-//		shared.addSelectionPath(new TreePath(config.Settings.getSharePath()));
 		return shared;
 	}
 	
