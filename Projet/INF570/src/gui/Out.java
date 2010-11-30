@@ -1,5 +1,7 @@
 package gui;
 
+import message.Result;
+
 
 public class Out {
 	private static OutputControler oc;
@@ -9,6 +11,13 @@ public class Out {
 	}
 	
 	public static void println(String s){
-	oc.printInConsole(s);
+		oc.printInConsole(s);
+	}
+	
+	public static void displayResult(Result[] tab) {
+	}
+	
+	public static void displayVoisin(){
+		
 	}
 }
