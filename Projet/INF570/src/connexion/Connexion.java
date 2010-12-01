@@ -42,6 +42,7 @@ public class Connexion {
 		closing=false;
 		isConnected=false;
 		id=(int)(Math.random()*1024);
+		ConnexionManager.addPreConnexion(this);
 		new Thread("preConnecting-"+id){
 			public void run() {
 				BufferedReader br=null;
@@ -77,7 +78,7 @@ public class Connexion {
 			}
 		}.start();
 	}
-
+	
 	/**
 	 * Un entier généré aléatoirement pour repérer les connexions (rien n'assure qu'il soit unique)
 	 * @return l'identifiant de la connexion

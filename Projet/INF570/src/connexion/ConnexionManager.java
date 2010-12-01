@@ -3,8 +3,12 @@ package connexion;
 import gui.Out;
 
 import java.io.IOException;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -30,6 +34,7 @@ public class ConnexionManager{
 	static private HashMap<Identifiant, Long> lastTimeId;
 	static private LinkedList<Neighbour> neighbours;
 	static private LinkedList<QueryResult> queryResults;
+	static private Identifiant lastPing;
 
 	/**
 	 * Initialise le ConnexionManager, il faut IMPERATIVEMENT appeler cette fonction avant de faire
@@ -44,13 +49,14 @@ public class ConnexionManager{
 		preConnexions = new HashMap<Connexion, Connexion>();
 		forwarding = new HashMap<Identifiant, Connexion>();
 		lastTimeId = new HashMap<Identifiant, Long>();
+		neighbours = new LinkedList<Neighbour>();
 		boolean serverCreated=false;
 		while(!serverCreated){
 			try {
 				System.out.println("Tentative de création de serveur sur le port "+port);
 				server = new ServerThread(port);
 				serverCreated=true;
-				Out.println("Serveur créé sur le port "+port);
+				Out.println("Serveur créé "+server.getIP()+":"+port);
 			} catch (IOException e) {
 				System.out.println("Impossible de créer le ServerSocket");
 				port++;
@@ -73,6 +79,7 @@ public class ConnexionManager{
 					} catch (Exception e) {
 					}
 				}
+				System.out.println("Thread de forwarding-sweep closed.");
 			};
 		};
 		sweepingThread.start();
@@ -145,7 +152,9 @@ public class ConnexionManager{
 	 */
 	static synchronized public void ping(){
 		neighbours = new LinkedList<Neighbour>();
+		Out.displayVoisin();
 		Message m=new Ping(Settings.getMaxTTL(), 0);
+		lastPing=m.getHeader().getMessageID();
 		sendAll(m, null);
 	}
 
@@ -231,8 +240,10 @@ public class ConnexionManager{
 		System.out.println(m);
 		switch(m.getHeader().getMessageType()){
 		case PONG:
-			neighbours.add(new Neighbour(m));
-			Out.displayVoisin();
+			if(m.getHeader().getMessageID().equals(lastPing)){
+				neighbours.add(new Neighbour(m));
+				Out.displayVoisin();
+			}
 			break;
 		case QUERY_HIT:
 			QueryHit qh = (QueryHit)m;
@@ -271,6 +282,7 @@ public class ConnexionManager{
 class ServerThread extends Thread{
 	private ServerSocket server;
 	private boolean closing;
+	private String IP;
 
 	/**
 	 * Création du serveur et de son thread d'écoute
@@ -280,12 +292,41 @@ class ServerThread extends Thread{
 	public ServerThread(int port) throws IOException{
 		super();
 		closing=false;
+		findIP();
 		server = new ServerSocket(port);
 		this.start();
 	}
 
+	private void findIP() {
+		Inet6Address ip=null;
+		try {
+			Enumeration<NetworkInterface> netInterfaces=NetworkInterface.getNetworkInterfaces();
+
+			while(netInterfaces.hasMoreElements()){
+				NetworkInterface ni=(NetworkInterface)netInterfaces.nextElement();
+				ip=(Inet6Address) ni.getInetAddresses().nextElement();
+				System.out.println(ip.isIPv4CompatibleAddress());
+				System.out.println(ip);
+				if( !ip.isSiteLocalAddress() && !ip.isLoopbackAddress()){
+					System.out.println("Interface "+ni.getName()+" seems to be InternetInterface. I'll take it...");
+					break;
+				}else{
+					ip=null;
+				}
+			}
+		} catch (Exception e) {}
+		if(ip!=null){
+			IP=ip.getHostAddress();
+			IP="0.0.0.0";
+		}
+		else{
+			IP="0.0.0.0";
+			System.err.println("Impossible de trouver l'IP.");
+		}
+	}
+
 	public String getIP(){
-		return server.getInetAddress().getHostAddress();
+		return IP;
 	}
 
 	public void close() {
@@ -303,16 +344,11 @@ class ServerThread extends Thread{
 	public void run() {
 		while(!closing){
 			Socket s=null;
-			Connexion c=null;
 			try {
 				s=server.accept();
-				c=new Connexion(s,true);
+				new Connexion(s,true);
 			} catch (IOException e) {
 				System.out.println("Arrêt de l'attente de nouvelles connexions");
-			}
-			if(c!=null){
-				System.out.println("Nouvelle preConnexion :"+s.getInetAddress().getCanonicalHostName());
-				ConnexionManager.addPreConnexion(c);
 			}
 		}
 	}
