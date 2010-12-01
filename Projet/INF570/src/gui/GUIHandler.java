@@ -33,7 +33,7 @@ public class GUIHandler implements OutputControler{
 	}
 
 	@Override
-	public synchronized void displayVoisin() {
+	public synchronized void displayNeighbours() {
 		LinkedList<Neighbour> list = ConnexionManager.getNeighbours();
 		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getTabPeer().getModel();
 		

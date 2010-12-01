@@ -19,7 +19,7 @@ public class Out {
 	}
 	
 	public static void displayVoisin(){
-		oc.displayVoisin();
+		oc.displayNeighbours();
 	}
 	
 	public static void majFiles(){

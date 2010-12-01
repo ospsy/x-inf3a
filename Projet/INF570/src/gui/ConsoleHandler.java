@@ -16,7 +16,7 @@ public class ConsoleHandler implements OutputControler {
 	}
 
 	@Override
-	public void displayVoisin() {
+	public void displayNeighbours() {
 		System.out.println("---voisins---");
 		for (Neighbour n : ConnexionManager.getNeighbours()) {
 			System.out.println(n.toString());
