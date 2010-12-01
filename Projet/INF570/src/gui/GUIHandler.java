@@ -19,8 +19,9 @@ public class GUIHandler implements OutputControler{
 	}
 
 	@Override
-	public void displayResult(Result[] tab) {
-	
+	public void displayQueryResults() {
+		//TODO
+	/*
 		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getResultats().getModel();
 		
 		while (model.getRowCount()>0) {//vide l'affichage
@@ -29,7 +30,7 @@ public class GUIHandler implements OutputControler{
 		
 		for(Result b : tab ){
 			model.addRow(new Object[]{b.getSharedFileName(),b.getFileSize(),"peer"});;
-		}
+		}*/
 	}
 
 	@Override
