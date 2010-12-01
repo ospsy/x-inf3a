@@ -4,7 +4,6 @@ import gui.Out;
 
 import java.io.IOException;
 import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.ServerSocket;
@@ -123,7 +122,7 @@ public class ConnexionManager{
 	/**
 	 * Ferme toutes les connexions et le server d'écoute
 	 */
-	static public void close(){
+	static synchronized public void close(){
 		closing=true;
 		sweepingThread.interrupt();
 		server.close();
@@ -252,7 +251,7 @@ public class ConnexionManager{
 			for(int i=0;i<results.length;i++){
 				queryResults.add(new QueryResult(qh.getIp(), qh.getPort(), qh.getSpeed(), results[i], qh.getServentIdentifier()));
 			}
-
+			Out.displayResult((Result[])queryResults.toArray());
 			break;
 		}
 	}
