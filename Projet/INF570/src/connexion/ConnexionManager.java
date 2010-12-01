@@ -302,7 +302,6 @@ class ServerThread extends Thread{
 		InetAddress ip=null;
 		try{
 			Enumeration<NetworkInterface> netInterfaces=NetworkInterface.getNetworkInterfaces();
-			
 			while(netInterfaces.hasMoreElements()){
 				NetworkInterface ni=(NetworkInterface)netInterfaces.nextElement();
 				Enumeration<InetAddress> ad=ni.getInetAddresses();
@@ -310,8 +309,9 @@ class ServerThread extends Thread{
 					ip=(InetAddress) ad.nextElement();
 					if(ip instanceof Inet4Address) break;
 				}
-				System.out.println(InetAddress.getLocalHost().getHostAddress());
-				if( !ip.isSiteLocalAddress() && !ip.isLoopbackAddress()){
+				System.out.println(ip);
+				if(ip==null) continue;
+				if(!ip.isLoopbackAddress()){
 					System.out.println("Interface "+ni.getName()+" seems to be InternetInterface. I'll take it...");
 					break;
 				}else{
