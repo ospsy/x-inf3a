@@ -8,11 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import sharing.SharingManager;
+
 
 
 public class Settings {
-	static private double version;
-	static private String sharePath;
+	static private double version=0.4;
+	static private String sharePath="shared";
 	static private String configPath="configuration/conf";
 	static private int maxTTL=5;
 	static private long speed=5;
@@ -80,7 +82,7 @@ public class Settings {
 	
 	static private void handle(String[] value){//le premier élément de value est le nom du paramètre
 		if(value[0].equals("version:"))version=Double.parseDouble(value[1]);
-		else if(value[0].equals("sharePath:"))sharePath = value[1];
+		else if(value[0].equals("sharePath:")) { sharePath = value[1]; SharingManager.setSharedDirPath(sharePath); }
 		else if(value[0].equals("maxTTL:"))maxTTL = Integer.parseInt(value[1]);
 		else if(value[0].equals("speed:"))speed = Long.parseLong(value[1]);
 	}
