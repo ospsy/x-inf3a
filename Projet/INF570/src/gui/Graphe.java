@@ -31,9 +31,9 @@ public class Graphe extends JPanel {
 		this.nodes = new LinkedList<Neighbour>();
 		this.colors = new LinkedList<Color>();
 		
-		int n = Settings.getMaxTTL();
 		
-		for (int i = 0; i < n; i++) {
+		
+		for (int i = 0; i < 3; i++) {
 			colors.add( new Color((int) (150+100*Math.random()),(int) (150+100*Math.random()),(int) (150+100*Math.random())));
 		}
 		
@@ -61,7 +61,7 @@ public class Graphe extends JPanel {
 		}
 		for(int i : indices){
 			int r = (int) (k*maxR*1./disc);
-			drawDisk(r,colors.get(i), g);
+			drawDisk(r,colors.get(i%3), g);
 			k--;
 		}
 		k = disc;
@@ -90,8 +90,10 @@ public class Graphe extends JPanel {
 		for (String string : labels) {
 			int x = (int) (w*1./2+rayon*Math.cos(k*2*Math.PI/n+offset));
 			int y = (int) (h*1./2+rayon*Math.sin(k*2*Math.PI/n+offset)/2);
+			g.setColor(Color.RED);
 			g.fillOval((int) (x-4),(int) (y-4),8, 8);
 			g.setFont(font);
+			g.setColor(Color.BLUE);
 			g.drawString(string, x-5*string.length()/2, y-5);
 			k++;
 		}
