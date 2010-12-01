@@ -310,7 +310,7 @@ class ServerThread extends Thread{
 					if(ip instanceof Inet4Address) break;
 				}
 				System.out.println(ip);
-				if(ip==null) continue;
+				if(ip==null || !(ip instanceof Inet4Address)) continue;
 				if(!ip.isLoopbackAddress()){
 					System.out.println("Interface "+ni.getName()+" seems to be InternetInterface. I'll take it...");
 					break;
