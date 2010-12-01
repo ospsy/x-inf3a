@@ -21,4 +21,8 @@ public class Out {
 	public static void displayVoisin(){
 		oc.displayVoisin();
 	}
+	
+	public static void majFiles(){
+		oc.majFiles();
+	}
 }
