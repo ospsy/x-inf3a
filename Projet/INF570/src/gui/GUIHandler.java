@@ -10,7 +10,7 @@ import sharing.SharingManager;
 
 import connexion.ConnexionManager;
 import connexion.Neighbour;
-import message.Result;
+import connexion.QueryResult;
 
 public class GUIHandler implements OutputControler{
 
@@ -20,17 +20,17 @@ public class GUIHandler implements OutputControler{
 
 	@Override
 	public void displayQueryResults() {
-		//TODO
-	/*
+
+		LinkedList<QueryResult> list = ConnexionManager.getQueryResults();
 		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getResultats().getModel();
 		
 		while (model.getRowCount()>0) {//vide l'affichage
 			model.removeRow(0);
 		}
 		
-		for(Result b : tab ){
-			model.addRow(new Object[]{b.getSharedFileName(),b.getFileSize(),"peer"});;
-		}*/
+		for(QueryResult b : list ){
+			model.addRow(new Object[]{b.getName(),b.getSize(),b.getIP()});;
+		}
 	}
 
 	@Override

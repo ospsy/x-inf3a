@@ -1,6 +1,5 @@
 package gui;
 
-import message.Result;
 
 public interface OutputControler {
 

@@ -1,20 +1,22 @@
 package gui;
 
+import java.util.LinkedList;
+
 import connexion.ConnexionManager;
 import connexion.Neighbour;
-import message.Result;
+import connexion.QueryResult;
 
 public class ConsoleHandler implements OutputControler {
 
 	@Override
 	public void displayQueryResults() {
-		//TODO
-		/*System.out.println("---résultats---");
-		for (Result n : tab) {
+		LinkedList<QueryResult> tab = ConnexionManager.getQueryResults();
+		System.out.println("---résultats---");
+		for (QueryResult n : tab) {
 			System.out.println(n.toString());
 		}
 		System.out.println("-------------");
-		*/
+		
 	}
 
 	@Override

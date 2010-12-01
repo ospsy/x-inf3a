@@ -1,6 +1,5 @@
 package gui;
 
-import message.Result;
 
 
 public class Out {
@@ -23,6 +22,7 @@ public class Out {
 	}
 	
 	public static void majFiles(){
+		if(oc!=null)
 		oc.majFiles();
 	}
 }
