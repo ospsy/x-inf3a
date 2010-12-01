@@ -574,7 +574,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		return sharedFiles;
 	}
 	
-	private JTree getShared() {
+	public JTree getShared() {
 		if(shared == null) {
 			shared = SharingManager.getJTree();
 		}
@@ -597,6 +597,11 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		}
 		
 		return graphe;
+	}
+
+	public void setShared(JTree jTree) {
+		shared = jTree;
+		
 	}
 
 }

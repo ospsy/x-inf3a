@@ -8,4 +8,5 @@ public interface OutputControler {
 	public void printInConsole(String s) ;
 	public void displayResult(Result[] tab);
 	public void displayVoisin();
+	public void majFiles();
 }

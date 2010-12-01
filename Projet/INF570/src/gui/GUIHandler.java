@@ -4,6 +4,8 @@ import java.util.LinkedList;
 
 import javax.swing.table.DefaultTableModel;
 
+import sharing.SharingManager;
+
 
 
 import connexion.ConnexionManager;
@@ -46,5 +48,13 @@ public class GUIHandler implements OutputControler{
 		FenetrePrincipale.thi.getGraphe().setNeighbour(list);
 		
 	}
+
+	@Override
+	public void majFiles() {
+		FenetrePrincipale.thi.setShared(SharingManager.getJTree());
+		
+	}
+	
+	
 
 }
