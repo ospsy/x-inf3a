@@ -15,7 +15,7 @@ public class Out {
 	}
 	
 	public static void displayResult(Result[] tab) {
-		oc.displayResult(tab);
+		oc.displayQueryResults(tab);
 	}
 	
 	public static void displayVoisin(){

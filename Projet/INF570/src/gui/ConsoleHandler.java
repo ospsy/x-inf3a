@@ -7,12 +7,14 @@ import message.Result;
 public class ConsoleHandler implements OutputControler {
 
 	@Override
-	public void displayResult(Result[] tab) {
-		System.out.println("---résultats---");
+	public void displayQueryResults() {
+		//TODO
+		/*System.out.println("---résultats---");
 		for (Result n : tab) {
 			System.out.println(n.toString());
 		}
 		System.out.println("-------------");
+		*/
 	}
 
 	@Override
