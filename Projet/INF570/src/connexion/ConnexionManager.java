@@ -308,7 +308,6 @@ class ServerThread extends Thread{
 				Enumeration<InetAddress> ad=ni.getInetAddresses();
 				while(ad.hasMoreElements()){
 					ip=(InetAddress) ad.nextElement();
-					System.out.println(ip);
 					if(ip instanceof Inet4Address) break;
 				}
 				System.out.println(InetAddress.getLocalHost().getHostAddress());
