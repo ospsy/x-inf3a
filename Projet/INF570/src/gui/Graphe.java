@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -20,6 +21,7 @@ public class Graphe extends JPanel {
 	private int h;
 	private LinkedList<Neighbour> nodes;
 	private LinkedList<Color> colors;
+	private Font font = new Font(Font.SANS_SERIF,Font.PLAIN,10);
 	
 	
 	public Graphe(int w, int h) {
@@ -60,6 +62,11 @@ public class Graphe extends JPanel {
 		for(int i : indices){
 			int r = (int) (k*maxR*1./disc);
 			drawDisk(r,colors.get(i), g);
+			k--;
+		}
+		k = disc;
+		for(int i : indices){
+			int r = (int) (k*maxR*1./disc);
 			drawOnDisk(r, set.get(i), g);
 			k--;
 		}
@@ -79,11 +86,13 @@ public class Graphe extends JPanel {
 		g.setColor(new Color(0,0,155));
 		int n = labels.size();
 		int k = 0;
+		double offset = Math.random()*2*3.1415;
 		for (String string : labels) {
-			int x = (int) (w*1./2+rayon*Math.cos(k*2*Math.PI/n));
-			int y = (int) (h*1./2+rayon*Math.sin(k*2*Math.PI/n)/2);
+			int x = (int) (w*1./2+rayon*Math.cos(k*2*Math.PI/n+offset));
+			int y = (int) (h*1./2+rayon*Math.sin(k*2*Math.PI/n+offset)/2);
 			g.fillOval((int) (x-4),(int) (y-4),8, 8);
-			g.drawChars(string.toCharArray(), 0, string.length(), x-5*string.length()/2, y-5);
+			g.setFont(font);
+			g.drawString(string, x-5*string.length()/2, y-5);
 			k++;
 		}
 		
