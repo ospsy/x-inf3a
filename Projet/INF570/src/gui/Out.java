@@ -14,8 +14,8 @@ public class Out {
 		oc.printInConsole(s);
 	}
 	
-	public static void displayResult(Result[] tab) {
-		oc.displayQueryResults(tab);
+	public static void displayQueryResults() {
+		oc.displayQueryResults();
 	}
 	
 	public static void displayVoisin(){
