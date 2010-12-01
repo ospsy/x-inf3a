@@ -251,7 +251,7 @@ public class ConnexionManager{
 			for(int i=0;i<results.length;i++){
 				queryResults.add(new QueryResult(qh.getIp(), qh.getPort(), qh.getSpeed(), results[i], qh.getServentIdentifier()));
 			}
-			Out.displayResult((Result[])queryResults.toArray());
+			Out.displayQueryResults();
 			break;
 		}
 	}
