@@ -3,6 +3,7 @@ package connexion;
 import gui.Out;
 
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -292,32 +293,37 @@ class ServerThread extends Thread{
 	public ServerThread(int port) throws IOException{
 		super();
 		closing=false;
-		findIP();
 		server = new ServerSocket(port);
+		findIP();
 		this.start();
 	}
 
 	private void findIP() {
-		Inet6Address ip=null;
-		try {
+		InetAddress ip=null;
+		try{
 			Enumeration<NetworkInterface> netInterfaces=NetworkInterface.getNetworkInterfaces();
-
+			
 			while(netInterfaces.hasMoreElements()){
 				NetworkInterface ni=(NetworkInterface)netInterfaces.nextElement();
-				ip=(Inet6Address) ni.getInetAddresses().nextElement();
-				System.out.println(ip.isIPv4CompatibleAddress());
-				System.out.println(ip);
+				Enumeration<InetAddress> ad=ni.getInetAddresses();
+				while(ad.hasMoreElements()){
+					ip=(InetAddress) ad.nextElement();
+					System.out.println(ip);
+					if(ip instanceof Inet4Address) break;
+				}
+				System.out.println(InetAddress.getLocalHost().getHostAddress());
 				if( !ip.isSiteLocalAddress() && !ip.isLoopbackAddress()){
 					System.out.println("Interface "+ni.getName()+" seems to be InternetInterface. I'll take it...");
 					break;
 				}else{
 					ip=null;
 				}
-			}
-		} catch (Exception e) {}
+			}	
+		} catch (Exception e) {
+			System.err.println("ERROR");
+		}
 		if(ip!=null){
 			IP=ip.getHostAddress();
-			IP="0.0.0.0";
 		}
 		else{
 			IP="0.0.0.0";
