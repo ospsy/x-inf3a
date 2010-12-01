@@ -31,10 +31,10 @@ public class Graphe extends JPanel {
 		
 		
 		
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 2; i++) {
 			colors.add(new Color(230,230,230));
 			colors.add(new Color(204,207,242));
-			colors.add(new Color(170,177,250));
+		//	colors.add(new Color(170,177,250));
 		}
 		
 	}
@@ -61,7 +61,7 @@ public class Graphe extends JPanel {
 		}
 		for(int i : indices){
 			int r = (int) (k*maxR*1./disc);
-			drawDisk(r,colors.get(i%3), g);
+			drawDisk(r,colors.get(i%2), g);
 			k--;
 		}
 		k = disc;
