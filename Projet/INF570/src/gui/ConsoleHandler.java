@@ -29,4 +29,10 @@ public class ConsoleHandler implements OutputControler {
 		System.out.println(s);
 	}
 
+	@Override
+	public void majFiles() {
+		
+		
+	}
+
 }
