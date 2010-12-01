@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JPanel;
-
-import config.Settings;
 import connexion.Neighbour;
 
 public class Graphe extends JPanel {
@@ -34,7 +32,9 @@ public class Graphe extends JPanel {
 		
 		
 		for (int i = 0; i < 3; i++) {
-			colors.add( new Color((int) (150+100*Math.random()),(int) (150+100*Math.random()),(int) (150+100*Math.random())));
+			colors.add(new Color(230,230,230));
+			colors.add(new Color(204,207,242));
+			colors.add(new Color(170,177,250));
 		}
 		
 	}
