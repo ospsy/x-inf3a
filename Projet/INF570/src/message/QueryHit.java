@@ -160,6 +160,7 @@ public class QueryHit extends Message{
 		}
 
 		for (int i = 0; i<16;i++){
+			
 			res[i+23+1+2+4+4+resultSet.length] = serventIdentifier.getData()[i];
 		}
 		return res;

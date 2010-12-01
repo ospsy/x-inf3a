@@ -21,17 +21,11 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JTree;
-import javax.swing.border.BevelBorder;
-import javax.swing.border.SoftBevelBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import javax.swing.tree.TreePath;
-
-import sharing.SharingManager;
-
-import message.Result;
 
 import kernel.Main;
+import sharing.SharingManager;
 import connexion.ConnexionManager;
 
 
@@ -549,6 +543,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		if(criteria == null) {
 			criteria = new JTextField();
 			criteria.setBounds(153, 2, 254, 23);
+			criteria.setFont(new java.awt.Font("SansSerif",0,10));
 		}
 		return criteria;
 	}
