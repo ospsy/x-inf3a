@@ -6,6 +6,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
 
 import message.Result;
 
@@ -17,10 +19,12 @@ import message.Result;
  */
 public class SharingManager {
 	
-	private static String sharedDirPath;
+	private static String sharedDirPath = "D:/Malik/Polytechnique/info3A/P2P"; // TODO : effacer cette initialisation
 	
 	private static int numberOfSharedFiles = 0;
 	private static long sharedFilesSize = 0;
+	private static JTree jTree = new JTree();
+	
 	private static final long UPDATE_PERIOD = 60000;
 	
 	private static Timer updateTimer = new Timer();
@@ -41,6 +45,18 @@ public class SharingManager {
 	public synchronized static void setSharedFilesSize(long s) {
 		sharedFilesSize = s;
 	}
+	public synchronized static JTree getJTree() {
+		return jTree;
+	}
+	public synchronized static void setJTree(JTree tree) {
+		jTree = tree;
+	}
+	
+	public static void init() {
+		
+		
+	}
+	
 	
 	/**
 	 * Définit le chemin d'accès du dossier de partage.
@@ -128,11 +144,7 @@ public class SharingManager {
 			}
 		}
 	}
-	public static JTree getJTree() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
+
 }
 
 /**
@@ -146,6 +158,7 @@ class Updater extends TimerTask {
 
 	private int numberOfSharedFiles;
 	private long sharedFilesSize;
+	
 	private boolean stop = false;
 	
 	@Override
@@ -162,22 +175,28 @@ class Updater extends TimerTask {
 		
 		numberOfSharedFiles = 0;
 		sharedFilesSize = 0;
+		DefaultMutableTreeNode fileTree = new DefaultMutableTreeNode(sharedDir.getName());
 		
-		parcours(sharedDir); // modifie numberOfSharedFiles et sharedFilesSize
+		parcours(sharedDir, fileTree); // modifie numberOfSharedFiles et sharedFilesSize
 		if(stop) return;
 		
 		SharingManager.setNumberOfSharedFiles(numberOfSharedFiles);
 		SharingManager.setSharedFilesSize(sharedFilesSize);
+		SharingManager.setJTree(new JTree(fileTree));
 		
 	}
 	
-	public void parcours(File dir) {
+	public void parcours(File dir, DefaultMutableTreeNode dirNode) {
 		File[] fileList = dir.listFiles();
 		File f;
 		for(int i=0; i<fileList.length; i++) {
 			if(stop) return;
 			f = fileList[i];
-			if(f.isDirectory()) parcours(f);
+			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(f.getName());
+			//DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(f); // donne plus d'infos
+			
+			dirNode.add(childNode);
+			if(f.isDirectory()) parcours(f,childNode);
 			else if(f.isFile()) {
 				numberOfSharedFiles++;
 				sharedFilesSize+=f.length();

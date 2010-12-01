@@ -1,4 +1,5 @@
 package kernel;
+import sharing.SharingManager;
 import message.Message;
 import message.Result;
 import gui.FenetrePrincipale;
