@@ -21,7 +21,7 @@ import message.Result;
  */
 public class SharingManager {
 	
-	private static String sharedDirPath = "D:/Malik/Polytechnique/info3A/P2P"; // TODO : effacer cette initialisation
+	private static String sharedDirPath; // TODO : effacer cette initialisation
 	
 	private static int numberOfSharedFiles = 0;
 	private static long sharedFilesSize = 0;
@@ -195,8 +195,7 @@ class Updater extends TimerTask {
 		for(int i=0; i<fileList.length; i++) {
 			if(stop) return;
 			f = fileList[i];
-			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(f.getName());
-			//DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(f); // donne plus d'infos
+			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(new FileWrapper(f));
 			
 			dirNode.add(childNode);
 			if(f.isDirectory()) parcours(f,childNode);
@@ -208,4 +207,18 @@ class Updater extends TimerTask {
 	}
 	
 	public synchronized void stop() { stop=true; }
+}
+
+class FileWrapper {
+
+	File file;
+	
+	FileWrapper(File file) {
+		this.file = file;
+	}
+	
+	public String toString() {
+		if(file.isFile()) return file.getName() + " [" + file.length() + " octets]";
+		else return file.getName();
+	}
 }
