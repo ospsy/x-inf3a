@@ -1,5 +1,7 @@
 package sharing;
 
+import gui.Out;
+
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Timer;
@@ -182,8 +184,9 @@ class Updater extends TimerTask {
 		
 		SharingManager.setNumberOfSharedFiles(numberOfSharedFiles);
 		SharingManager.setSharedFilesSize(sharedFilesSize);
-		SharingManager.setJTree(new JTree(fileTree));
-		
+		JTree jTree = new JTree(fileTree);
+		SharingManager.setJTree(jTree);
+		Out.majFiles();
 	}
 	
 	public void parcours(File dir, DefaultMutableTreeNode dirNode) {
