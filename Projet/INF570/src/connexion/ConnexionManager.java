@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import config.Settings;
@@ -67,9 +68,10 @@ public class ConnexionManager{
 			public void run() {
 				while(!closing){
 					synchronized (ConnexionManager.class) {
-						for (Identifiant id : lastTimeId.keySet()) {
+						for (Iterator<Identifiant> it = lastTimeId.keySet().iterator();it.hasNext();) {
+							Identifiant id=it.next();
 							if(System.currentTimeMillis()-lastTimeId.get(id)>20000){
-								lastTimeId.remove(id);
+								it.remove();
 								forwarding.remove(id);
 							}
 						}
@@ -126,10 +128,10 @@ public class ConnexionManager{
 		closing=true;
 		sweepingThread.interrupt();
 		server.close();
-		for(Connexion c : connexions.keySet())
-			c.close();
-		for(Connexion c : preConnexions.keySet())
-			c.close();
+		for(Iterator<Connexion> it = connexions.keySet().iterator();it.hasNext();)
+			it.next().close();
+		for(Iterator<Connexion> it = preConnexions.keySet().iterator();it.hasNext();)
+			it.next().close();
 	}
 
 	/**
