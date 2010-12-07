@@ -1,4 +1,8 @@
 package kernel;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import gui.FenetrePrincipale;
 import gui.GUIHandler;
 import gui.Input;
@@ -18,8 +22,10 @@ public class Main {
 		return Settings.load();
 	}
 	
+	
 
 	public static void main(String[] args){
+		test();
 		loadSettings();
 		FenetrePrincipale.launch();
 		
@@ -49,6 +55,17 @@ public class Main {
 			}
 		}
 		
+	}
+
+	private static void test() {
+		Pattern p = Pattern.compile("^GET /get/[0-9]+/[a-zA-Z_0-9.-]+/ HTTP/1.0\r\n");
+		String s = "GET /get/2/a-b/ HTTP/1.0\r\n";
+		String ss = s.substring(9);System.out.println(ss);
+		StringTokenizer st = new StringTokenizer(ss,"/");
+		System.out.println(st.nextToken());
+		System.out.println(st.nextToken());
+		Matcher m = p.matcher(s);
+		System.out.println(m.matches());
 	}
 
 }
