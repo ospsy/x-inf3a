@@ -26,7 +26,7 @@ public class SharingManager {
 	private static long sharedFilesSize = 0;
 	private static JTree jTree = new JTree();
 	
-	private static final long UPDATE_PERIOD = 60000;
+	private static final long UPDATE_PERIOD = 5000;
 	
 	private static Timer updateTimer = new Timer();
 	private static Updater updater = new Updater();
@@ -159,11 +159,12 @@ class Updater extends TimerTask {
 
 	private int numberOfSharedFiles;
 	private long sharedFilesSize;
-	
+	private int compteur = 0;
 	private boolean stop = false;
 	
 	@Override
 	public void run() {
+		System.out.println("updating shared files tree " + ++compteur);
 		File sharedDir = new File(SharingManager.getSharedDirPath());
 		if(!sharedDir.exists()) {
 			System.err.println("Echec de la mise à jour : Le chemin spécifié pour le dossier de partage n'existe pas");
@@ -186,6 +187,8 @@ class Updater extends TimerTask {
 		JTree jTree = new JTree(fileTree);
 		SharingManager.setJTree(jTree);
 		Out.majFiles();
+		System.out.println("shared files tree update " + compteur + " finished");
+		
 	}
 	
 	public void parcours(File dir, DefaultMutableTreeNode dirNode) {
