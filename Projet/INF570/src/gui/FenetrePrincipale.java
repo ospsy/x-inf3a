@@ -594,8 +594,8 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		return graphe;
 	}
 
-	public static void setShared(JTree jTree) {
-		thi.shared = jTree;
+	public void setShared(JTree jTree) {
+		shared = jTree;
 		
 	}
 
