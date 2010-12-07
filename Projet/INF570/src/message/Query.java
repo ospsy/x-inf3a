@@ -54,7 +54,7 @@ public class Query extends Message {
 
 	@Override
 	public short[] toShortTab() {
-		short[] res = new short[37];
+		short[] res = new short[23+2+totalSizeOfCriteria()+1];
 		for (int i = 0; i<23;i++){
 			res[i] = header.getHeader()[i];
 		}
@@ -64,7 +64,16 @@ public class Query extends Message {
 		for (int i = 0; i<criteria.length;i++){
 			res[i+25] = criteria[i];
 		}
+		res[23+2+totalSizeOfCriteria()] = 0;
 		return res;
+	}
+
+	private int totalSizeOfCriteria() {
+		int k = -1;
+		for (String s : scriteria) {
+			k+=s.length()+1;
+		}
+		return k;
 	}
 
 	protected static String[] getCriteria(short[]tab,int maxLength){
