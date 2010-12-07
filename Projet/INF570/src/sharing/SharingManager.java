@@ -26,12 +26,7 @@ public class SharingManager {
 	private static long sharedFilesSize = 0;
 	private static JTree jTree = new JTree();
 	
-	private static final long UPDATE_PERIOD = 5000;
-	
-	private static Timer updateTimer = new Timer();
 	private static Updater updater = new Updater();
-	
-	private static boolean timerLaunched = false;
 	
 	public synchronized static int getNumberOfSharedFiles() {
 		return numberOfSharedFiles;
@@ -53,11 +48,6 @@ public class SharingManager {
 		jTree = tree;
 	}
 	
-	public static void init() {
-		
-		
-	}
-	
 	
 	/**
 	 * Définit le chemin d'accès du dossier de partage.
@@ -76,13 +66,20 @@ public class SharingManager {
 			return;
 		}
 		sharedDirPath = path;
-		updater.stop();
-		if(timerLaunched) updater.cancel();
-		else timerLaunched = true;
-		updater = new Updater();
-		updateTimer.schedule(updater, 0, UPDATE_PERIOD);
+		update();
 	}
 	
+	/**
+	 * Met à jour l'arbre des fichiers paragés.
+	 */
+	public static void update() {
+		updater.run();
+	}
+	
+	/**
+	 * Renvoie le chemin du répertoire partagé.
+	 * @return La chaîne de caractère correspondant au chemin du répertoire partagé.
+	 */
 	public synchronized static String getSharedDirPath() {
 		return sharedDirPath;
 	}
@@ -155,16 +152,13 @@ public class SharingManager {
  * @author Malik
  *
  */
-class Updater extends TimerTask {
+class Updater implements Runnable {
 
 	private int numberOfSharedFiles;
 	private long sharedFilesSize;
-	private int compteur = 0;
-	private boolean stop = false;
 	
 	@Override
 	public void run() {
-		System.out.println("updating shared files tree " + ++compteur);
 		File sharedDir = new File(SharingManager.getSharedDirPath());
 		if(!sharedDir.exists()) {
 			System.err.println("Echec de la mise à jour : Le chemin spécifié pour le dossier de partage n'existe pas");
@@ -180,14 +174,13 @@ class Updater extends TimerTask {
 		DefaultMutableTreeNode fileTree = new DefaultMutableTreeNode(sharedDir.getName());
 		
 		parcours(sharedDir, fileTree); // modifie numberOfSharedFiles et sharedFilesSize
-		if(stop) return;
+		
 		
 		SharingManager.setNumberOfSharedFiles(numberOfSharedFiles);
 		SharingManager.setSharedFilesSize(sharedFilesSize);
 		JTree jTree = new JTree(fileTree);
 		SharingManager.setJTree(jTree);
 		Out.majFiles();
-		System.out.println("shared files tree update " + compteur + " finished");
 		
 	}
 	
@@ -195,7 +188,6 @@ class Updater extends TimerTask {
 		File[] fileList = dir.listFiles();
 		File f;
 		for(int i=0; i<fileList.length; i++) {
-			if(stop) return;
 			f = fileList[i];
 			DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(new FileWrapper(f));
 			
@@ -208,7 +200,6 @@ class Updater extends TimerTask {
 		}
 	}
 	
-	public synchronized void stop() { stop=true; }
 }
 
 class FileWrapper {
