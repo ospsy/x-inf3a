@@ -12,7 +12,6 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Set;
 
 import config.Settings;
 import message.*;
@@ -21,18 +20,18 @@ import message.*;
  * La classe ConnexionManager gère les relations entre les différentes Connexions,
  * comme l'envoi global, les déconnexions et les confirmations de connexions. De plus,
  * il héberge le thread du serveur recevant les connexions. Il faut l'initialiser avec <code>init(ServerPort)</code>
- * @see Connexion
+ * @see NeighbourConnexion
  * @author Benoit
  *
  */
 public class ConnexionManager{
 	static private boolean closing;
 	static private int port;
-	static private HashMap<Connexion, Connexion> connexions;
-	static private HashMap<Connexion, Connexion> preConnexions;
+	static private HashMap<NeighbourConnexion, NeighbourConnexion> connexions;
+	static private HashMap<PreConnexion, PreConnexion> preConnexions;
 	static private ServerThread server;
 	static private Thread sweepingThread;
-	static private HashMap<Identifiant, Connexion> forwarding;
+	static private HashMap<Identifiant, NeighbourConnexion> forwarding;
 	static private HashMap<Identifiant, Long> lastTimeId;
 	static private LinkedList<Neighbour> neighbours;
 	static private LinkedList<QueryResult> queryResults;
@@ -47,9 +46,9 @@ public class ConnexionManager{
 	static public void init(int ServerPort) {
 		closing=false;
 		port=ServerPort;
-		connexions = new HashMap<Connexion, Connexion>();
-		preConnexions = new HashMap<Connexion, Connexion>();
-		forwarding = new HashMap<Identifiant, Connexion>();
+		connexions = new HashMap<NeighbourConnexion, NeighbourConnexion>();
+		preConnexions = new HashMap<PreConnexion, PreConnexion>();
+		forwarding = new HashMap<Identifiant, NeighbourConnexion>();
 		lastTimeId = new HashMap<Identifiant, Long>();
 		neighbours = new LinkedList<Neighbour>();
 		boolean serverCreated=false;
@@ -129,12 +128,12 @@ public class ConnexionManager{
 		closing=true;
 		sweepingThread.interrupt();
 		server.close();
-		LinkedList<Connexion> tmp = new LinkedList<Connexion>(connexions.keySet());
-		for(Connexion c : tmp)
+		LinkedList<NeighbourConnexion> tmp = new LinkedList<NeighbourConnexion>(connexions.keySet());
+		for(NeighbourConnexion c : tmp)
 			c.close();
-		tmp = new LinkedList<Connexion>(preConnexions.keySet());
-		for(Connexion c : tmp)
-			c.close();
+		LinkedList<PreConnexion> tmp2 = new LinkedList<PreConnexion>(preConnexions.keySet());
+		for(PreConnexion pc : tmp2)
+			pc.close();
 	}
 
 	/**
@@ -145,7 +144,7 @@ public class ConnexionManager{
 	static public void connect(String ip, int port){
 		try {
 			Socket s = new Socket(ip,port);
-			addPreConnexion(new Connexion(s, false));
+			addPreConnexion(new PreConnexion(s, false));
 		} catch (Exception e) {
 			Out.println("Connexion impossible...");
 		}
@@ -175,25 +174,37 @@ public class ConnexionManager{
 	 * Enlève une connexion de la liste des connexions gérées
 	 * @param c la connexion à enlever
 	 */
-	static protected synchronized void remove(Connexion c){
+	static protected synchronized void removeConnexion(NeighbourConnexion c){
 		Out.println("Connexion "+c.getId()+" retirée");
 		connexions.remove(c);
 	}
 
 	/**
-	 * Retire une preConnexion, si par exemple le protocole de confirmation a échoué
+	 * Retire une preConnexion
 	 * @param c la preConnexion a retirer
+	 * @param success permet de préciser la réussite du processus de connexion
 	 */
-	static protected synchronized void removePreConnexion(Connexion c){
-		Out.println("Confirmation de la Preconnexion "+c.getId()+" échouée");
+	static protected synchronized void removePreConnexion(PreConnexion c, boolean success){
+		if(!success)
+			Out.println("Confirmation de la Preconnexion "+c.getId()+" échouée");
 		preConnexions.remove(c);
+	}
+	
+	/**
+	 * Confirme la connexion dans la liste globale
+	 * Si la preConnexion n'existe pas, affiche un message d'erreur
+	 * @param c la connexion à confirmer
+	 */
+	static protected synchronized void addConnexion(NeighbourConnexion c){
+		Out.println("Connexion "+c.getId()+" ajoutée");
+		connexions.put(c, c);
 	}
 
 	/**
 	 * Ajoute une connexion à confirmer à la liste des preConnexions gérées
 	 * @param preConnexion la connexion à confirmer
 	 */
-	static protected synchronized void addPreConnexion(Connexion preConnexion){
+	static protected synchronized void addPreConnexion(PreConnexion preConnexion){
 		System.out.println("Preconnexion "+preConnexion.getId()+" réussie");
 		preConnexions.put(preConnexion, preConnexion);
 	}
@@ -203,11 +214,11 @@ public class ConnexionManager{
 	 * @param m le message à envoyer
 	 * @param exclude la connexion à exclure
 	 */
-	static protected synchronized void sendAll(Message m, Connexion exclude){
+	static protected synchronized void sendAll(Message m, NeighbourConnexion exclude){
 		if(!forwarding.containsKey(m.getHeader().getMessageID())){//si on a pas encore inondé
 			forwarding.put(m.getHeader().getMessageID(), exclude);
 			lastTimeId.put(m.getHeader().getMessageID(), new Long(System.currentTimeMillis()));
-			for(Connexion c : connexions.keySet()){
+			for(NeighbourConnexion c : connexions.keySet()){
 				if(c!=exclude){
 					c.send(m);
 				}
@@ -226,7 +237,7 @@ public class ConnexionManager{
 				System.err.println("Impossible de forwarder...");
 				return;
 			}
-			Connexion c=forwarding.get(id);
+			NeighbourConnexion c=forwarding.get(id);
 			if(c!=null && m.getHeader().getTTL()>0){//je transfère
 				m.decreaseTTL();
 				c.send(m);
@@ -257,21 +268,6 @@ public class ConnexionManager{
 			}
 			Out.displayQueryResults();
 			break;
-		}
-	}
-
-	/**
-	 * Confirme la connexion dans la liste globale
-	 * Si la preConnexion n'existe pas, affiche un message d'erreur
-	 * @param c la connexion à confirmer
-	 */
-	static protected synchronized void confirmPreConnexion(Connexion c){
-		if(preConnexions.remove(c)!=null){
-			System.out.println("Preconnexion "+c.getId()+" confirmée");
-			Out.println("Connexion "+c.getId()+" ajoutée");
-			connexions.put(c, c);
-		}else{//si la connexion n'était pas dans la liste de preConnexion
-			System.err.println("confirmConnexion : la connexion n'était pas à confirmer...");
 		}
 	}
 
@@ -354,7 +350,7 @@ class ServerThread extends Thread{
 			Socket s=null;
 			try {
 				s=server.accept();
-				new Connexion(s,true);
+				new PreConnexion(s,true);
 			} catch (IOException e) {
 				System.out.println("Arrêt de l'attente de nouvelles connexions");
 			}

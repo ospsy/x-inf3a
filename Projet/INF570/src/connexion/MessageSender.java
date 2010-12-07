@@ -12,7 +12,7 @@ import message.Message;
  *
  */
 public class MessageSender extends Thread {
-	private Connexion connexion;
+	private NeighbourConnexion connexion;
 	private OutputStream out;
 	private boolean closing;
 
@@ -22,7 +22,7 @@ public class MessageSender extends Thread {
 	 * @param out le flux sur lequel écrire
 	 * @throws IOException si la création du PrintWriter d'écriture a échoué
 	 */
-	public MessageSender(Connexion connexion, OutputStream out) throws IOException {
+	public MessageSender(NeighbourConnexion connexion, OutputStream out) throws IOException {
 		super("MessageSender-"+connexion.getId());
 		closing=false;
 		this.connexion=connexion;

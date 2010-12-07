@@ -12,7 +12,7 @@ import message.Message;
  *
  */
 public class MessageReader extends Thread {
-	private Connexion connexion;
+	private NeighbourConnexion connexion;
 	private InputStream in;
 	private boolean closing;
 	
@@ -23,7 +23,7 @@ public class MessageReader extends Thread {
 	 * @param in le flux d'entrée à écouter
 	 * @throws IOException si la création du Reader d'écoute a échoué
 	 */
-	public MessageReader(Connexion connexion, InputStream in){
+	public MessageReader(NeighbourConnexion connexion, InputStream in){
 		super("MessageReader-"+connexion.getId());
 		closing=false;
 		this.connexion=connexion;
