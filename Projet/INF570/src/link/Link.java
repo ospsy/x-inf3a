@@ -1,8 +1,15 @@
 package link;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import sharing.SharingManager;
 
 import message.Message;
 import message.MessageHeader;
@@ -100,5 +107,45 @@ public class Link {
 		for(int i=0; i<l; i++)
 			sTab[i] = (short) (bTab[i]&0xFF);
 		return sTab;
+	}
+	
+	public static void sendFile(File file, OutputStream out) throws IOException {
+		FileReader fr = new FileReader(file);
+		int c;
+		while((c = fr.read())!=-1)
+			out.write(c);
+		out.close();
+	}
+	
+	public static void receiveFile(String fileName, InputStream in) throws IOException {
+		String sharedDirectoryPath = SharingManager.getSharedDirPath();
+		
+		File file = new File(sharedDirectoryPath + File.pathSeparator + fileName);
+
+		if(file.exists()) {
+			String[] splitArr = fileName.split("\\.");
+
+			String fileNameRoot = splitArr[0];
+			for(int i=1; i<splitArr.length-1; i++)
+				fileNameRoot += "." + splitArr[i];
+			String fileNameExtension = "";
+			if(splitArr.length>1) fileNameExtension = "." + splitArr[splitArr.length-1];
+
+			int j=2;
+			while(file.exists()) {
+				file = new File(sharedDirectoryPath + File.pathSeparator +
+						fileNameRoot + "_" + (j++) + fileNameExtension);
+			}
+
+		}
+		
+		file.createNewFile();
+		
+		FileWriter fw = new FileWriter(file);
+		int c;
+		while((c = in.read())!=-1) {
+			fw.write(c);
+		}
+		fw.close();
 	}
 }
