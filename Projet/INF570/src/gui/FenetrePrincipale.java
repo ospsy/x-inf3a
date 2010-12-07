@@ -596,7 +596,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 
 	public void setShared(JTree jTree) {
 		shared = jTree;
-		
+		jScrollPane4.setViewportView(getShared());
 	}
 
 }
