@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Set;
 
 import config.Settings;
 import message.*;
@@ -128,10 +129,12 @@ public class ConnexionManager{
 		closing=true;
 		sweepingThread.interrupt();
 		server.close();
-		for(Iterator<Connexion> it = connexions.keySet().iterator();it.hasNext();)
-			it.next().close();
-		for(Iterator<Connexion> it = preConnexions.keySet().iterator();it.hasNext();)
-			it.next().close();
+		LinkedList<Connexion> tmp = new LinkedList<Connexion>(connexions.keySet());
+		for(Connexion c : tmp)
+			c.close();
+		tmp = new LinkedList<Connexion>(preConnexions.keySet());
+		for(Connexion c : tmp)
+			c.close();
 	}
 
 	/**
@@ -144,7 +147,6 @@ public class ConnexionManager{
 			Socket s = new Socket(ip,port);
 			addPreConnexion(new Connexion(s, false));
 		} catch (Exception e) {
-			e.printStackTrace();
 			Out.println("Connexion impossible...");
 		}
 	}
