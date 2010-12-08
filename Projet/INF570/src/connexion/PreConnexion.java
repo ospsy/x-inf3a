@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
@@ -15,7 +16,7 @@ public class PreConnexion {
 	private boolean isConnected;
 	private BufferedReader br;
 	private PrintWriter pw;
-	
+
 	public PreConnexion(Socket socket, String fileName, int fileIndex) {
 		init(socket,fileName,fileIndex,false);
 	}
@@ -23,7 +24,7 @@ public class PreConnexion {
 	PreConnexion(Socket socket, final boolean isServer){
 		init(socket,"",0,isServer);
 	}
-	
+
 	private void init(Socket socket, String fileName, int fileIndex,final boolean isServer){
 		s = socket;
 		closing=false;
@@ -32,7 +33,8 @@ public class PreConnexion {
 		br=null;
 		pw=null;
 		ConnexionManager.addPreConnexion(this);
-		new Thread("preConnecting-"+id){
+		final String name=new String(fileName);
+		new Thread("preConnecting-"+id){			
 			public void run() {
 				try {
 					br=new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -48,17 +50,23 @@ public class PreConnexion {
 							}
 						}else{
 							Pattern p = Pattern.compile("^GET /get/[0-9]+/[a-zA-Z_0-9.-]+/ HTTP/1.0\r\n");
-
-
+							Matcher m = p.matcher(str);
+							if(m.matches()){
+								//TODO
+							}
 						}
 					}else{//cote client
-						pw.print("GNUTELLA CONNECT/0.4\n\n");
-						pw.flush();
-						if(br.readLine().equals("GNUTELLA OK"))
-							if(br.readLine().equals("")){
-								new NeighbourConnexion(s);
-								isConnected=true;
-							}
+						if(name.equals("")){//connexion classique
+							pw.print("GNUTELLA CONNECT/0.4\n\n");
+							pw.flush();
+							if(br.readLine().equals("GNUTELLA OK"))
+								if(br.readLine().equals("")){
+									new NeighbourConnexion(s);
+									isConnected=true;
+								}
+						}else{//connexion de téléchargement
+							//TODO
+						}
 					}
 				} catch (IOException e) {
 				}
