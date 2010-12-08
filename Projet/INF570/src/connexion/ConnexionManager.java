@@ -252,7 +252,7 @@ public class ConnexionManager{
 	 * @param m le message à traiter
 	 */
 	static synchronized private void processMsg(Message m){
-		System.out.println(m);
+		//System.out.println(m);
 		switch(m.getHeader().getMessageType()){
 		case PONG:
 			if(m.getHeader().getMessageID().equals(lastPing)){
