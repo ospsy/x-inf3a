@@ -3,6 +3,7 @@ package sharing;
 import gui.Out;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import javax.swing.JTree;
@@ -18,10 +19,11 @@ import message.Result;
  */
 public class SharingManager {
 	
-	private static String sharedDirPath; // TODO : effacer cette initialisation
+	private static String sharedDirPath;
 	
 	private static int numberOfSharedFiles = 0;
 	private static long sharedFilesSize = 0;
+	private static HashMap<Integer, File> fileHashMap = new HashMap<Integer, File>();
 	private static JTree jTree = new JTree();
 	
 	private static Updater updater = new Updater();
@@ -38,6 +40,12 @@ public class SharingManager {
 	}
 	public synchronized static void setSharedFilesSize(long s) {
 		sharedFilesSize = s;
+	}
+	public synchronized static void setFileHashMap(HashMap<Integer,File> fhm) {
+		fileHashMap = fhm;
+	}
+	public synchronized static File getFileFromId(int id) {
+		return fileHashMap.get(id);
 	}
 	public synchronized static JTree getJTree() {
 		return jTree;
@@ -154,6 +162,7 @@ class Updater implements Runnable {
 
 	private int numberOfSharedFiles;
 	private long sharedFilesSize;
+	private HashMap<Integer, File> fileHashMap;
 	
 	@Override
 	public void run() {
@@ -169,6 +178,8 @@ class Updater implements Runnable {
 		
 		numberOfSharedFiles = 0;
 		sharedFilesSize = 0;
+		fileHashMap = new HashMap<Integer, File>();
+		
 		DefaultMutableTreeNode fileTree = new DefaultMutableTreeNode(sharedDir.getName());
 		
 		parcours(sharedDir, fileTree); // modifie numberOfSharedFiles et sharedFilesSize
@@ -176,6 +187,7 @@ class Updater implements Runnable {
 		
 		SharingManager.setNumberOfSharedFiles(numberOfSharedFiles);
 		SharingManager.setSharedFilesSize(sharedFilesSize);
+		SharingManager.setFileHashMap(fileHashMap);
 		JTree jTree = new JTree(fileTree);
 		SharingManager.setJTree(jTree);
 		Out.majFiles();
@@ -192,6 +204,7 @@ class Updater implements Runnable {
 			dirNode.add(childNode);
 			if(f.isDirectory()) parcours(f,childNode);
 			else if(f.isFile()) {
+				fileHashMap.put(numberOfSharedFiles, f);
 				numberOfSharedFiles++;
 				sharedFilesSize+=f.length();
 			}
@@ -200,6 +213,11 @@ class Updater implements Runnable {
 	
 }
 
+/**
+ * Classe utilisée uniquement pour donner une méthode toString particulière aux fichiers.
+ * @author Malik
+ *
+ */
 class FileWrapper {
 
 	File file;
