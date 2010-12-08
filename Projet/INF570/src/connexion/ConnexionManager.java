@@ -29,7 +29,7 @@ public class ConnexionManager{
 	static private int port;
 	static private HashMap<NeighbourConnexion, NeighbourConnexion> connexions;
 	static private HashMap<PreConnexion, PreConnexion> preConnexions;
-	static private HashMap<DownloadConnexion, DownloadConnexion> downloadConnexions;
+	static private HashMap<TransferConnexion, TransferConnexion> transferConnexions;
 	static private ServerThread server;
 	static private Thread sweepingThread;
 	static private HashMap<Identifiant, NeighbourConnexion> forwarding;
@@ -121,6 +121,14 @@ public class ConnexionManager{
 	static synchronized public LinkedList<QueryResult> getQueryResults(){
 		return (LinkedList<QueryResult>) queryResults.clone();
 	}
+	
+	static synchronized public LinkedList<Transfer> getTransfers(){
+		LinkedList<Transfer> tmp= new LinkedList<Transfer>();
+		for (TransferConnexion transferConnexion : transferConnexions.keySet()) {
+			tmp.add(new Transfer(transferConnexion));
+		}
+		return tmp;
+	}
 
 	/**
 	 * Ferme toutes les connexions et le server d'écoute
@@ -172,13 +180,13 @@ public class ConnexionManager{
 	}
 
 
-	static protected synchronized void addConnexion(DownloadConnexion c){
+	static protected synchronized void addConnexion(TransferConnexion c){
 		Out.println("DownloadConnexion "+c.getId()+" ajoutée");
-		downloadConnexions.put(c, c);
+		transferConnexions.put(c, c);
 	}
-	static protected synchronized void removeConnexion(DownloadConnexion c){
+	static protected synchronized void removeConnexion(TransferConnexion c){
 		Out.println("DownloadConnexion "+c.getId()+" retirée");
-		downloadConnexions.remove(c);
+		transferConnexions.remove(c);
 	}
 	
 	static protected synchronized void addConnexion(NeighbourConnexion c){

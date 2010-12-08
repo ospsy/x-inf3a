@@ -18,24 +18,14 @@ import config.Settings;
  * @author Malik, Benoit
  *
  */
-public class NeighbourConnexion {
-	private boolean isConnected;
-	private boolean closing;
-	private Socket s;
+public class NeighbourConnexion extends Connexion{
 	private LinkedList<Message> toSend;
 	private MessageReader messageReader;
 	private MessageSender messageSender;
 
-	private String id;
 
-	/**
-	 * Crée une nouvelle connexion
-	 * @param s la socket sur laquelle la connexion a lieu
-	 * @param isServer TRUE si on a recu la connexion, FALSE si on l'a créée (c'est nous qui nous sommes connecté)
-	 */
 	NeighbourConnexion(Socket socket){
-		s=socket;
-		id=s.getInetAddress().getHostAddress()+":"+s.getPort();
+		super(socket);
 		toSend = new LinkedList<Message>();
 		try{
 			messageSender = new MessageSender(this, s.getOutputStream());
@@ -48,13 +38,6 @@ public class NeighbourConnexion {
 		}
 	}
 
-	/**
-	 * Un entier généré aléatoirement pour repérer les connexions (rien n'assure qu'il soit unique)
-	 * @return l'identifiant de la connexion
-	 */
-	public String getId(){
-		return id;
-	}
 
 	/**
 	 * Ajoute m à la file d'envoi : cette fonction est donc non bloquante.
