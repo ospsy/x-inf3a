@@ -1,13 +1,15 @@
 package connexion;
 
 /**
- * Cette classe n'est qu'une petite classe pour indexer les voisins détectés avec les PONG.
+ * Cette classe n'est qu'une petite classe pour indexer les transferts en cours
  * Les champs accessibles sont :
- * numberOfKilobytesShared
- * numberOfSharedFiles
  * IP
  * port
- * distance;
+ * fileIndex
+ * fileName
+ * status
+ * size
+ * TransferConnexionType type
  * @author Benoit
  *
  */
@@ -17,7 +19,7 @@ public class Transfer {
 	private int fileIndex;
 	private String fileName;
 	private double status;
-	private int size;
+	private long size;
 	private TransferConnexionType type;
 	
 	
@@ -47,15 +49,12 @@ public class Transfer {
 	public double getStatus() {
 		return status;
 	}
-	public int getSize() {
+	public long getSize() {
 		return size;
 	}
-
 	public TransferConnexionType getType() {
 		return type;
 	}
-
-
 
 	@Override
 	public String toString() {
