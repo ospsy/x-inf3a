@@ -3,10 +3,13 @@ package link;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import sharing.SharingManager;
@@ -110,18 +113,23 @@ public class Link {
 	}
 	
 	public static void sendFile(File file, OutputStream out) throws IOException {
-		FileReader fr = new FileReader(file);
-		int c;
-		while((c = fr.read())!=-1)
-			out.write(c);
-		out.close();
+		FileInputStream fis = new FileInputStream(file);
+		byte[] buffer = new byte[fis.available()];
+		fis.read(buffer);
+		ObjectOutputStream oos = new ObjectOutputStream(out) ;
+		oos.writeObject(buffer);
+		out.flush();
+		fis.close();
+		oos.close();
 	}
 	
-	public static void receiveFile(String fileName, InputStream in) throws IOException {
+	public static void receiveFile(String fileName, InputStream in) throws IOException, ClassNotFoundException {
 		String sharedDirectoryPath = SharingManager.getSharedDirPath();
 		
-		File file = new File(sharedDirectoryPath + File.pathSeparator + fileName);
+		File file = new File(sharedDirectoryPath + File.separator + fileName);
 
+		System.out.println(sharedDirectoryPath + File.separator+ fileName);
+		
 		if(file.exists()) {
 			String[] splitArr = fileName.split("\\.");
 
@@ -133,7 +141,7 @@ public class Link {
 
 			int j=2;
 			while(file.exists()) {
-				file = new File(sharedDirectoryPath + File.pathSeparator +
+				file = new File(sharedDirectoryPath + File.separator +
 						fileNameRoot + "_" + (j++) + fileNameExtension);
 			}
 
@@ -141,11 +149,14 @@ public class Link {
 		
 		file.createNewFile();
 		
-		FileWriter fw = new FileWriter(file);
-		int c;
-		while((c = in.read())!=-1) {
-			fw.write(c);
-		}
-		fw.close();
+		ObjectInputStream ois = new ObjectInputStream(in);
+		byte[] buffer = (byte[])ois.readObject();
+		FileOutputStream fos = new FileOutputStream(file);
+		fos.write(buffer);
+		fos.close();
+		ois.close();
 	}
+	
+	
+
 }
