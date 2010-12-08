@@ -3,6 +3,8 @@ package gui;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -47,6 +49,12 @@ public class Graphe extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
+		Graphics2D g2 = (Graphics2D) g;
+
+		g2.addRenderingHints( new RenderingHints( RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON ));
+		
+		g=g2;
 		HashMap<Integer, LinkedList<String>> set = new HashMap<Integer, LinkedList<String>>();
 		for (Neighbour nei : nodes) {
 			if(!set.containsKey(nei.getDistance()))set.put(nei.getDistance(), new LinkedList<String>());
