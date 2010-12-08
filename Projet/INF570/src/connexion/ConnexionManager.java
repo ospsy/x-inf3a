@@ -29,6 +29,7 @@ public class ConnexionManager{
 	static private int port;
 	static private HashMap<NeighbourConnexion, NeighbourConnexion> connexions;
 	static private HashMap<PreConnexion, PreConnexion> preConnexions;
+	static private HashMap<DownloadConnexion, DownloadConnexion> downloadConnexions;
 	static private ServerThread server;
 	static private Thread sweepingThread;
 	static private HashMap<Identifiant, NeighbourConnexion> forwarding;
@@ -144,7 +145,7 @@ public class ConnexionManager{
 	static public void connect(String ip, int port){
 		try {
 			Socket s = new Socket(ip,port);
-			addPreConnexion(new PreConnexion(s, false));
+			new PreConnexion(s, false);
 		} catch (Exception e) {
 			Out.println("Connexion impossible...");
 		}
@@ -170,44 +171,43 @@ public class ConnexionManager{
 		sendAll(m, null);
 	}
 
-	/**
-	 * Enlève une connexion de la liste des connexions gérées
-	 * @param c la connexion à enlever
-	 */
+
+	static protected synchronized void addConnexion(DownloadConnexion c){
+		Out.println("DownloadConnexion "+c.getId()+" ajoutée");
+		downloadConnexions.put(c, c);
+	}
+	static protected synchronized void removeConnexion(DownloadConnexion c){
+		Out.println("DownloadConnexion "+c.getId()+" retirée");
+		downloadConnexions.remove(c);
+	}
+	
+	static protected synchronized void addConnexion(NeighbourConnexion c){
+		Out.println("Connexion "+c.getId()+" ajoutée");
+		connexions.put(c, c);
+	}
 	static protected synchronized void removeConnexion(NeighbourConnexion c){
 		Out.println("Connexion "+c.getId()+" retirée");
 		connexions.remove(c);
 	}
 
-	/**
-	 * Retire une preConnexion
-	 * @param c la preConnexion a retirer
-	 * @param success permet de préciser la réussite du processus de connexion
-	 */
+
+	static protected synchronized void addPreConnexion(PreConnexion preConnexion){
+		System.out.println("Preconnexion "+preConnexion.getId()+" réussie");
+		preConnexions.put(preConnexion, preConnexion);
+	}
 	static protected synchronized void removePreConnexion(PreConnexion c, boolean success){
 		if(!success)
 			Out.println("Confirmation de la Preconnexion "+c.getId()+" échouée");
 		preConnexions.remove(c);
 	}
+
 	
-	/**
-	 * Confirme la connexion dans la liste globale
-	 * Si la preConnexion n'existe pas, affiche un message d'erreur
-	 * @param c la connexion à confirmer
-	 */
-	static protected synchronized void addConnexion(NeighbourConnexion c){
-		Out.println("Connexion "+c.getId()+" ajoutée");
-		connexions.put(c, c);
-	}
 
 	/**
 	 * Ajoute une connexion à confirmer à la liste des preConnexions gérées
 	 * @param preConnexion la connexion à confirmer
 	 */
-	static protected synchronized void addPreConnexion(PreConnexion preConnexion){
-		System.out.println("Preconnexion "+preConnexion.getId()+" réussie");
-		preConnexions.put(preConnexion, preConnexion);
-	}
+	
 
 	/**
 	 * Envoit un message à toutes les connexions gérées sauf une
