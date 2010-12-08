@@ -18,7 +18,7 @@ public class testMessage {
 	//	Message m2 = new Pong(Message.getRandomId(),5,2,8080,"129.104.227.1",2,520);
 	//	Message m3 = new Query(5, 6, "banane jaune   singe".split(" "), 1000);
 		Message m4 = new QueryHit(Message.getRandomId(), 5, 6, 8080, "129.104.127.1", 1000, resultSet);
-		short[] mm4 = m4.toShortTab();
+
 	//	Message m5 = new Push(Message.getRandomId(), 5, 6, 8080, "129.104.127.1", 2, Message.getRandomId());
 		Message m6 = Message.parseMessage(m4.getHeader(), Message.subTab(m4.toShortTab(), 23, 22+m4.getHeader().getPayloadLength()));
 //		System.out.println(m1);
