@@ -7,6 +7,7 @@ import java.awt.event.WindowListener;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -68,6 +69,9 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private AbstractAction pingClicked;
 	private JButton Query;
 	private JPanel Buttons;
+	private JPanel jPanel3;
+	private AbstractAction actual;
+	private JButton actualizeFile;
 	private Graphe graphe;
 	private JScrollPane jScrollPane4;
 	private JTree shared;
@@ -134,10 +138,12 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			}
 			pack();
 			getSortie();
-			this.setSize(809, 600);
+			this.setSize(800, 590);
+			this.getActualizeFile();
+		//	deActivate();
 			this.setResizable(false);
 		} catch (Exception e) {
-		    //add your error handling code here
+		    //add your error handling code here800590
 			e.printStackTrace();
 		}
 	}
@@ -221,7 +227,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 			Multitab.setBackground(new java.awt.Color(224,224,224));
 			Multitab.setOpaque(true);
 			Multitab.addTab("Console", null, getConsole(), null);
-			Multitab.addTab("Files", null, getSharedFiles(), null);
+			Multitab.addTab("Fichiers", null, getJPanel3(), null);
 		}
 		return Multitab;
 	}
@@ -562,9 +568,9 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JPanel getSharedFiles() {
 		if(sharedFiles == null) {
 			sharedFiles = new JPanel();
-			BorderLayout sharedFilesLayout = new BorderLayout();
-			sharedFiles.setLayout(sharedFilesLayout);
-			sharedFiles.add(getJScrollPane4(), BorderLayout.CENTER);
+			sharedFiles.setLayout(null);
+			sharedFiles.setBounds(0, 0, 709, 229);
+			sharedFiles.add(getJScrollPane4(), "Center");
 		}
 		return sharedFiles;
 	}
@@ -572,6 +578,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	public JTree getShared() {
 		if(shared == null) {
 			shared = SharingManager.getJTree();
+			
 		}
 		return shared;
 	}
@@ -579,7 +586,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	private JScrollPane getJScrollPane4() {
 		if(jScrollPane4 == null) {
 			jScrollPane4 = new JScrollPane();
-			jScrollPane4.setPreferredSize(new java.awt.Dimension(737, 229));
+			jScrollPane4.setBounds(0, 0, 708, 229);
 			jScrollPane4.setViewportView(getShared());
 		}
 		return jScrollPane4;
@@ -598,5 +605,43 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 		shared = jTree;
 		jScrollPane4.setViewportView(getShared());
 	}
+	
+	private JButton getActualizeFile() {
+		if(actualizeFile == null) {
+			actualizeFile = new JButton();
+			actualizeFile.setBounds(707, 0, 28, 28);
+			actualizeFile.setAction(getActual());
+			actualizeFile.setMnemonic(java.awt.event.KeyEvent.VK_MINUS);
+		}
+		return actualizeFile;
+	}
+	
+	private AbstractAction getActual() {
+		if(actual == null) {
+			actual = new AbstractAction("", new ImageIcon("src/sprites/act.png")) {
+				/**
+				* 
+				*/
+				private static final long serialVersionUID = 1L;
+				
+				public void actionPerformed(ActionEvent evt) {
+					SharingManager.update();
+				}
+			};
+		}
+		return actual;
+	}
+	
+	private JPanel getJPanel3() {
+		if(jPanel3 == null) {
+			jPanel3 = new JPanel();
+			jPanel3.setLayout(null);
+			jPanel3.setPreferredSize(new java.awt.Dimension(737, 229));
+			jPanel3.add(getActualizeFile(), "East");
+			jPanel3.add(getSharedFiles(), "West");
+		}
+		return jPanel3;
+	}
 
 }
+

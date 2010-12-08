@@ -41,9 +41,10 @@ public class QueryHit extends Message{
 		return sresultSet;
 	}
 
-	protected QueryHit(MessageHeader mh,short[] port, short[] ip, short[] speed, short[] resultSet, short[] serventId) {
+	protected QueryHit(MessageHeader mh,int hit,short[] port, short[] ip, short[] speed, short[] resultSet, short[] serventId) {
 		super();
 		this.header = mh;
+		this.inumberOfHits = hit;
 		this.port = port;
 		this.iport = port[0]*256+port[1];
 		this.ip = ip;
@@ -52,7 +53,7 @@ public class QueryHit extends Message{
 		this.speed = speed;
 		this.dSpeed = longFromTab(speed);
 		this.resultSet = resultSet;
-		this.sresultSet = getResults(resultSet, resultSet.length);
+		this.sresultSet = getResults(resultSet, hit);
 	}
 
 	protected static Result[] getResults(short[] resultSet, int length) {
@@ -74,7 +75,7 @@ public class QueryHit extends Message{
 		
 		int l = 0;
 		for (int i = 0; i < resultSet.length; i++) {
-			l += resultSet[i].length();
+			l += resultSet[i].toShortTab().length;
 		}
 		
 		short[] res = new short[l];
@@ -123,7 +124,7 @@ public class QueryHit extends Message{
 		this.inumberOfHits = resultSet.length;
 		this.dSpeed = speed;
 
-		this.header = new MessageHeader(id,TypeMessage.QUERY_HIT,ttl,hops,50+resultSet.length);
+		this.header = new MessageHeader(id,TypeMessage.QUERY_HIT,ttl,hops,27+totalSizeOf(resultSet));
 
 		this.resultSet = tabResultSet(resultSet);
 		short[] bport = new short[2];
@@ -139,9 +140,17 @@ public class QueryHit extends Message{
 
 
 
+	private int totalSizeOf(Result[] rs) {
+		int c = 0;
+		for (int i = 0; i < rs.length; i++) {
+			c+=rs[i].toShortTab().length;
+		}
+		return c;
+	}
+
 	@Override
 	public short[] toShortTab() {
-		short[] res = new short[23+16+resultSet.length];
+		short[] res = new short[23+16+1+2+4+4+resultSet.length];
 		for (int i = 0; i<23;i++){
 			res[i] = header.getHeader()[i];
 		}

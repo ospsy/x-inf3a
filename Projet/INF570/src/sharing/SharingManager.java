@@ -4,8 +4,6 @@ import gui.Out;
 
 import java.io.File;
 import java.util.LinkedList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;

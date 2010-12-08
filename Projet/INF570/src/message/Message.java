@@ -90,7 +90,7 @@ public abstract class Message {
 		Random ran = new Random();
 		short[] res = new short[16];
 		for (int i = 0; i < res.length; i++) {
-			res[i] = (short) ran.nextInt(256);
+			res[i] = (short) (ran.nextInt(256));
 		}
 		return new Identifiant(res);
 	}
@@ -99,7 +99,7 @@ public abstract class Message {
 		Random ran = new Random();
 		short[] res = new short[16];
 		for (int i = 0; i < res.length; i++) {
-			res[i] = (short) ran.nextInt(256);
+			res[i] = (short) (1+ran.nextInt(255));
 		}
 		return res;
 	}
@@ -142,7 +142,7 @@ public abstract class Message {
 				System.err.println("payload trop court");
 				return null;
 			}
-			return new QueryHit(h,subTab(payload, 1, 2),subTab(payload, 3, 6),subTab(payload, 7, 10),subTab(payload, 11, payload.length-18), subTab(payload, payload.length-17, payload.length-1));
+			return new QueryHit(h,payload[0],subTab(payload, 1, 2),subTab(payload, 3, 6),subTab(payload, 7, 10),subTab(payload, 11, payload.length-17), subTab(payload, payload.length-16, payload.length-1));
 		default:
 			break;
 		}
