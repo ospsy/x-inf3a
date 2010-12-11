@@ -55,13 +55,13 @@ public class PreConnexion {
 								isConnected=true;
 							}
 						}else{
-							Pattern p = Pattern.compile("^GET /get/[0-9]+/[a-zA-Z_0-9.-]+/ HTTP/1.0\r");
+							Pattern p = Pattern.compile("^GET /get/[0-9]+/[a-zA-Z_0-9.-]+/ HTTP/1.0");
 							Matcher m = p.matcher(str);
 							if(m.matches()){
-								if(br.readLine().equals("User-Agent: Gnutella/0.4\r")){
-									if(br.readLine().equals("Range: bytes=0-\r")){
-										if(br.readLine().equals("Connection: Keep-Alive\r")){
-											if(br.readLine().equals("\r")){
+								if(br.readLine().equals("User-Agent: Gnutella/0.4")){
+									if(br.readLine().equals("Range: bytes=0-")){
+										if(br.readLine().equals("Connection: Keep-Alive")){
+											if(br.readLine().equals("")){
 												StringTokenizer tokenizer = new StringTokenizer(str.substring(9),"/");
 												int indexAsked = Integer.parseInt(tokenizer.nextToken());
 												String nameAsked = tokenizer.nextToken();
@@ -93,20 +93,21 @@ public class PreConnexion {
 									isConnected=true;
 								}
 						}else{//connexion de téléchargement
-							pw.print("GET /get/"+fileIndex+"/"+name+"/ HTTP/1.0\r\n" +
-									"User-Agent: Gnutella/0.4\r\n" +
-									"Range: bytes=0-\r\n" +
-									"Connection: Keep-Alive\r\n" +
-							"\r\n");
+							String msg="GET /get/"+fileIndex+"/"+name+"/ HTTP/1.0\r\n" +
+							"User-Agent: Gnutella/0.4\r\n" +
+							"Range: bytes=0-\r\n" +
+							"Connection: Keep-Alive\r\n" +
+					"\r\n";
+							pw.print(msg);
 							pw.flush();
-							if(br.readLine().equals("HTTP/1.0 200 OK\r")){
-								if(br.readLine().equals("Server: Gnutella/0.4\r")){
-									if(br.readLine().equals("Content-Type: application/binary\r")){
+							if(br.readLine().equals("HTTP/1.0 200 OK")){
+								if(br.readLine().equals("Server: Gnutella/0.4")){
+									if(br.readLine().equals("Content-Type: application/binary")){
 										String str=br.readLine();
-										Pattern p = Pattern.compile("^Content-Length: [0-9]+\r\n");
+										Pattern p = Pattern.compile("^Content-Length: [0-9]+");
 										Matcher m = p.matcher(str);
 										if(m.matches()){
-											if(br.readLine().equals("\r")){
+											if(br.readLine().equals("")){
 												int size=Integer.parseInt(str.substring(16));
 												Out.println("Requête pour le fichier "+name+" acceptée!");
 												new TransferConnexion(s, name, fileIndex, size);
@@ -118,7 +119,8 @@ public class PreConnexion {
 							}
 						}
 					}
-				} catch (IOException e) {
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
 				close();
 			}

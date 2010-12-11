@@ -48,6 +48,7 @@ public class ConnexionManager{
 		closing=false;
 		port=ServerPort;
 		connexions = new HashMap<NeighbourConnexion, NeighbourConnexion>();
+		transferConnexions = new HashMap<TransferConnexion, TransferConnexion>();
 		preConnexions = new HashMap<PreConnexion, PreConnexion>();
 		forwarding = new HashMap<Identifiant, NeighbourConnexion>();
 		lastTimeId = new HashMap<Identifiant, Long>();
@@ -159,6 +160,10 @@ public class ConnexionManager{
 		}
 	}
 	
+	/**
+	 * Télécharge le fichier décrit
+	 * @param r le QueryResult décrivant le fichier
+	 */
 	static public void download(QueryResult r){
 		try {
 			Socket s = new Socket(r.getIP(),r.getPort());
@@ -167,6 +172,10 @@ public class ConnexionManager{
 			Out.println("Téléchargement impossible...");
 		}
 	}
+	
+	/*static public void download(){
+		download(queryResults.getFirst());
+	}*/
 
 	/**
 	 * Envoit un PING à tout le monde
