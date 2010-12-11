@@ -16,7 +16,7 @@ package connexion;
 public class Transfer {
 	private String IP;
 	private int port;
-	private int fileIndex;
+	private long fileIndex;
 	private String fileName;
 	private double status;
 	private long size;
@@ -40,7 +40,7 @@ public class Transfer {
 	public int getPort() {
 		return port;
 	}
-	public int getFileIndex() {
+	public long getFileIndex() {
 		return fileIndex;
 	}
 	public String getFileName() {
