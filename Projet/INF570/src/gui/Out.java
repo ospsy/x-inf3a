@@ -11,6 +11,7 @@ public class Out {
 	
 	public static void println(String s){
 		oc.printInConsole(s);
+		System.out.println(s);
 	}
 	
 	public static void displayQueryResults() {
