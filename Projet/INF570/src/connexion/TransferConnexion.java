@@ -17,7 +17,7 @@ enum TransferConnexionType{
  *
  */
 public class TransferConnexion extends Connexion{
-	private int fileIndex;
+	private long fileIndex;
 	private String fileName;
 	private double status;
 	private long size;
@@ -27,7 +27,7 @@ public class TransferConnexion extends Connexion{
 	 * @param socket la socket de la connexion
 	 * @param fileIndex l'index du fichier à envoyer
 	 */
-	TransferConnexion(Socket socket, int fileIndex, File file){
+	TransferConnexion(Socket socket, long fileIndex, File file){
 		super(socket);
 		type=TransferConnexionType.OUT;
 		this.fileIndex=fileIndex;
@@ -51,7 +51,7 @@ public class TransferConnexion extends Connexion{
 	 * @param fileIndex index du fichier téléchargé (chez l'uploader)
 	 * @param size la taille du fichier
 	 */
-	TransferConnexion(Socket socket, String fileName, int fileIndex, int size){
+	TransferConnexion(Socket socket, String fileName, long fileIndex, long size){
 		super(socket);
 		type=TransferConnexionType.IN;
 		this.fileIndex=fileIndex;
@@ -72,7 +72,7 @@ public class TransferConnexion extends Connexion{
 	public TransferConnexionType getType(){
 		return type;
 	}
-	public int getFileIndex() {
+	public long getFileIndex() {
 		return fileIndex;
 	}
 	public String getFileName() {

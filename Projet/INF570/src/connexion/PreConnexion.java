@@ -1,12 +1,18 @@
 package connexion;
 
+import gui.Out;
+
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import sharing.SharingManager;
 
 
 public class PreConnexion {
@@ -17,7 +23,7 @@ public class PreConnexion {
 	private BufferedReader br;
 	private PrintWriter pw;
 
-	public PreConnexion(Socket socket, String fileName, int fileIndex) {
+	public PreConnexion(Socket socket, String fileName, long fileIndex) {
 		init(socket,fileName,fileIndex,false);
 	}
 
@@ -25,7 +31,7 @@ public class PreConnexion {
 		init(socket,"",0,isServer);
 	}
 
-	private void init(Socket socket, String fileName, int fileIndex,final boolean isServer){
+	private void init(Socket socket, String fileName, final long fileIndex,final boolean isServer){
 		s = socket;
 		closing=false;
 		isConnected=false;
@@ -34,7 +40,7 @@ public class PreConnexion {
 		pw=null;
 		ConnexionManager.addPreConnexion(this);
 		final String name=new String(fileName);
-		new Thread("preConnecting-"+id){			
+		new Thread("preConnecting-"+id){	
 			public void run() {
 				try {
 					br=new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -49,10 +55,32 @@ public class PreConnexion {
 								isConnected=true;
 							}
 						}else{
-							Pattern p = Pattern.compile("^GET /get/[0-9]+/[a-zA-Z_0-9.-]+/ HTTP/1.0\r\n");
+							Pattern p = Pattern.compile("^GET /get/[0-9]+/[a-zA-Z_0-9.-]+/ HTTP/1.0\r");
 							Matcher m = p.matcher(str);
 							if(m.matches()){
-								//TODO
+								if(br.readLine().equals("User-Agent: Gnutella/0.4\r")){
+									if(br.readLine().equals("Range: bytes=0-\r")){
+										if(br.readLine().equals("Connection: Keep-Alive\r")){
+											if(br.readLine().equals("\r")){
+												StringTokenizer tokenizer = new StringTokenizer(str.substring(9),"/");
+												int indexAsked = Integer.parseInt(tokenizer.nextToken());
+												String nameAsked = tokenizer.nextToken();
+												File fileAsked = SharingManager.getFileFromId(indexAsked);
+												if(fileAsked.getName().equals(nameAsked)){
+													Out.println("Réception d'une requête pour le fichier "+nameAsked);
+													pw.print("HTTP/1.0 200 OK\r\n" +
+															"Server: Gnutella/0.4\r\n" +
+															"Content-Type: application/binary\r\n" +
+															"Content-Length: "+fileAsked.length()+"\r\n" +
+													"\r\n");
+													pw.flush();
+													new TransferConnexion(s, indexAsked, fileAsked);
+													isConnected=true;
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}else{//cote client
@@ -65,7 +93,29 @@ public class PreConnexion {
 									isConnected=true;
 								}
 						}else{//connexion de téléchargement
-							//TODO
+							pw.print("GET /get/"+fileIndex+"/"+name+"/ HTTP/1.0\r\n" +
+									"User-Agent: Gnutella/0.4\r\n" +
+									"Range: bytes=0-\r\n" +
+									"Connection: Keep-Alive\r\n" +
+							"\r\n");
+							pw.flush();
+							if(br.readLine().equals("HTTP/1.0 200 OK\r")){
+								if(br.readLine().equals("Server: Gnutella/0.4\r")){
+									if(br.readLine().equals("Content-Type: application/binary\r")){
+										String str=br.readLine();
+										Pattern p = Pattern.compile("^Content-Length: [0-9]+\r\n");
+										Matcher m = p.matcher(str);
+										if(m.matches()){
+											if(br.readLine().equals("\r")){
+												int size=Integer.parseInt(str.substring(16));
+												Out.println("Requête pour le fichier "+name+" acceptée!");
+												new TransferConnexion(s, name, fileIndex, size);
+												isConnected=true;
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				} catch (IOException e) {

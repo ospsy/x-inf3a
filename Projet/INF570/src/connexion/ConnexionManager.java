@@ -158,6 +158,15 @@ public class ConnexionManager{
 			Out.println("Connexion impossible...");
 		}
 	}
+	
+	static public void download(QueryResult r){
+		try {
+			Socket s = new Socket(r.getIP(),r.getPort());
+			new PreConnexion(s, r.getName(), r.getIndex());
+		} catch (Exception e) {
+			Out.println("Téléchargement impossible...");
+		}
+	}
 
 	/**
 	 * Envoit un PING à tout le monde
@@ -173,12 +182,11 @@ public class ConnexionManager{
 	/**
 	 * Envoit un QUERY à tout le monde
 	 */
-	public static void query(String[] criteria) {
+	public synchronized static void query(String[] criteria) {
 		queryResults=new LinkedList<QueryResult>();
 		Message m=new Query(Settings.getMaxTTL(), 0,criteria,0);
 		sendAll(m, null);
 	}
-
 
 	static protected synchronized void addConnexion(TransferConnexion c){
 		Out.println("DownloadConnexion "+c.getId()+" ajoutée");
