@@ -1,6 +1,5 @@
 package gui;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -25,6 +24,7 @@ import javax.swing.JTextPane;
 import javax.swing.JTree;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import javax.swing.text.Document;
 
 import kernel.Main;
 import sharing.SharingManager;
@@ -291,7 +291,10 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 
 	protected static void display(String s){
 		Sortie.setText(Sortie.getText()+'\n'+s);
-		thi.jScrollPane1.scrollRectToVisible(thi.jScrollPane1.getBounds());
+		
+
+		Document d = Sortie.getDocument();
+		Sortie.select(d.getLength(), d.getLength());
 	}
 
 	private void close() {
@@ -525,15 +528,17 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	public JTable getResultats() {
 		if(resultats == null) {			
 			TableModel resultatsModel = 
-				new DefaultTableModel();
+				new MyDefaultTableModel();
 			((DefaultTableModel)resultatsModel).setDataVector(
 						new Object[][] {},
 						new Object[] { "nom", "taille" , "peer","download" });
 			resultats = new JTable();
+			
 			resultats.setModel(resultatsModel);
 			resultats.getColumn("download").setCellEditor(new Downloader());
 			resultats.getColumn("download").setCellRenderer(new DownloaderRenderer());
-		 	resultats.setEnabled(true);
+		  	resultats.setEnabled(true);
+		  	
 			resultats.setDragEnabled(false);
 			resultats.setRowSelectionAllowed(false);
 			resultats.setAutoCreateRowSorter(true);

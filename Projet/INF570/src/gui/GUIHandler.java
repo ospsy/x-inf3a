@@ -2,13 +2,9 @@ package gui;
 
 import java.util.LinkedList;
 
-import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 import sharing.SharingManager;
-
-
-
 import connexion.ConnexionManager;
 import connexion.Neighbour;
 import connexion.QueryResult;
@@ -37,7 +33,7 @@ public class GUIHandler implements OutputControler{
 	@Override
 	public synchronized void displayNeighbours() {
 		LinkedList<Neighbour> list = ConnexionManager.getNeighbours();
-		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getTabPeer().getModel();
+		MyDefaultTableModel model  = (MyDefaultTableModel) FenetrePrincipale.thi.getTabPeer().getModel();
 		
 		while (model.getRowCount()>0) {//vide l'affichage
 			model.removeRow(0);
@@ -50,11 +46,21 @@ public class GUIHandler implements OutputControler{
 		FenetrePrincipale.thi.getGraphe().setNeighbour(list);
 		
 	}
+	
+	
 
 	@Override
 	public void majFiles() {
 		FenetrePrincipale.thi.setShared(SharingManager.getJTree());
 		
+	}
+
+	@Override
+	public void clearResults() {
+		MyDefaultTableModel model = (MyDefaultTableModel) FenetrePrincipale.thi.getResultats().getModel();
+		while (model.getRowCount()>0) {//vide l'affichage
+			model.removeRow(0);
+		}
 	}
 	
 	

@@ -26,4 +26,8 @@ public class Out {
 		if(oc!=null)
 		oc.majFiles();
 	}
+
+	public static void clearResults() {
+		oc.clearResults();
+	}
 }

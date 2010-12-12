@@ -39,4 +39,9 @@ public class ConsoleHandler implements OutputControler {
 		
 	}
 
+	@Override
+	public void clearResults() {
+		
+	}
+
 }
