@@ -87,6 +87,7 @@ public class TransferConnexion extends Connexion{
 						Link.receiveFile(name, in);
 						Out.println("Téléchargement terminé!");
 						SharingManager.update();
+						Out.clearResults();
 					} catch (Exception e) {
 						Out.println("Problème sur le téléchargement...");
 					}
