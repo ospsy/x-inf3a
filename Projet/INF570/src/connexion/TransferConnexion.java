@@ -8,6 +8,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import sharing.SharingManager;
+
 import link.Link;;
 
 enum TransferConnexionType{
@@ -84,6 +86,7 @@ public class TransferConnexion extends Connexion{
 					try {
 						Link.receiveFile(name, in);
 						Out.println("Téléchargement terminé!");
+						SharingManager.update();
 					} catch (Exception e) {
 						Out.println("Problème sur le téléchargement...");
 					}
