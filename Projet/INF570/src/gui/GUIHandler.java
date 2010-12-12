@@ -2,6 +2,7 @@ package gui;
 
 import java.util.LinkedList;
 
+import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 import sharing.SharingManager;
@@ -29,7 +30,7 @@ public class GUIHandler implements OutputControler{
 		}
 		
 		for(QueryResult b : list ){
-			model.addRow(new Object[]{b.getName(),b.getSize(),b.getIP()});;
+			model.addRow(new Object[]{b.getName(),b.getSize(),b.getIP(),b});;
 		}
 	}
 

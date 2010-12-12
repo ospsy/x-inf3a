@@ -1,5 +1,6 @@
 package gui;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -290,6 +291,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 
 	protected static void display(String s){
 		Sortie.setText(Sortie.getText()+'\n'+s);
+		thi.jScrollPane1.scrollRectToVisible(thi.jScrollPane1.getBounds());
 	}
 
 	private void close() {
@@ -484,6 +486,7 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 						new String[][]{},
 						new String[] { "ip","port", "dist","number of files", "total size (kB)" });
 			tabPeer = new JTable();
+			tabPeer.setEnabled(false);
 			tabPeer.setModel(model);
 			tabPeer.setDragEnabled(false);
 			tabPeer.setRowSelectionAllowed(false);
@@ -522,11 +525,15 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 	public JTable getResultats() {
 		if(resultats == null) {			
 			TableModel resultatsModel = 
-				new DefaultTableModel(
-						new String[][] {  },
-						new String[] { "nom", "taille" , "peer" });
+				new DefaultTableModel();
+			((DefaultTableModel)resultatsModel).setDataVector(
+						new Object[][] {},
+						new Object[] { "nom", "taille" , "peer","download" });
 			resultats = new JTable();
 			resultats.setModel(resultatsModel);
+			resultats.getColumn("download").setCellEditor(new Downloader());
+			resultats.getColumn("download").setCellRenderer(new DownloaderRenderer());
+		 	resultats.setEnabled(true);
 			resultats.setDragEnabled(false);
 			resultats.setRowSelectionAllowed(false);
 			resultats.setAutoCreateRowSorter(true);
