@@ -638,6 +638,11 @@ public class FenetrePrincipale extends javax.swing.JFrame implements WindowListe
 				
 				public void actionPerformed(ActionEvent evt) {
 					SharingManager.update();
+					try {
+						javax.swing.UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
+					} catch(Exception e) {
+						e.printStackTrace();
+					}
 				}
 			};
 		}
