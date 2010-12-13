@@ -19,7 +19,7 @@ public class GUIHandler implements OutputControler{
 	public void displayQueryResults() {
 
 		LinkedList<QueryResult> list = ConnexionManager.getQueryResults();
-		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getResultats().getModel();
+		MyDefaultTableModel model  = (MyDefaultTableModel) FenetrePrincipale.thi.getResultats().getModel();
 		
 		while (model.getRowCount()>0) {//vide l'affichage
 			model.removeRow(0);
@@ -33,7 +33,7 @@ public class GUIHandler implements OutputControler{
 	@Override
 	public synchronized void displayNeighbours() {
 		LinkedList<Neighbour> list = ConnexionManager.getNeighbours();
-		MyDefaultTableModel model  = (MyDefaultTableModel) FenetrePrincipale.thi.getTabPeer().getModel();
+		DefaultTableModel model  = (DefaultTableModel) FenetrePrincipale.thi.getTabPeer().getModel();
 		
 		while (model.getRowCount()>0) {//vide l'affichage
 			model.removeRow(0);
