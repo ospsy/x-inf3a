@@ -66,17 +66,19 @@ public class PreConnexion {
 												int indexAsked = Integer.parseInt(tokenizer.nextToken());
 												String nameAsked = tokenizer.nextToken();
 												File fileAsked = SharingManager.getFileFromId(indexAsked);
-												if(fileAsked.getName().equals(nameAsked)){
-													Out.println("Réception d'une requête pour le fichier "+nameAsked);
-													pw.print("HTTP/1.0 200 OK\r\n" +
-															"Server: Gnutella/0.4\r\n" +
-															"Content-Type: application/binary\r\n" +
-															"Content-Length: "+fileAsked.length()+"\r\n" +
-													"\r\n");
-													pw.flush();
-													new TransferConnexion(s, indexAsked, fileAsked);
-													isConnected=true;
-												}
+												if(fileAsked!=null)
+													if(fileAsked.getName().equals(nameAsked)){
+														Out.println("Réception d'une requête pour le fichier "+nameAsked);
+														pw.print("HTTP/1.0 200 OK\r\n" +
+																"Server: Gnutella/0.4\r\n" +
+																"Content-Type: application/binary\r\n" +
+																"Content-Length: "+fileAsked.length()+"\r\n" +
+														"\r\n");
+														pw.flush();
+														Thread.sleep(500);
+														new TransferConnexion(s, indexAsked, fileAsked);
+														isConnected=true;
+													}
 											}
 										}
 									}
@@ -97,26 +99,28 @@ public class PreConnexion {
 							"User-Agent: Gnutella/0.4\r\n" +
 							"Range: bytes=0-\r\n" +
 							"Connection: Keep-Alive\r\n" +
-					"\r\n";
+							"\r\n";
 							pw.print(msg);
 							pw.flush();
-							if(br.readLine().equals("HTTP/1.0 200 OK")){
-								if(br.readLine().equals("Server: Gnutella/0.4")){
-									if(br.readLine().equals("Content-Type: application/binary")){
-										String str=br.readLine();
-										Pattern p = Pattern.compile("^Content-Length: [0-9]+");
-										Matcher m = p.matcher(str);
-										if(m.matches()){
-											if(br.readLine().equals("")){
-												int size=Integer.parseInt(str.substring(16));
-												Out.println("Requête pour le fichier "+name+" acceptée!");
-												new TransferConnexion(s, name, fileIndex, size);
-												isConnected=true;
+							String str=br.readLine();
+							if(str!=null)
+								if(str.equals("HTTP/1.0 200 OK")){
+									if(br.readLine().equals("Server: Gnutella/0.4")){
+										if(br.readLine().equals("Content-Type: application/binary")){
+											str=br.readLine();
+											Pattern p = Pattern.compile("^Content-Length: [0-9]+");
+											Matcher m = p.matcher(str);
+											if(m.matches()){
+												if(br.readLine().equals("")){
+													int size=Integer.parseInt(str.substring(16));
+													Out.println("Requête pour le fichier "+name+" acceptée!");
+													new TransferConnexion(s, name, fileIndex, size);
+													isConnected=true;
+												}
 											}
 										}
 									}
 								}
-							}
 						}
 					}
 				} catch (Exception e) {
