@@ -170,6 +170,7 @@ public class ConnexionManager{
 			new PreConnexion(s, r.getName(), r.getIndex());
 		} catch (Exception e) {
 			Out.println("Téléchargement impossible...");
+			//e.printStackTrace();
 		}
 	}
 	
@@ -280,17 +281,21 @@ public class ConnexionManager{
 		//System.out.println(m);
 		switch(m.getHeader().getMessageType()){
 		case PONG:
+			System.out.println("PONG recu");
 			if(m.getHeader().getMessageID().equals(lastPing)){
 				neighbours.add(new Neighbour(m));
 				Out.displayVoisin();
 			}
 			break;
 		case QUERY_HIT:
+			System.out.println("QUERY_HIT recu");
 			QueryHit qh = (QueryHit)m;
 			Result[] results = qh.getResultSet();
+			System.out.println(queryResults.size()+"résultats "+results.length+" à ajouter");
 			for(int i=0;i<results.length;i++){
 				queryResults.add(new QueryResult(qh.getIp(), qh.getPort(), qh.getSpeed(), results[i], qh.getServentIdentifier()));
 			}
+			System.out.println(queryResults.size()+"résultats");
 			Out.displayQueryResults();
 			break;
 		}
