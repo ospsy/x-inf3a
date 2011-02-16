@@ -1,0 +1,6 @@
+PROJECT( INF560 )
+cmake_minimum_required(VERSION 2.6)
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "../CMakeModules")
+FIND_PACKAGE( OpenCV REQUIRED )
+ADD_EXECUTABLE( Projet main.cpp )
+TARGET_LINK_LIBRARIES( Projet ${OpenCV_LIBS} )
