@@ -1,5 +1,6 @@
 #include <cv.h>
 #include <highgui.h>
+#include <iostream.h>
 
 template<class T> class Image
 {
@@ -14,17 +15,21 @@ template<class T> class Image
 
 typedef Image<unsigned char>  BwImage;
 
-void makeIntegralImage(const BwImage in, BwImage out){
-	int tmp=0;
-	for(int i=0;i<in.imgp->height;i++){
-		tmp+=in[i][0];
-		cvSet2D(out,i,0,cvScalar(tmp));
+void makeIntegralImage(const IplImage* in, IplImage* out){
+	if(in->depth!=IPL_DEPTH_8U || out->depth!=IPL_DEPTH_32S){
+		std::cout << "Mauvais type d'images dans makeIntegralImage" << std::endl;
+		exit(EXIT_FAILURE);
 	}
-	for(int i=1;i<in.imgp->height;i++){
-		int tmp=0;
-		for(int j=0;j<in.imgp->width;j++){
-			tmp+=in[i][j];
-			cvSet2D(out,i,j,tmp+out[i-1][j]));
+	unsigned int tmp=0;
+	for(int i=0;i<in->height;i++){
+		tmp+=((uchar*)(in->imageData + in->widthStep*i))[0];
+		((uint*)(out->imageData + out->widthStep*i))[0]=tmp;
+	}
+	for(int i=1;i<in->height;i++){
+		unsigned int tmp=0;
+		for(int j=0;j<in->width;j++){
+			tmp+=((uchar*)(in->imageData + in->widthStep*i))[j];
+			((uint*)(out->imageData + out->widthStep*i))[j]=tmp+((uint*)(out->imageData + out->widthStep*(i-1)))[j];
 		}
 	}
 }
@@ -35,16 +40,14 @@ int main ( int argc, char **argv )
 	
 
   cvNamedWindow( "My Window", 1 );
-  IplImage *img = cvCreateImage( cvSize( 640, 480 ), IPL_DEPTH_8U, 1 );
-  CvFont font;
-  double hScale = 1.0;
-  double vScale = 1.0;
-  int lineWidth = 1;
-  cvInitFont( &font, CV_FONT_HERSHEY_SIMPLEX | CV_FONT_ITALIC,
-              hScale, vScale, 0, lineWidth );
-  cvPutText( img, "Hello World!", cvPoint( 200, 400 ), &font,
-             cvScalar( 255, 255, 0 ) );
+  cvNamedWindow( "My Window 2", 1 );
+  IplImage *img = cvLoadImage("lena.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+  IplImage *img2 = cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
   cvShowImage( "My Window", img );
+  makeIntegralImage(img,img2);
+  cvShowImage( "My Window 2", img2 );
   cvWaitKey();
+  cvReleaseImage(&img);
+  cvReleaseImage(&img2);
   return 0;
 }
