@@ -3,7 +3,7 @@
  */
 #include "loadppm.h"
 
-void ImageBW::load(const char *filename)
+void Image::load(const char *filename)
 {
     char buff[16];
 
@@ -52,32 +52,19 @@ void ImageBW::load(const char *filename)
     while (fp.read(buff, 1), buff[0] != '\n')
       ;
 
-    GLubyte *data2 = new  GLubyte[3*sizeX * sizeY];
-    if (!data2)
+    data = new  GLubyte[3*sizeX * sizeY];
+    if (!data)
     {
       cerr <<  "Unable to allocate memory\n";
       throw 0;
     }
 
     // Chargement de l'image directement
-    fp.read((char*)data2, 3 * sizeX*sizeY);
+    fp.read((char*)data, 3 * sizeX*sizeY);
     if (fp.bad()) {
       cerr <<  "Error loading image " << filename << endl;
       throw 0;
     }
-    
-    data = new  GLubyte[sizeX * sizeY];
-    if (!data)
-    {
-      cerr <<  "Unable to allocate memory\n";
-      throw 0;
-    }
-    
-    for(int i=0;i<sizeX*sizeY;i++){
-    	data[i]=(data2[3*i]+data2[3*i+1]+data2[3*i+2])/3;
-    }
-    
-    delete data2;
     
     fp.close();
     cout << "Image " << filename << " loaded" << endl;
