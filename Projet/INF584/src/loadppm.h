@@ -25,12 +25,17 @@ public:
     if (data)
       delete [] data;
   }
-  inline const GLubyte & operator () (int x, int y) const{
+  inline float operator () (float x, float y) const{
   	if(x<0) x=0;
   	if(x>=sizeX) x=sizeX-1;
   	if(y<0) y=0;
   	if(y>=sizeY) y=sizeY-1;
-  	return data[y+x*sizeY];
+  	int x0=(int)x;
+  	int y0=(int)y;
+  	return data[y0+x0*sizeY]*(x0+1-x)*(y0+1-y)+
+	  	data[y0+1+x0*sizeY]*(x0+1-x)*(y0-y)+
+	  	data[y0+1+(x0+1)*sizeY]*(x0-x)*(y0-y)+
+	  	data[y0+(x0+1)*sizeY]*(x0-x)*(y0+1-y);
   }
 };
 
