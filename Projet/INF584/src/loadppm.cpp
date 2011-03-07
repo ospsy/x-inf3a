@@ -66,7 +66,7 @@ void ImageBW::load(const char *filename)
       throw 0;
     }
     
-    GLubyte *data = new  GLubyte[sizeX * sizeY];
+    data = new  GLubyte[sizeX * sizeY];
     if (!data)
     {
       cerr <<  "Unable to allocate memory\n";
