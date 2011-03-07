@@ -264,14 +264,6 @@ void init(const char * fileName){
 void dessiner( )
 {
 	if(mode==MESH){
-		for(int y=0;y<tex.sizeY;y++){
-			for(int x=0;x<tex.sizeX;x++){
-				tex(x,y,0)=128;
-				tex(x,y,1)=128;
-				tex(x,y,2)=128;
-				tex.set(x,y,Vec3Df(0.5,0.5,0.5));
-			}
-		}
 		int w=img.sizeX;
 		int h=img.sizeY;
 		for(int y=0;y<h-1;y++){
@@ -285,9 +277,10 @@ void dessiner( )
 			}
 		}
 	}else{
+		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
+			  GL_RGB, GL_UNSIGNED_BYTE, tex.data);
 		glEnable(GL_TEXTURE_2D);
 	    glBindTexture(GL_TEXTURE_2D, idTexture);
-	    glColor3f(0,0.5,1);
 		glBegin(GL_QUADS);
 	    glTexCoord2f(0,0);
 	    glVertex2f(0,0);
