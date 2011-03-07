@@ -13,7 +13,8 @@ using namespace std;
 void computeLighting();
 void dealWithUserInput(int x, int y);
 Mesh MyMesh;
-ImageBW img;
+Image img;
+Image tex;
 unsigned int W_fen = 800;  // largeur fenetre
 unsigned int H_fen = 500;  // hauteur fenetre
 
@@ -28,8 +29,11 @@ unsigned int H_fen = 500;  // hauteur fenetre
 //couleur du d�cors
 float BackgroundColor[]={0,0,0};
 // Diff�rents modes d'affichage
-enum Mode{ ORIGINAL_LIGHTING=0,DIFFUSE_LIGHTING, TOON_LIGHTING, SPECULAR_LIGHTING, COMBINED_LIGHTING, MODIFY_LIGHTING, MODIFY_SPEC, SURFACE_EDIT};
-Mode mode=COMBINED_LIGHTING;
+enum Mode{ MESH=0,TEXTURE};
+int NB_MODES=2;
+Mode mode=MESH;
+
+GLuint idTexture;
 
 //selon la vitesse de l'ordinateur on recalcule l'eclairage a chaque frame.
 //toggle avec la touche "U" pendant l'execution du programme.
@@ -44,77 +48,16 @@ unsigned int SelectedLight=0;
 //pas encore necessaire, plus tard, ca va servir pour avoir des lumi�res color�es
 std::vector<Vec3Df> LightColor;
 
+
+
 //la position de la cam�ra COURRANTE!
 Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 
 
-//afficher le sommet choisi touche "s"
-bool ShowSelectedVertex=false;
-//les deux variables apr�s sont utilis�es plus tard dans le TP.
-int SelectedVertex=-1;
 
 //un tableau suppl�mentaire utilis� pour faire des changements locals (plus tard dans l'exercise)
 std::vector<Vec3Df> customData;
 
-
-class Rayon{
-	
-public :
-	Vec3Df origine;
-	Vec3Df direction;
-
-
-	Rayon(Vec3Df o, Vec3Df d){
-		origine = o;
-		direction = d;
-	}
-
-	
-
-};
-
-bool estSous(const Vec3Df courant, ImageBW & im){
-	return im(courant[0],courant[1])> courant[2];
-}
-
-
-//La valeur d'epsilon est celle du pas pour avancer
-Vec3Df intersection(const Rayon r, const ImageBW & im, float epsilon, int nbPas){
-
-	int nbPas = 10;
-
-	Vec3Df courant = r.origine;
-	while(! estSous(courant,im)){
-		courant+= (r.direction)*epsilon;
-	}
-
-
-	// Recherche Binaire
-	float pas = epsilon/2;
-
-	for(int i = 0 ; i < nbPas ; i++) {
-		Vec3Df milieu;
-		milieu= courant-r.direction*pas;
-		
-
-		if(estSous(milieu,im)){
-			courant = milieu;
-		}
-
-		pas= pas/2;
-	}
-
-	return courant;
-
-}
-
-bool eclairage(Vec3Df regard, Vec3Df lumiere, const ImageBW & im, float x, float y, float epsilon, int nbPas){
-
-	Rayon r1(regard,Vec3Df(x,y,im(x,y))-regard);
-	Rayon r2(lumiere,Vec3Df(x,y,im(x,y))-lumiere);
-
-	return (distance(intersection(r1,im,epsilon,nbPas),intersection(r2,im,epsilon,nbPas)) < epsilon);
-}
 
 
 Vec3Df computeLighting(Vec3Df & vertexPos, Vec3Df & normal, unsigned int light, unsigned int index)
@@ -195,7 +138,11 @@ void keyboard(unsigned char key, int x, int y)
 
 	switch (key)
 	{
-	//A remplir
+	case 'm':
+	{
+		mode=Mode((mode+1)%NB_MODES);
+		return;
+	}
 	case 'r':
 		break;
 	case 'R':
@@ -269,10 +216,6 @@ void keyboard(unsigned char key, int x, int y)
 		computeLighting();
 		return;
 	}
-	case 's':
-	{
-		ShowSelectedVertex=!ShowSelectedVertex;
-	}
 	}
 
 }
@@ -287,13 +230,16 @@ std::vector<Vec3Df> lighting;
  ************************************************************/
 void init(const char * fileName){
 	img.load(fileName);
-	//this function loads a mesh
-//	MyMesh.loadMesh(fileName);
-//	lighting.resize(MyMesh.vertices.size());
-//	customData.resize(MyMesh.vertices.size(), Vec3Df(0,0,0));
+	
 	LightPos.push_back(Vec3Df(0,0,3));
 	LightColor.push_back(Vec3Df(1,1,1));
 	computeLighting();
+	
+	tex.resize(300,300);
+	glGenTextures(1, &idTexture);
+	glBindTexture(GL_TEXTURE_2D, idTexture);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
+			  GL_RGB, GL_UNSIGNED_BYTE, tex.data);
 }
 
 
@@ -317,18 +263,42 @@ void init(const char * fileName){
 
 void dessiner( )
 {
-	int w=img.sizeX;
-	int h=img.sizeY;
-	for(int y=0;y<h-1;y++){
-		for(int x=0;x<w-1;x++){
-			glBegin(GL_QUADS);
-//			cout << img(x,y) << endl;
-			glVertex3f((float)x/w,(float)y/h,(float)img(x,y)/255);
-			glVertex3f((float)(x+1)/w,(float)y/h,(float)img((x+1),y)/255);
-			glVertex3f((float)(x+1)/w,(float)(y+1)/h,(float)img((x+1),(y+1))/255);
-			glVertex3f((float)x/w,(float)(y+1)/h,(float)img(x,(y+1))/255);
-			glEnd();
+	if(mode==MESH){
+		for(int y=0;y<tex.sizeY;y++){
+			for(int x=0;x<tex.sizeX;x++){
+				tex(x,y,0)=128;
+				tex(x,y,1)=128;
+				tex(x,y,2)=128;
+				tex.set(x,y,Vec3Df(0.5,0.5,0.5));
+			}
 		}
+		int w=img.sizeX;
+		int h=img.sizeY;
+		for(int y=0;y<h-1;y++){
+			for(int x=0;x<w-1;x++){
+				glBegin(GL_QUADS);
+				glVertex3f((float)x/w,(float)y/h,img(x,y)/255);
+				glVertex3f((float)(x+1)/w,(float)y/h,img((x+1),y)/255);
+				glVertex3f((float)(x+1)/w,(float)(y+1)/h,img((x+1),(y+1))/255);
+				glVertex3f((float)x/w,(float)(y+1)/h,img(x,(y+1))/255);
+				glEnd();
+			}
+		}
+	}else{
+		glEnable(GL_TEXTURE_2D);
+	    glBindTexture(GL_TEXTURE_2D, idTexture);
+	    glColor3f(0,0.5,1);
+		glBegin(GL_QUADS);
+	    glTexCoord2f(0,0);
+	    glVertex2f(0,0);
+	    glTexCoord2f(0,1);
+	    glVertex2f(0,1);
+	    glTexCoord2f(1,0);
+	    glVertex2f(1,1);
+	    glTexCoord2f(1,0);
+	    glVertex2f(1,0);
+	    glEnd();
+	    glDisable(GL_TEXTURE_2D);
 	}
 
 
@@ -413,11 +383,6 @@ int main(int argc, char** argv)
 {
 	glutInit (&argc, argv);
 
-	if(argc == 2){
-		init(argv[1]);
-	}else{
-		init("damier.ppm");
-	}
 
 	// couches du framebuffer utilisees par l'application
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH );
@@ -437,6 +402,12 @@ int main(int argc, char** argv)
 	glDisable( GL_LIGHTING );
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_NORMALIZE);
+
+	if(argc == 2){
+		init(argv[1]);
+	}else{
+		init("damier.ppm");
+	}
 
 	// cablage des callback
 	glutReshapeFunc(reshape);
