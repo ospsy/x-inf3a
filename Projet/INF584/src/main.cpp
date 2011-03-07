@@ -260,17 +260,14 @@ void dessiner( )
 {
 	int w=img.sizeX;
 	int h=img.sizeY;
-	cout <<"plop"<<endl;
-	cout << img(0,0) << endl;
-	cout <<"plop"<<endl;
 	for(int y=0;y<h-1;y++){
 		for(int x=0;x<w-1;x++){
 			glBegin(GL_QUADS);
-			cout << img(x,y) << endl;
-			glVertex3f(x/w,y/h,img(x,y)/255);
-			glVertex3f((x+1)/w,y/h,img((x+1),y)/255);
-			glVertex3f((x+1)/w,(y+1)/h,img((x+1),(y+1))/255);
-			glVertex3f(x/w,(y+1)/h,img(x,(y+1))/255);
+//			cout << img(x,y) << endl;
+			glVertex3f((float)x/w,(float)y/h,(float)img(x,y)/255);
+			glVertex3f((float)(x+1)/w,(float)y/h,(float)img((x+1),y)/255);
+			glVertex3f((float)(x+1)/w,(float)(y+1)/h,(float)img((x+1),(y+1))/255);
+			glVertex3f((float)x/w,(float)(y+1)/h,(float)img(x,(y+1))/255);
 			glEnd();
 		}
 	}
