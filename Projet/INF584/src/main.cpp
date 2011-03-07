@@ -7,7 +7,7 @@
 #include <assert.h>
 #include "traqueboule.h"
 #include "mesh.h"
-#include "image.h"
+#include "loadppm.h"
 
 using namespace std;
 void computeLighting();
@@ -40,7 +40,7 @@ bool updateAlways=true;
 //pour le moment, utilisez toujours LightPos[0]
 std::vector<Vec3Df> LightPos;
 //la lumi�re courrante (au d�but ceci vaut toujours 0)
-int SelectedLight=0;
+unsigned int SelectedLight=0;
 //pas encore necessaire, plus tard, ca va servir pour avoir des lumi�res color�es
 std::vector<Vec3Df> LightColor;
 
@@ -63,7 +63,7 @@ Vec3Df computeLighting(Vec3Df & vertexPos, Vec3Df & normal, unsigned int light, 
 	//la fonction pour calculer l'�clairage du mod�le.
 	switch(mode)
 	{
-	case ORIGINAL_LIGHTING:
+	/*case ORIGINAL_LIGHTING:
 	{
 		return Vec3Df(1,1,1);
 	}
@@ -96,7 +96,7 @@ Vec3Df computeLighting(Vec3Df & vertexPos, Vec3Df & normal, unsigned int light, 
 		if(result.normalize()>0.5)
 			result.init(0,0,0);
 		else result.init(1,1,1);;
-	}
+	}*/
 
 	default:
 		return Vec3Df(0,1,0);
@@ -226,13 +226,12 @@ std::vector<Vec3Df> lighting;
 /************************************************************
  * Fonction pour initialiser le maillage
  ************************************************************/
-void init(const char * fileName, int w, int h){
-	img.resize(w,h);
-	img.loadRAW(fileName);
+void init(const char * fileName){
+	img.load(fileName);
 	//this function loads a mesh
-	MyMesh.loadMesh(fileName);
-	lighting.resize(MyMesh.vertices.size());
-	customData.resize(MyMesh.vertices.size(), Vec3Df(0,0,0));
+//	MyMesh.loadMesh(fileName);
+//	lighting.resize(MyMesh.vertices.size());
+//	customData.resize(MyMesh.vertices.size(), Vec3Df(0,0,0));
 	LightPos.push_back(Vec3Df(0,0,3));
 	LightColor.push_back(Vec3Df(1,1,1));
 	computeLighting();
@@ -259,15 +258,19 @@ void init(const char * fileName, int w, int h){
 
 void dessiner( )
 {
-	int w=img.w;
-	int h=img.h;
-	for(int i=0;i<h;i++){
-		for(int j=0;j<w;j++){
+	int w=img.sizeX;
+	int h=img.sizeY;
+	cout <<"plop"<<endl;
+	cout << img(0,0) << endl;
+	cout <<"plop"<<endl;
+	for(int y=0;y<h-1;y++){
+		for(int x=0;x<w-1;x++){
 			glBegin(GL_QUADS);
-			glVertex3f(i/h,j/w,img.getPixel(i,j)/255);
-			glVertex3f((i+1)/h,j/w,img.getPixel((i+1),j)/255);
-			glVertex3f((i+1)/h,(j+1)/w,img.getPixel((i+1),(j+1))/255);
-			glVertex3f(i/h,(j+1)/w,img.getPixel(i,(j+1))/255);
+			cout << img(x,y) << endl;
+			glVertex3f(x/w,y/h,img(x,y)/255);
+			glVertex3f((x+1)/w,y/h,img((x+1),y)/255);
+			glVertex3f((x+1)/w,(y+1)/h,img((x+1),(y+1))/255);
+			glVertex3f(x/w,(y+1)/h,img(x,(y+1))/255);
 			glEnd();
 		}
 	}
@@ -340,7 +343,7 @@ void computeLighting()
 	for (unsigned int i=0; i<MyMesh.vertices.size();++i)
 	{
 		(*result)[i]=Vec3Df();
-		for (int l=0; l<LightPos.size();++l)
+		for (unsigned int l=0; l<LightPos.size();++l)
 			(*result)[i]+=computeLighting(MyMesh.vertices[i].p, MyMesh.vertices[i].n, l, i);
 	}
 }
@@ -354,10 +357,10 @@ int main(int argc, char** argv)
 {
 	glutInit (&argc, argv);
 
-	if(argc == 3){
-		//init(argc[1],argc[2],argc[3]);
+	if(argc == 2){
+		init(argv[1]);
 	}else{
-		init("Memorial512x768.raw",100,100);
+		init("damier.ppm");
 	}
 
 	// couches du framebuffer utilisees par l'application
