@@ -1,60 +1,45 @@
 #  James Bigler, NVIDIA Corp (nvidia.com - jbigler)
-#  Abe Stephens, SCI Institute -- 
-http://www.sci.utah.edu/~abe/FindCuda.html
+#  Abe Stephens, SCI Institute -- http://www.sci.utah.edu/~abe/FindCuda.html
 #
 #  Copyright (c) 2008 - 2009 NVIDIA Corporation.  All rights reserved.
 #
 #  Copyright (c) 2007-2009
 #  Scientific Computing and Imaging Institute, University of Utah
 #
-#  This code is licensed under the MIT License.  See the FindCUDA.cmake 
-script
+#  This code is licensed under the MIT License.  See the FindCUDA.cmake script
 #  for the text of the license.
 
 # The MIT License
 #
-# License for the specific language governing rights and limitations 
-under
-# Permission is hereby granted, free of charge, to any person obtaining 
-a
-# copy of this software and associated documentation files (the 
-"Software"),
-# to deal in the Software without restriction, including without 
-limitation
-# the rights to use, copy, modify, merge, publish, distribute, 
-sublicense,
+# License for the specific language governing rights and limitations under
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
 # and/or sell copies of the Software, and to permit persons to whom the
 # Software is furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be 
-included
+# The above copyright notice and this permission notice shall be included
 # in all copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, 
-EXPRESS
-# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF 
-MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT 
-SHALL
-# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR 
-OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
-ARISING
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 #
 
 #######################################################################
-# Parses a .cubin file produced by nvcc and reports statistics about the 
-file.
+# Parses a .cubin file produced by nvcc and reports statistics about the file.
 
 
 file(READ ${input_file} file_text)
 
 if (${file_text} MATCHES ".+")
 
-  # Remember, four backslashes is escaped to one backslash in the 
-string.
+  # Remember, four backslashes is escaped to one backslash in the string.
   string(REGEX REPLACE ";" "\\\\;" file_text ${file_text})
   string(REGEX REPLACE "\ncode" ";code" file_text ${file_text})
 
@@ -91,22 +76,19 @@ string.
 
           # Registers
           if (${entry} MATCHES "reg([ ]+)=([ ]+)([^ ]+)")
-            string(REGEX REPLACE ".*([ ]+)=([ ]+)([^ ]+)" "\\3" entry 
-${entry})
+            string(REGEX REPLACE ".*([ ]+)=([ ]+)([^ ]+)" "\\3" entry ${entry})
             message("Registers: ${entry}")
           endif()
 
           # Local memory
           if (${entry} MATCHES "lmem([ ]+)=([ ]+)([^ ]+)")
-            string(REGEX REPLACE ".*([ ]+)=([ ]+)([^ ]+)" "\\3" entry 
-${entry})
+            string(REGEX REPLACE ".*([ ]+)=([ ]+)([^ ]+)" "\\3" entry ${entry})
             message("Local:     ${entry}")
           endif()
 
           # Shared memory
           if (${entry} MATCHES "smem([ ]+)=([ ]+)([^ ]+)")
-            string(REGEX REPLACE ".*([ ]+)=([ ]+)([^ ]+)" "\\3" entry 
-${entry})
+            string(REGEX REPLACE ".*([ ]+)=([ ]+)([^ ]+)" "\\3" entry ${entry})
             message("Shared:    ${entry}")
           endif()
 
@@ -126,4 +108,5 @@ ${entry})
 else()
   # message("FOUND NO DEPENDS")
 endif()
+
 
