@@ -8,6 +8,7 @@
 #include "traqueboule.h"
 #include "mesh.h"
 #include "loadppm.h"
+#include "Header1.h"
 
 using namespace std;
 void computeLighting();
@@ -57,6 +58,11 @@ Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 
 //un tableau suppl�mentaire utilis� pour faire des changements locals (plus tard dans l'exercise)
 std::vector<Vec3Df> customData;
+
+
+
+
+
 
 
 
