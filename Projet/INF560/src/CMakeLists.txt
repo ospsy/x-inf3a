@@ -18,5 +18,5 @@ ${CUDA_CUT_INCLUDE_DIR}
 ${OpenCV_INCLUDE_DIR}
 ${CUDA_INCLUDE_DIRS}
 )
-CUDA_ADD_EXECUTABLE( Projet calculus.cu main.cpp )
+CUDA_ADD_EXECUTABLE( Projet calculus.cu main.cpp calculus.cpp )
 TARGET_LINK_LIBRARIES( Projet ${OpenCV_LIBS} ${CUDA_LIBRARIES} )
