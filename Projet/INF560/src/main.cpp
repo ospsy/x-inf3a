@@ -2,6 +2,9 @@
 #include <highgui.h>
 #include <iostream.h>
 
+#include "surf.h"
+#include "surfCUDA.h"
+
 template<class T> class Image
 {
   public:
@@ -14,25 +17,6 @@ template<class T> class Image
 };
 
 typedef Image<unsigned char>  BwImage;
-
-void makeIntegralImage(const IplImage* in, IplImage* out){
-	if(in->depth!=IPL_DEPTH_8U || out->depth!=IPL_DEPTH_32S){
-		std::cout << "Mauvais type d'images dans makeIntegralImage" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-	unsigned int tmp=0;
-	for(int i=0;i<in->height;i++){
-		tmp+=((uchar*)(in->imageData + in->widthStep*i))[0];
-		((uint*)(out->imageData + out->widthStep*i))[0]=tmp;
-	}
-	for(int i=1;i<in->height;i++){
-		unsigned int tmp=0;
-		for(int j=0;j<in->width;j++){
-			tmp+=((uchar*)(in->imageData + in->widthStep*i))[j];
-			((uint*)(out->imageData + out->widthStep*i))[j]=tmp+((uint*)(out->imageData + out->widthStep*(i-1)))[j];
-		}
-	}
-}
 
 
 // Acces au pixel x,y d'une image
@@ -68,7 +52,7 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 		for (int y=borderSize ; y<(imageIntegrale->height)-borderSize ; y++)
 			for (int x=borderSize ; x<(imageIntegrale->width)-borderSize ; x++)
 			{
-				IplImage* current = *(out + inter) ;
+				IplImage* current = out[inter] ;
 				
 				// On calcule la reponse des differents filtres
 				
@@ -136,24 +120,47 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 				
 				int dxy = lobe00 + lobe11 - lobe10 - lobe01 ;
 				
-				(current->imageDate + current->widthStep*x + y)* = dxx*dyy- (0.9*dxy)*(0.9*dxy) ;
+				((int*)(current->imageData + current->widthStep*x))[y] = (int)(dxx*dyy- (0.9*dxy)*(0.9*dxy)) ;
 			}
 	}
 }
 
 int main ( int argc, char **argv )
 {
-	
-
   cvNamedWindow( "My Window", 1 );
   cvNamedWindow( "My Window 2", 1 );
-  IplImage *img = cvLoadImage("lena.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+  IplImage *img = cvLoadImage("lena_600.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+  if(!img){
+  	std::cout << "impossible de charger l'image, aborting..." << std::endl;
+  	return 1;
+  }
   IplImage *img2 = cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
+  IplImage *img3 = cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
   cvShowImage( "My Window", img );
-  makeIntegralImage(img,img2);
+  //integralImage
+  CUDAmakeIntegralImage(img,img2);
+  makeIntegralImage(img,img3);
+  for(int i=0;i<img->height;i++){
+  	for(int j=0;j<img->width;j++){
+  		i=j;
+  		if( ((uint*)( (img2->imageData) + (img2->widthStep) * i)) [j] != ((uint*)( (img3->imageData) + (img3->widthStep) * i)) [j])
+  			std::cout << i << "," << j << " "<< ((uint*)( (img2->imageData) + (img2->widthStep) * i)) [j] << " "<< ((uint*)( (img3->imageData) + (img3->widthStep) * i)) [j]<< std::endl;
+    }
+  }
   cvShowImage( "My Window 2", img2 );
+  //filtres gaussiens
+  IplImage *imgs[6];
+  for(int i=0;i<6;i++){
+  	imgs[i]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32F,1);
+  }
+  calculateGaussianDerivative(img,imgs,0,6);
+  cvShowImage( "My Window 3", imgs[0] );
+  cvShowImage( "My Window 4", imgs[1] );
+  cvShowImage( "My Window 5", imgs[2] );
+  
   cvWaitKey();
   cvReleaseImage(&img);
   cvReleaseImage(&img2);
+  std::cout << "plop2" << std::endl;
   return 0;
 }
