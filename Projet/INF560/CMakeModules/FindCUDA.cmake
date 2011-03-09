@@ -642,6 +642,8 @@ find_path(CUDA_SDK_ROOT_DIR common/inc/cutil.h
   "$ENV{NVSDKCUDA_ROOT}"
   "[HKEY_LOCAL_MACHINE\\SOFTWARE\\NVIDIA Corporation\\Installed Products\\NVIDIA SDK 10\\Compute;InstallDir]"
   "/Developer/GPU\ Computing/C"
+  "${CUDA_TOOLKIT_ROOT_DIR}/sdk"
+  "${CUDA_TOOLKIT_ROOT_DIR}/sdk/C"
   )
 
 # Keep the CUDA_SDK_ROOT_DIR first in order to be able to override the
@@ -658,17 +660,17 @@ set(CUDA_SDK_SEARCH_PATH
 
 # Example of how to find an include file from the CUDA_SDK_ROOT_DIR
 
-# find_path(CUDA_CUT_INCLUDE_DIR
-#   cutil.h
-#   PATHS ${CUDA_SDK_SEARCH_PATH}
-#   PATH_SUFFIXES "common/inc"
-#   DOC "Location of cutil.h"
-#   NO_DEFAULT_PATH
-#   )
-# # Now search system paths
-# find_path(CUDA_CUT_INCLUDE_DIR cutil.h DOC "Location of cutil.h")
+find_path(CUDA_CUT_INCLUDE_DIR
+  cutil.h
+  PATHS ${CUDA_SDK_SEARCH_PATH}
+  PATH_SUFFIXES "common/inc"
+  DOC "Location of cutil.h"
+  NO_DEFAULT_PATH
+  )
+# Now search system paths
+find_path(CUDA_CUT_INCLUDE_DIR cutil.h DOC "Location of cutil.h")
 
-# mark_as_advanced(CUDA_CUT_INCLUDE_DIR)
+mark_as_advanced(CUDA_CUT_INCLUDE_DIR)
 
 
 # Example of how to find a library in the CUDA_SDK_ROOT_DIR
