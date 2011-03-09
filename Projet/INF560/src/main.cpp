@@ -36,7 +36,7 @@ void makeIntegralImage(const IplImage* in, IplImage* out){
 
 
 // Acces au pixel x,y d'une image
-uint getPixel(const IplImage* in, int x, int y)
+inline uint getPixel(const IplImage* in, int x, int y)
 {
 	// Pixel en dehors de l'image
 	if (x < 0 || x >= in->width || y < 0 || y >= in->height)
@@ -74,8 +74,22 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 				
 				// Derivee selon x
 				// Lobe de gauche
-				int lobeGauche = 0 ;
-				lobeGauche += getPixel(imageIntegrale, x-(lobe+1)/2, y) ;
+				int lobeGauche = lobeCentre = lobeDroit = 0 ;
+				lobeGauche += getPixel(imageIntegrale, x-(lobe+1)/2, y + lobe-1) ;
+				lobeGauche -= getPixel(imageIntegrale, x-(lobe+1)/2, y - lobe) ;
+				lobeGauche += getPixel(imageIntegrale, x-(lobe+1)/2 - lobe, y + lobe) ;
+				lobeGauche -= getPixel(imageIntegrale, x-(lobe+1)/2 - lobe, y + lobe-1) ;
+
+				lobeCentre += getPixel(imageIntegrale, x-(lobe+1)/2, y - lobe) ;
+				lobeCentre -= getPixel(imageIntegrale, x-(lobe+1)/2, y + lobe-1) ;
+				lobeCentre += getPixel(imageIntegrale, x+(lobe-1)/2, y + lobe-1) ;
+				lobeCentre -= getPixel(imageIntegrale, x+(lobe-1)/2, y - lobe) ;
+				
+				lobeDroit += getPixel(imageIntegrale, x+(lobe-1)/2, y - lobe) ;
+				lobeDroit -= getPixel(imageIntegrale, x+(lobe-1)/2, y + lobe-1) ;
+				lobeDroit += getPixel(imageIntegrale, x+(lobe-1)/2 + lobe, y + lobe-1) ;
+				lobeDroit -= getPixel(imageIntegrale, x+(lobe-1)/2 + lobe, y - lobe) ;
+				
 				
 			}
 	}
