@@ -1,6 +1,7 @@
 #include <cv.h>
 #include <highgui.h>
-#include <iostream.h>
+#include <iostream>
+#include <cutil.h>
 
 template<class T> class Image
 {
@@ -37,8 +38,6 @@ void makeIntegralImage(const IplImage* in, IplImage* out){
 
 int main ( int argc, char **argv )
 {
-	
-
   cvNamedWindow( "My Window", 1 );
   cvNamedWindow( "My Window 2", 1 );
   IplImage *img = cvLoadImage("lena.jpg",CV_LOAD_IMAGE_GRAYSCALE);
