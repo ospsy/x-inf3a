@@ -1,6 +1,6 @@
 #include <cv.h>
 #include <highgui.h>
-#include <iostream.h>
+#include <iostream>
 
 void makeIntegralImage(const IplImage* in, IplImage* out){
 	if(in->depth!=IPL_DEPTH_8U || out->depth!=IPL_DEPTH_32S){
@@ -20,5 +20,5 @@ void makeIntegralImage(const IplImage* in, IplImage* out){
 			((uint*)((uchar*)out->imageData + out->widthStep*i))[j]=tmp+((uint*)((uchar*)out->imageData + out->widthStep*(i-1)))[j];
 		}
 	}
-	std::cout << "makeIntegralImage : " << 1000*(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
+	std::cout << "makeIntegralImage : " << 1000*(float)(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
 }

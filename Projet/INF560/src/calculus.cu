@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <cv.h>
-#include <time.h>
+#include <ctime>
 
 const int blocksize = 4;
 
@@ -34,15 +34,12 @@ void CUDAmakeIntegralImage(const IplImage* in, IplImage* out){
 		exit(EXIT_FAILURE);
 	}
 	uint *a, pitch;
-	clock_t timer=clock();
 	//allocation de la memoire device
 	cudaMallocPitch((void**)&a,&pitch,in->width*sizeof(unsigned int),in->height);
-	std::cout << "CUDAmakeIntegralImage : " << 1000*(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
-	
 	//copie d'une image U8 vers une S32
 	cvConvert(in, out);
-	std::cout << "CUDAmakeIntegralImage : " << 1000*(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
 	
+	clock_t timer=clock();
 	//copie sur le device
 	if(cudaSuccess != cudaMemcpy2D(a,pitch,out->imageData,out->widthStep,
 			out->width*sizeof(unsigned int),out->height,cudaMemcpyHostToDevice))
@@ -67,14 +64,13 @@ void CUDAmakeIntegralImage(const IplImage* in, IplImage* out){
       CUDAmakeIntegralImageColonnes<<<dimGrid, dimBlock>>>( a, in->width, in->height , pitch );
 	  cudaThreadSynchronize();
 	}
-	std::cout << "CUDAmakeIntegralImage : " << 1000*(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
-	
 	//recuperation depuis le device
 	if(cudaSuccess != cudaMemcpy2D(out->imageData,out->widthStep,a,pitch,
 			out->width*sizeof(unsigned int),out->height,cudaMemcpyDeviceToHost))
 			std::cout << "erreur copie" << std::endl;
+			
+	std::cout << "CUDAmakeIntegralImage : " << 1000*(clock()-timer)/(double)CLOCKS_PER_SEC <<"ms"<< std::endl;
+	
 	//liberation de la memoire du device
 	cudaFree(a);
-
-	std::cout << "CUDAmakeIntegralImage : " << 1000*(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
 }
