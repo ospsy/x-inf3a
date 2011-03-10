@@ -62,7 +62,6 @@ Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 std::vector<Vec3Df> customData;
 
 
-
 void remplissagTex(){
 	
 	for (int i=0 ; i < tex.sizeX ; i++)
