@@ -30,7 +30,8 @@ enum Mode{ MESH=0,TEXTURE};
 int NB_MODES=2;
 Mode mode=MESH;
 
-GLuint idTexture;
+GLuint idCalculatedTexture;
+GLuint idTextureCouleur;
 
 //selon la vitesse de l'ordinateur on recalcule l'eclairage a chaque frame.
 //toggle avec la touche "U" pendant l'execution du programme.
@@ -54,10 +55,10 @@ Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 
 void remplissagTex(){
 	std::cout << "Debut remplissage" << std::endl;
-	
+
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
-		
+
 			Vec3Df Couleur(0,0,0);
 			float poids=0;
 
@@ -67,14 +68,13 @@ void remplissagTex(){
 			enj=enj/tex.sizeY;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				lumiere(CamPos,LightPos[it],LightColor[it],relief,eni,enj,epsilon,nbPas,Couleur,poids);
+				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,eni,enj,epsilon,nbPas,Couleur,poids);
 			}
-			std::cout << Couleur << std::endl;
 			tex.set(i,j,Couleur);
-			
+
 		}
 
-		std::cout << "Fin remplissage" << std::endl;
+	std::cout << "Fin remplissage" << std::endl;
 }
 
 
@@ -84,18 +84,20 @@ void remplissagTex(){
  ************************************************************/
 void init(const char * fileNameRelief,const char * fileNameCouleur){
 	relief.load(fileNameRelief);
-	couleur.load(filenameCouleur);
+	couleur.load(fileNameCouleur);
 	LightPos.resize(1);
 	LightPos[0]=Vec3Df(0,0,3);
 	LightColor.resize(1);
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
-	
-	tex.resize(10,10);
-	glGenTextures(1, &idTexture);
-	glBindTexture(GL_TEXTURE_2D, idTexture);
-	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
-			  GL_RGB, GL_UNSIGNED_BYTE, tex.data);
+
+	tex.resize(60,60);
+	glGenTextures(1, &idCalculatedTexture);
+
+	glGenTextures(1, &idTextureCouleur);
+	glBindTexture(GL_TEXTURE_2D, idTextureCouleur);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, couleur.sizeX, couleur.sizeY,
+			GL_RGB, GL_UNSIGNED_BYTE, couleur.data);
 }
 
 
@@ -111,31 +113,37 @@ void dessiner( )
 		int h=relief.sizeY;
 		for(int y=0;y<h-1;y++){
 			for(int x=0;x<w-1;x++){
+				glBindTexture(GL_TEXTURE_2D, idTextureCouleur);
+				glEnable(GL_TEXTURE_2D);
 				glBegin(GL_QUADS);
-				glVertex3f((float)x/w,(float)y/h,relief(x,y)/255);
-				glVertex3f((float)(x+1)/w,(float)y/h,relief((x+1),y)/255);
-				glVertex3f((float)(x+1)/w,(float)(y+1)/h,relief((x+1),(y+1))/255);
-				glVertex3f((float)x/w,(float)(y+1)/h,relief(x,(y+1))/255);
+				glTexCoord2f((float)x/w,(float)y/h);
+				glVertex3f((float)x/w,(float)y/h,relief(x,y)/255.);
+				glTexCoord2f((float)(x+1)/w,(float)y/h);
+				glVertex3f((float)(x+1)/w,(float)y/h,relief((x+1),y)/255.);
+				glTexCoord2f((float)(x+1)/w,(float)(y+1)/h);
+				glVertex3f((float)(x+1)/w,(float)(y+1)/h,relief((x+1),(y+1))/255.);
+				glTexCoord2f((float)x/w,(float)(y+1)/h);
+				glVertex3f((float)x/w,(float)(y+1)/h,relief(x,(y+1))/255.);
 				glEnd();
 			}
 		}
 	}else{
 		remplissagTex();
+		glBindTexture(GL_TEXTURE_2D, idCalculatedTexture);
 		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
-			  GL_RGB, GL_UNSIGNED_BYTE, tex.data);
+				GL_RGB, GL_UNSIGNED_BYTE, tex.data);
 		glEnable(GL_TEXTURE_2D);
-	    glBindTexture(GL_TEXTURE_2D, idTexture);
 		glBegin(GL_QUADS);
-	    glTexCoord2f(0,0);
-	    glVertex2f(0,0);
-	    glTexCoord2f(0,1);
-	    glVertex2f(0,1);
-	    glTexCoord2f(1,0);
-	    glVertex2f(1,1);
-	    glTexCoord2f(1,0);
-	    glVertex2f(1,0);
-	    glEnd();
-	    glDisable(GL_TEXTURE_2D);
+		glTexCoord2f(0,0);
+		glVertex2f(0,0);
+		glTexCoord2f(0,1);
+		glVertex2f(0,1);
+		glTexCoord2f(1,0);
+		glVertex2f(1,1);
+		glTexCoord2f(1,0);
+		glVertex2f(1,0);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
 		//mode=MESH;
 	}
 
@@ -151,7 +159,7 @@ void idle()
 	if (updateAlways)
 		//computeLighting();
 
-	glutPostRedisplay();
+		glutPostRedisplay();
 }
 
 void display(void);
@@ -187,10 +195,10 @@ int main(int argc, char** argv)
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_NORMALIZE);
 
-	if(argc == 2){
-		init(argv[1]);
+	if(argc == 3){
+		init(argv[1],argv[2]);
 	}else{
-		init("damier.ppm","couleur.ppm");
+		init("relief.ppm","couleur.ppm");
 	}
 
 	// cablage des callback
