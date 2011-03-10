@@ -41,7 +41,7 @@ bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, in
 
 //x et y sont les coordonn�es sur lesquelles on veut projet notre point
 // OriginalColor et poidsCumule nous informent sur la Color pour le moment allou�e au point tex(x,y) et le poids total des distances dans ce calcul
-void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & im, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule);
+void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule);
 
 /*
 Vec3Df tangente(float x, float y ,float theta, const Image & I1){
