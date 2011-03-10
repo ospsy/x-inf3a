@@ -60,6 +60,9 @@ public:
   	data[3*(y+x*sizeY)+1]=(unsigned char)(color[0]*255);
   	data[3*(y+x*sizeY)+2]=(unsigned char)(color[0]*255);
   }
+  inline float getInRealWorld(float x, float y, int color=0) const{
+	  return operator()(x*sizeX,y*sizeY,color);
+  }
 };
 
 #endif

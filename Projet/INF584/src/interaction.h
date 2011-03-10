@@ -52,42 +52,6 @@ void keyboard(unsigned char key, int x, int y)
 		break;
 	case 'B':
 		break;
-
-		//a pas y toucher!!!
-
-		//ARRETEZ DE LIRE � PARTIR D'ICI!!!
-		//________________________________
-		//________________________________
-		//________________________________
-		//________________________________
-		//________________________________
-
-
-	case 'l':
-	{
-		LightPos[SelectedLight]=getCameraPosition();
-		return;
-	}
-	case 'L':
-	{
-		LightPos.push_back(getCameraPosition());
-		LightColor.push_back(Vec3Df(1,1,1));
-		return;
-	}
-	case '+':
-	{
-		++SelectedLight;
-		if (SelectedLight>=LightPos.size())
-			SelectedLight=0;
-		return;
-	}
-	case '-':
-	{
-		--SelectedLight;
-		if (SelectedLight<0)
-			SelectedLight=LightPos.size()-1;
-		return;
-	}
 	case 'U':
 	{
 		updateAlways=!updateAlways;
