@@ -18,6 +18,8 @@ Image img;
 Image tex;
 unsigned int W_fen = 800;  // largeur fenetre
 unsigned int H_fen = 500;  // hauteur fenetre
+int nbPas = 10; // précision de la dichotomie
+float epsilon = 0.0001; // largeur du pas
 
 
 //________________________________
@@ -63,10 +65,22 @@ std::vector<Vec3Df> customData;
 
 void remplissagTex(){
 	
-	for (int i=0 ; i < tex.sizeX ; i++)
-		for(int j=0 ; j < tex.sizeY;j++)
-			
+	
 
+	for (int i=0 ; i < tex.sizeX ; i++)
+		for(int j=0 ; j < tex.sizeY;j++){
+		
+			Vec3Df Couleur(0,0,0);
+			float poids=0;
+
+			for(int it = 0 ; it < LightPos.size() ; it++){
+				lumiere(CamPos,LightPos[it],LightColor[it],img,i,j,epsilon,nbPas,Couleur,poids);
+			}
+
+			tex.set(i,j,Couleur);
+		
+		}
+			
 }
 
 
