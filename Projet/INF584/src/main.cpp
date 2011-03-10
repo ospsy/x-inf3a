@@ -92,7 +92,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
 
-	tex.resize(100,100);
+	tex.resize(50,50);
 	glGenTextures(1, &idCalculatedTexture);
 
 	glGenTextures(1, &idTextureCouleur);
