@@ -13,8 +13,9 @@
 
 using namespace std;
 void dealWithUserInput(int x, int y);
-Image img;
+Image relief;
 Image tex;
+Image couleur;
 unsigned int W_fen = 800;  // largeur fenetre
 unsigned int H_fen = 500;  // hauteur fenetre
 int nbPas = 10; // précision de la dichotomie
@@ -66,7 +67,7 @@ void remplissagTex(){
 			enj=enj/tex.sizeY;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				lumiere(CamPos,LightPos[it],LightColor[it],img,eni,enj,epsilon,nbPas,Couleur,poids);
+				lumiere(CamPos,LightPos[it],LightColor[it],relief,eni,enj,epsilon,nbPas,Couleur,poids);
 			}
 			std::cout << Couleur << std::endl;
 			tex.set(i,j,Couleur);
@@ -81,9 +82,9 @@ void remplissagTex(){
 /************************************************************
  * Fonction pour initialiser la scène
  ************************************************************/
-void init(const char * fileName){
-	img.load(fileName);
-
+void init(const char * fileNameRelief,const char * fileNameCouleur){
+	relief.load(fileNameRelief);
+	couleur.load(filenameCouleur);
 	LightPos.resize(1);
 	LightPos[0]=Vec3Df(0,0,3);
 	LightColor.resize(1);
@@ -106,15 +107,15 @@ void init(const char * fileName){
 void dessiner( )
 {
 	if(mode==MESH){
-		int w=img.sizeX;
-		int h=img.sizeY;
+		int w=relief.sizeX;
+		int h=relief.sizeY;
 		for(int y=0;y<h-1;y++){
 			for(int x=0;x<w-1;x++){
 				glBegin(GL_QUADS);
-				glVertex3f((float)x/w,(float)y/h,img(x,y)/255);
-				glVertex3f((float)(x+1)/w,(float)y/h,img((x+1),y)/255);
-				glVertex3f((float)(x+1)/w,(float)(y+1)/h,img((x+1),(y+1))/255);
-				glVertex3f((float)x/w,(float)(y+1)/h,img(x,(y+1))/255);
+				glVertex3f((float)x/w,(float)y/h,relief(x,y)/255);
+				glVertex3f((float)(x+1)/w,(float)y/h,relief((x+1),y)/255);
+				glVertex3f((float)(x+1)/w,(float)(y+1)/h,relief((x+1),(y+1))/255);
+				glVertex3f((float)x/w,(float)(y+1)/h,relief(x,(y+1))/255);
 				glEnd();
 			}
 		}
@@ -189,7 +190,7 @@ int main(int argc, char** argv)
 	if(argc == 2){
 		init(argv[1]);
 	}else{
-		init("damier.ppm");
+		init("damier.ppm","couleur.ppm");
 	}
 
 	// cablage des callback
