@@ -71,8 +71,13 @@ void remplissagTex(){
 			Vec3Df Couleur(0,0,0);
 			float poids=0;
 
+			float eni=i;
+			float enj=j;
+			eni=eni/tex.sizeX;
+			enj=enj/tex.sizeY;
+
 			for(int it = 0 ; it < LightPos.size() ; it++){
-				lumiere(CamPos,LightPos[it],LightColor[it],img,i,j,epsilon,nbPas,Couleur,poids);
+				lumiere(CamPos,LightPos[it],LightColor[it],img,eni,enj,epsilon,nbPas,Couleur,poids);
 			}
 
 			tex.set(i,j,Couleur);

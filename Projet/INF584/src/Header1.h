@@ -79,7 +79,7 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & im, fl
 		
 }
 
-
+/*
 Vec3Df tangente(float x, float y ,float theta, const Image & I1){
 
 
@@ -89,4 +89,4 @@ Vec3Df tangente(float x, float y ,float theta, const Image & I1){
 float safetyRadius(float x, float y, const Image& I1, float theta){
 
 
-}
+}*/
