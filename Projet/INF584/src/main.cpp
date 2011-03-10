@@ -6,14 +6,12 @@
 #include <math.h>
 #include <assert.h>
 #include "traqueboule.h"
-#include "mesh.h"
 #include "loadppm.h"
-#include "Header1.h"
+#include "lighting.h"
 
 using namespace std;
 void computeLighting();
 void dealWithUserInput(int x, int y);
-Mesh MyMesh;
 Image img;
 Image tex;
 unsigned int W_fen = 800;  // largeur fenetre
@@ -22,12 +20,6 @@ int nbPas = 10; // précision de la dichotomie
 float epsilon = 0.01; // largeur du pas
 
 
-//________________________________
-//________________________________
-//________________________________
-//________________________________
-//________________________________
-//COMMENCEZ A LIRE ICI!!!
 
 //couleur du d�cors
 float BackgroundColor[]={0,0,0};
@@ -58,10 +50,6 @@ Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 
 
 
-//un tableau suppl�mentaire utilis� pour faire des changements locals (plus tard dans l'exercise)
-std::vector<Vec3Df> customData;
-
-
 void remplissagTex(){
 	std::cout << "Debut remplissage" << std::endl;
 	
@@ -88,52 +76,6 @@ void remplissagTex(){
 }
 
 
-
-
-Vec3Df computeLighting(Vec3Df & vertexPos, Vec3Df & normal, unsigned int light, unsigned int index)
-{
-	//la fonction pour calculer l'�clairage du mod�le.
-	switch(mode)
-	{
-	/*case ORIGINAL_LIGHTING:
-	{
-		return Vec3Df(1,1,1);
-	}
-	case DIFFUSE_LIGHTING:
-	{
-		return Vec3Df(1,1,1)*Vec3Df::dotProduct(LightPos[0]-vertexPos,normal)/(normal.getLength()*(LightPos[0]-vertexPos).getLength());
-	}
-	case SPECULAR_LIGHTING:
-	{
-		return Vec3Df(1,1,1)*pow(Vec3Df::dotProduct(CamPos-vertexPos,normal)/(normal.getLength()*(CamPos-vertexPos).getLength()),5);
-	}
-	case COMBINED_LIGHTING:
-	{
-		Vec3Df result(0,0,0);
-		for(int i=0;i<LightPos.size();i++){
-			result+=LightColor[i]/Vec3Df::distance(LightPos[i],vertexPos)*(Vec3Df::dotProduct(LightPos[i]-vertexPos,normal)/(normal.getLength()*(LightPos[i]-vertexPos).getLength()));
-			if(Vec3Df::dotProduct(LightPos[i]-vertexPos,normal)>0)
-				result+=LightColor[i]/Vec3Df::distance(LightPos[i],vertexPos)*(pow(Vec3Df::dotProduct(CamPos-vertexPos,normal)/(normal.getLength()*(CamPos-vertexPos).getLength()),5));
-		}
-		return result;
-	}
-	case TOON_LIGHTING:
-	{
-		Vec3Df result(0,0,0);
-		for(int i=0;i<LightPos.size();i++){
-			result+=LightColor[i]/Vec3Df::distance(LightPos[i],vertexPos)*(Vec3Df::dotProduct(LightPos[i]-vertexPos,normal)/(normal.getLength()*(LightPos[i]-vertexPos).getLength()));
-			if(Vec3Df::dotProduct(LightPos[i]-vertexPos,normal)>0)
-				result+=LightColor[i]/Vec3Df::distance(LightPos[i],vertexPos)*(pow(Vec3Df::dotProduct(CamPos-vertexPos,normal)/(normal.getLength()*(CamPos-vertexPos).getLength()),5));
-		}
-		if(result.normalize()>0.5)
-			result.init(0,0,0);
-		else result.init(1,1,1);;
-	}*/
-
-	default:
-		return Vec3Df(0,1,0);
-	}
-}
 
 
 //pour g�rer les interactions avec l'utilisateur
@@ -252,23 +194,17 @@ void keyboard(unsigned char key, int x, int y)
 
 
 
-//�clairage du mod�le (normalement vous n'avez pas � y toucher...
-std::vector<Vec3Df> lighting;
-
 /************************************************************
- * Fonction pour initialiser le maillage
+ * Fonction pour initialiser la scène
  ************************************************************/
 void init(const char * fileName){
-	cout << "avant" <<endl;
 	img.load(fileName);
-	cout << "apres" << endl;
 
 	LightPos.resize(1);
 	LightPos[0]=Vec3Df(0,0,3);
 	LightColor.resize(1);
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
-	//computeLighting();
 	
 	tex.resize(10,10);
 	glGenTextures(1, &idTexture);
@@ -282,19 +218,6 @@ void init(const char * fileName){
 /************************************************************
  * Appel des diff�rentes fonctions de dessin
  ************************************************************/
-
-
-/*void dealWithUserInput(int x, int y)
-{
-	Vec3Df worldPoint=getWorldPositionOfPixel(x, H_fen-y);
-	SelectedVertex=MyMesh.getClosestVertexIndex(CamPos, worldPoint-CamPos);
-	if (SelectedVertex>=0)
-	{
-		Vec3Df selectedPos=MyMesh.vertices[SelectedVertex].p;
-		Vec3Df selectedNormal=MyMesh.vertices[SelectedVertex].n;
-		userInteraction(selectedPos, selectedNormal, SelectedVertex, CamPos, (worldPoint-CamPos).unit());				
-	}
-}*/
 
 void dessiner( )
 {
@@ -331,46 +254,6 @@ void dessiner( )
 		mode==MESH;
 	}
 
-
-	/*glPointSize(10);
-	glBegin(GL_POINTS);
-	//LightColor
-	glColor3f(1,0,0);	
-
-	for (int i=0; i<LightPos.size();++i)	
-	{	
-		glVertex3f(LightPos[i][0],LightPos[i][1],LightPos[i][2]);
-	}
-	glEnd();
-
-	glPointSize(40);
-	glColor3f(1,1,0);	
-	glBegin(GL_POINTS);
-	glVertex3f(LightPos[SelectedLight][0],LightPos[SelectedLight][1],LightPos[SelectedLight][2]);
-	glEnd();
-
-	switch( mode )
-	{
-	case ORIGINAL_LIGHTING:
-	{
-		Vec3Df p;
-		if (ShowSelectedVertex&&SelectedVertex>=0)
-		{
-			p=MyMesh.vertices[SelectedVertex].p;
-			glBegin(GL_POINTS);
-			glVertex3f(p[0],p[1],p[2]);
-			glEnd();
-		}
-		MyMesh.drawWithColors(lighting);
-	}
-	break;
-	case MODIFY_LIGHTING:
-		//defineLight();
-		break;
-	default:
-		MyMesh.drawWithColors(lighting);
-		break;
-	}*/
 }
 
 
@@ -389,20 +272,6 @@ void idle()
 void display(void);
 void reshape(int w, int h);
 void keyboard(unsigned char key, int x, int y);
-
-
-void computeLighting()
-{
-	std::vector<Vec3Df> *result=&lighting;
-
-
-	for (unsigned int i=0; i<MyMesh.vertices.size();++i)
-	{
-		(*result)[i]=Vec3Df();
-		for (unsigned int l=0; l<LightPos.size();++l)
-			(*result)[i]+=computeLighting(MyMesh.vertices[i].p, MyMesh.vertices[i].n, l, i);
-	}
-}
 
 
 
