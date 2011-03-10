@@ -1,7 +1,7 @@
 /* loadppm.cpp
  *  v1.3 11.10.2005
  */
-#include "loadppm.h"
+#include "image.h"
 
 void Image::load(const char *filename)
 {
