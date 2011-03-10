@@ -61,7 +61,8 @@ std::vector<Vec3Df> customData;
 
 
 
-
+void remplissagTex(){
+}
 
 
 
