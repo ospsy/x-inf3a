@@ -27,7 +27,7 @@ public :
 };
 
 inline bool estSous(const Vec3Df courant, const Image & im){
-	return im(courant[0],courant[1])> courant[2];
+	return im.getInRealWorld(courant[0],courant[1])/255> courant[2];
 }
 
 
