@@ -65,8 +65,6 @@ std::vector<Vec3Df> customData;
 
 void remplissagTex(){
 	
-	
-
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
 		
@@ -80,7 +78,6 @@ void remplissagTex(){
 			tex.set(i,j,Couleur);
 		
 		}
-			
 }
 
 
