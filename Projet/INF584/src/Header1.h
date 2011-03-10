@@ -69,14 +69,14 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & im, fl
 
 	if(!eclairage(regard, PosLum, im, epsilon,nbPas,intersec))
 		return;
-
+	std::cout << "plop" << std::endl;
 	float poids2 = Vec3Df::distance(PosLum,intersec);
-
+	std::cout << poids2 << std::endl;
 	Vec3Df coul = Vec3Df(ColorLum[0]*im(x,y,0),ColorLum[1]*im(x,y,1),ColorLum[2]*im(x,y,2));
-
+	std::cout << coul << std::endl;
 	OriginalColor = (poidsCumule*OriginalColor+coul*poids2)/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
-		
+	std::cout << OriginalColor << std::endl;
 }
 
 /*

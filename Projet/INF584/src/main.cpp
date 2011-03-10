@@ -19,7 +19,7 @@ Image tex;
 unsigned int W_fen = 800;  // largeur fenetre
 unsigned int H_fen = 500;  // hauteur fenetre
 int nbPas = 10; // précision de la dichotomie
-float epsilon = 0.0001; // largeur du pas
+float epsilon = 0.01; // largeur du pas
 
 
 //________________________________
@@ -63,6 +63,7 @@ std::vector<Vec3Df> customData;
 
 
 void remplissagTex(){
+	std::cout << "Debut remplissage" << std::endl;
 	
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
@@ -78,10 +79,12 @@ void remplissagTex(){
 			for(int it = 0 ; it < LightPos.size() ; it++){
 				lumiere(CamPos,LightPos[it],LightColor[it],img,eni,enj,epsilon,nbPas,Couleur,poids);
 			}
-
+			std::cout << Couleur << std::endl;
 			tex.set(i,j,Couleur);
-		
+			
 		}
+
+		std::cout << "Fin remplissage" << std::endl;
 }
 
 
@@ -256,13 +259,18 @@ std::vector<Vec3Df> lighting;
  * Fonction pour initialiser le maillage
  ************************************************************/
 void init(const char * fileName){
+	cout << "avant" <<endl;
 	img.load(fileName);
+	cout << "apres" << endl;
+
+	LightPos.resize(1);
+	LightPos[0]=Vec3Df(0,0,3);
+	LightColor.resize(1);
+	LightColor[0]=Vec3Df(1,1,1);
+	SelectedLight=0;
+	//computeLighting();
 	
-	LightPos.push_back(Vec3Df(0,0,3));
-	LightColor.push_back(Vec3Df(1,1,1));
-	computeLighting();
-	
-	tex.resize(300,300);
+	tex.resize(10,10);
 	glGenTextures(1, &idTexture);
 	glBindTexture(GL_TEXTURE_2D, idTexture);
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
@@ -304,6 +312,7 @@ void dessiner( )
 			}
 		}
 	}else{
+		remplissagTex();
 		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
 			  GL_RGB, GL_UNSIGNED_BYTE, tex.data);
 		glEnable(GL_TEXTURE_2D);
@@ -319,6 +328,7 @@ void dessiner( )
 	    glVertex2f(1,0);
 	    glEnd();
 	    glDisable(GL_TEXTURE_2D);
+		mode==MESH;
 	}
 
 
