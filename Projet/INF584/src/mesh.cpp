@@ -1,6 +1,5 @@
 #include "mesh.h"
 #include <GL/glut.h>
-
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
