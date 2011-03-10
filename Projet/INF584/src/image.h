@@ -56,9 +56,9 @@ public:
   	return data[3*(y+x*sizeY)+color];
   }
   inline void set(int x, int y, const Vec3Df& color){
-  	data[3*(y+x*sizeY)]=(unsigned char)(color[0]*255);
-  	data[3*(y+x*sizeY)+1]=(unsigned char)(color[0]*255);
-  	data[3*(y+x*sizeY)+2]=(unsigned char)(color[0]*255);
+  	data[3*(y+x*sizeY)]=(unsigned char)(color[0]);
+  	data[3*(y+x*sizeY)+1]=(unsigned char)(color[1]);
+  	data[3*(y+x*sizeY)+2]=(unsigned char)(color[2]);
   }
   inline float getInRealWorld(float x, float y, int color=0) const{
 	  return operator()(x*sizeX,y*sizeY,color);
