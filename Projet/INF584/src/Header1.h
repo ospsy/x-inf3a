@@ -15,15 +15,13 @@ public :
 
 };
 
-bool estSous(const Vec3Df courant, Image & im){
+bool estSous(const Vec3Df courant, const Image & im){
 	return im(courant[0],courant[1])> courant[2];
 }
 
 
 //La valeur d'epsilon est celle du pas pour avancer
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
-
-	int nbPas = 10;
 
 	Vec3Df courant = r.origine;
 	while(! estSous(courant,im)){
@@ -57,9 +55,9 @@ bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, in
 
 	//On retrouve le point sur lequel le regard tombe
 	intersec = intersection(regard,im,epsilon,nbPas);
-	Rayon r2(lumiere,inter-lumiere);
+	Rayon r2(lumiere,intersec-lumiere);
 
-	return (distance(inter,intersection(r2,im,epsilon,nbPas)) < epsilon);
+	return (Vec3Df::distance(intersec,intersection(r2,im,epsilon,nbPas)) < epsilon);
 }
 
 //x et y sont les coordonnées sur lesquelles on veut projet notre point
@@ -72,11 +70,11 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & im, fl
 	if(!eclairage(regard, PosLum, im, epsilon,nbPas,intersec))
 		return;
 
-	float poids2 = Vec3Df::distance(PosLum,inter);
+	float poids2 = Vec3Df::distance(PosLum,intersec);
 
 	Vec3Df coul = Vec3Df(ColorLum[0]*im(x,y,0),ColorLum[1]*im(x,y,1),ColorLum[2]*im(x,y,2));
 
-	OriginalColor = (poidsCumule*Original+coul*poids2)/(poids2+poidsCumule);
+	OriginalColor = (poidsCumule*OriginalColor+coul*poids2)/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
 		
 }
