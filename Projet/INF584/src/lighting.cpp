@@ -5,7 +5,6 @@
  *      Author: benoit
  */
 
-#include "Vec3D.h"
 #include "lighting.h"
 
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){

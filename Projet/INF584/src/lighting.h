@@ -1,12 +1,17 @@
 /*
  * lighting.h
  *
+ * Header des fonctions d'éclairage
+ *
  *  Created on: 10 mars 2011
  *      Author: benoit
  */
 
 #ifndef LIGHTING_H_
 #define LIGHTING_H_
+
+#include "Vec3D.h"
+#include "image.h"
 
 class Rayon{
 

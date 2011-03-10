@@ -6,11 +6,12 @@
 #include <math.h>
 #include <assert.h>
 #include "traqueboule.h"
-#include "loadppm.h"
+#include "image.h"
 #include "lighting.h"
+#include "Vec3D.h"
+#include <vector>
 
 using namespace std;
-void computeLighting();
 void dealWithUserInput(int x, int y);
 Image img;
 Image tex;
@@ -48,7 +49,7 @@ std::vector<Vec3Df> LightColor;
 //la position de la cam�ra COURRANTE!
 Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 
-
+#include "interaction.h"
 
 void remplissagTex(){
 	std::cout << "Debut remplissage" << std::endl;
@@ -64,7 +65,7 @@ void remplissagTex(){
 			eni=eni/tex.sizeX;
 			enj=enj/tex.sizeY;
 
-			for(int it = 0 ; it < LightPos.size() ; it++){
+			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
 				lumiere(CamPos,LightPos[it],LightColor[it],img,eni,enj,epsilon,nbPas,Couleur,poids);
 			}
 			std::cout << Couleur << std::endl;
@@ -73,123 +74,6 @@ void remplissagTex(){
 		}
 
 		std::cout << "Fin remplissage" << std::endl;
-}
-
-
-
-
-//pour g�rer les interactions avec l'utilisateur
-void userInteraction(const Vec3Df & selectedPos, const Vec3Df & selectedNormal, int selectedIndex, Vec3Df origin, Vec3Df direction)
-{
-	if(selectedIndex<0)
-		return;
-	//LightPos[0]=selectedPos-direction/direction.getSquaredLength();
-	direction.normalize();
-	LightPos[0]-=Vec3Df::dotProduct(direction,selectedPos+LightPos[0])*direction;
-	LightPos[0].normalize();
-	LightPos[0]*=1.5;
-	std::cout << LightPos[0] << std::endl;
-}
-
-
-
-// prise en compte du clavier
-//Vous allez ajouter quelques fonctionalites pendant le TP
-//ce qui est important pour vous: key contient le caract�re correspondant � la touche appuy� par l'utilisateur
-
-void keyboard(unsigned char key, int x, int y)
-{
-	printf("key %d pressed at %d,%d\n",key,x,y);
-	fflush(stdout);
-	if (key>'0'&& key<='7')
-	{
-		mode=Mode(key-'1');
-		computeLighting();
-		return;
-	}
-
-	switch (key)
-	{
-	case 'm':
-	{
-		mode=Mode((mode+1)%NB_MODES);
-		return;
-	}
-	case 'r':
-		break;
-	case 'R':
-		break;
-	case 'g':
-		break;
-	case 'G':
-		break;
-	case 'b':
-		break;
-	case 'B':
-		break;
-
-		//a pas y toucher!!!
-
-		//ARRETEZ DE LIRE � PARTIR D'ICI!!!
-		//________________________________
-		//________________________________
-		//________________________________
-		//________________________________
-		//________________________________
-
-
-	case 'l':
-	{
-		LightPos[SelectedLight]=getCameraPosition();
-		return;
-	}
-	case 'L':
-	{
-		LightPos.push_back(getCameraPosition());
-		LightColor.push_back(Vec3Df(1,1,1));
-		return;
-	}
-	case '+':
-	{
-		++SelectedLight;
-		if (SelectedLight>=LightPos.size())
-			SelectedLight=0;
-		return;
-	}
-	case '-':
-	{
-		--SelectedLight;
-		if (SelectedLight<0)
-			SelectedLight=LightPos.size()-1;
-		return;
-	}
-	case 'U':
-	{
-		updateAlways=!updateAlways;
-		return;
-	}
-
-	case 'N':
-	{
-		for (unsigned int i=0; i<MyMesh.vertices.size();++i)
-		{
-			customData[i]=Vec3Df(0,0,0);
-		}
-		LightPos.resize(1);
-		LightPos[0]=Vec3Df(0,0,3);
-		LightColor.resize(1);
-		LightColor[0]=Vec3Df(1,1,1);
-		SelectedLight=0;
-	}
-
-	case 'u':
-	{
-		//mise a jour de l'eclairage
-		computeLighting();
-		return;
-	}
-	}
-
 }
 
 
@@ -251,7 +135,7 @@ void dessiner( )
 	    glVertex2f(1,0);
 	    glEnd();
 	    glDisable(GL_TEXTURE_2D);
-		mode==MESH;
+		//mode=MESH;
 	}
 
 }
@@ -264,7 +148,7 @@ void idle()
 	CamPos=getCameraPosition();
 
 	if (updateAlways)
-		computeLighting();
+		//computeLighting();
 
 	glutPostRedisplay();
 }
