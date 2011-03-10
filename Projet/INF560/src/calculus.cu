@@ -4,7 +4,7 @@
 #include <cv.h>
 #include <ctime>
 
-const int blocksize = 8;
+const int blocksize = 6;
 
 __global__ void CUDAmakeIntegralImageLignes(uint* a, int width, int height, int pitch ) {
   int n = blockIdx.x * blockDim.x*blockDim.y+blockIdx.y*blockDim.y*blockDim.x*gridDim.x + threadIdx.x + threadIdx.y*blockDim.x;

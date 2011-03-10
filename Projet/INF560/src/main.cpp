@@ -23,10 +23,10 @@ typedef Image<unsigned char>  BwImage;
 inline uint getPixel(const IplImage* in, int x, int y)
 {
 	// Pixel en dehors de l'image
-	if (x < 0 || x >= in->width || y < 0 || y >= in->height)
+	if (x < 0 || x >= in->width || y < 0 || y >= in->height){
 		std::cout << "En dehords des bords.\n" ;
 		return 0 ;
-	
+	}
 	return ((uint*)( (in->imageData) + (in->widthStep) * x)) [y] ;
 }	
 
@@ -120,7 +120,7 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 				
 				int dxy = lobe00 + lobe11 - lobe10 - lobe01 ;
 				
-				((int*)(current->imageData + current->widthStep*x))[y] = (int)(dxx*dyy- (0.9*dxy)*(0.9*dxy)) ;
+				((int*)(current->imageData + current->widthStep*x))[y] = (int)((dxx*dyy- (0.9*dxy)*(0.9*dxy))/area) ;
 			}
 	}
 }
@@ -129,14 +129,14 @@ int main ( int argc, char **argv )
 {
   cvNamedWindow( "My Window", 1 );
   cvNamedWindow( "My Window 2", 1 );
-  IplImage *img = cvLoadImage("lena_600.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+  IplImage *img = cvLoadImage("lena_1024.jpg",CV_LOAD_IMAGE_GRAYSCALE);
   if(!img){
   	std::cout << "impossible de charger l'image, aborting..." << std::endl;
   	return 1;
   }
   IplImage *img2 = cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
   IplImage *img3 = cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
-  cvShowImage( "My Window", img );
+  //cvShowImage( "My Window", img );
   //integralImage
   CUDAmakeIntegralImage(img,img2);
   makeIntegralImage(img,img3);
@@ -151,12 +151,18 @@ int main ( int argc, char **argv )
   //filtres gaussiens
   IplImage *imgs[6];
   for(int i=0;i<6;i++){
-  	imgs[i]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32F,1);
+  	imgs[i]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
   }
-  calculateGaussianDerivative(img,imgs,0,6);
+  calculateGaussianDerivative(img3,imgs,0,6);
   cvShowImage( "My Window 3", imgs[0] );
-  cvShowImage( "My Window 4", imgs[1] );
-  cvShowImage( "My Window 5", imgs[2] );
+  //cvShowImage( "My Window 4", imgs[1] );
+  //cvShowImage( "My Window 5", imgs[2] );
+  for(int i=0;i<img->height;i++){
+  	for(int j=0;j<img->width;j++){
+  		i=j;
+  		std::cout << i << "," << j << " "<< ((int*)( imgs[0]->imageData + imgs[0]->widthStep * i)) [j] << std::endl;
+    }
+  }
   
   cvWaitKey();
   cvReleaseImage(&img);
