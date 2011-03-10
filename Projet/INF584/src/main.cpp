@@ -53,22 +53,22 @@ Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 
 #include "interaction.h"
 
-void remplissagTex(){
+void remplissageTex(){
 	std::cout << "Debut remplissage" << std::endl;
 
+	std::cout << "Caméra " << CamPos << std::endl;
+	std::cout << "Lumière " << LightPos[0] << std::endl;
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
+
+			float realX = i/(float)(tex.sizeX);
+			float realY = j/(float)(tex.sizeY);
 
 			Vec3Df Couleur(0,0,0);
 			float poids=0;
 
-			float eni=i;
-			float enj=j;
-			eni=eni/tex.sizeX;
-			enj=enj/tex.sizeY;
-
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,eni,enj,epsilon,nbPas,Couleur,poids);
+				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,Couleur,poids);
 			}
 			tex.set(i,j,Couleur);
 
@@ -91,7 +91,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
 
-	tex.resize(60,60);
+	tex.resize(100,100);
 	glGenTextures(1, &idCalculatedTexture);
 
 	glGenTextures(1, &idTextureCouleur);
@@ -128,7 +128,7 @@ void dessiner( )
 			}
 		}
 	}else{
-		remplissagTex();
+		remplissageTex();
 		glBindTexture(GL_TEXTURE_2D, idCalculatedTexture);
 		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
 				GL_RGB, GL_UNSIGNED_BYTE, tex.data);
@@ -138,7 +138,7 @@ void dessiner( )
 		glVertex2f(0,0);
 		glTexCoord2f(0,1);
 		glVertex2f(0,1);
-		glTexCoord2f(1,0);
+		glTexCoord2f(1,1);
 		glVertex2f(1,1);
 		glTexCoord2f(1,0);
 		glVertex2f(1,0);
