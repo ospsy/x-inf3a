@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <math.h>
-//#include <GL/gl.h>
 #include "Vec3D.h"
 #include <GL/glut.h>
 
