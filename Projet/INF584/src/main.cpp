@@ -58,6 +58,7 @@ void remplissageTex(){
 
 	std::cout << "Caméra " << CamPos << std::endl;
 	std::cout << "Lumière " << LightPos[0] << std::endl;
+	std::cout << "Lumière couleur " << LightColor[0] << std::endl;
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
 

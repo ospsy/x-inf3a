@@ -34,7 +34,6 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 
 
 bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec){
-	return true;
 	//On retrouve le point sur lequel le regard tombe
 	intersec = intersection(regard,im,epsilon,nbPas);
 	Rayon r2(lumiere,intersec-lumiere);
@@ -49,12 +48,12 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief
 
 	if(!eclairage(regard, PosLum, relief, epsilon,nbPas,intersec))
 		return;
-//	std::cout << "plop" << std::endl;
 	float poids2 = Vec3Df::distance(PosLum,intersec);
-//	std::cout << poids2 << std::endl;
-	Vec3Df coul = Vec3Df(ColorLum[0]*couleur.getInRealWorld(x,y,0),ColorLum[1]*couleur.getInRealWorld(x,y,1),ColorLum[2]*couleur.getInRealWorld(x,y,2));
-//	std::cout << coul << std::endl;
+	float xCol = intersec[0];
+	float yCol = intersec[1];
+	std::cout << "x,y=" << x << ","<< y << "|"<< xCol<<","<<yCol<<std::endl;
+	Vec3Df coul = Vec3Df(ColorLum[0]*couleur.getInRealWorld(xCol,yCol,0),ColorLum[1]*couleur.getInRealWorld(xCol,yCol,1),ColorLum[2]*couleur.getInRealWorld(xCol,yCol,2));
+
 	OriginalColor = (poidsCumule*OriginalColor+coul*poids2)/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
-//	std::cout << OriginalColor << std::endl;
 }
