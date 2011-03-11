@@ -5,21 +5,9 @@
 #include "surf.h"
 #include "surfCUDA.h"
 
-template<class T> class Image
-{
-  public:
-  IplImage* imgp;
-  Image(IplImage* img=0) {imgp=img;}
-  ~Image(){imgp=0;}
-  void operator=(IplImage* img) {imgp=img;}
-  inline T* operator[](const int rowIndx) const {
-    return ((T *)(imgp->imageData + rowIndx*imgp->widthStep));}
-};
-
-typedef Image<unsigned char>  BwImage;
-
 
 // Acces au pixel x,y d'une image
+//#define getPixel(in, x, y) ((uint*)( ((in)->imageData) + ((in)->widthStep) * (x))) [(y)]
 inline uint getPixel(const IplImage* in, int x, int y)
 {
 	// Pixel en dehors de l'image
@@ -129,7 +117,7 @@ int main ( int argc, char **argv )
 {
   cvNamedWindow( "My Window", 1 );
   cvNamedWindow( "My Window 2", 1 );
-  IplImage *img = cvLoadImage("lena_600.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+  IplImage *img = cvLoadImage("lena_1024.jpg",CV_LOAD_IMAGE_GRAYSCALE);
   if(!img){
   	std::cout << "impossible de charger l'image, aborting..." << std::endl;
   	return 1;
