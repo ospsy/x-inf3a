@@ -77,6 +77,9 @@ __global__ void CUDAcalculateGaussianDerivative2(uint* integral, uint* out, int 
 				
 				getPixel(out, pitch, x, y) = (int)((dxx*dyy- (0.9*dxy)*(0.9*dxy))/area) ;
   }
+  else{
+  	getPixel(out, pitch, x, y) =0;
+  }
 }
 
 void CUDAcalculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out, int octave, int intervals){
