@@ -21,8 +21,6 @@ unsigned int H_fen = 500;  // hauteur fenetre
 int nbPas = 10; // précision de la dichotomie
 float epsilon = 0.01; // largeur du pas
 
-
-
 //couleur du d�cors
 float BackgroundColor[]={0,0,0};
 // Diff�rents modes d'affichage
@@ -38,7 +36,6 @@ GLuint idTextureCouleur;
 //"u" en miniscule effectue un seul calcul pour la configuration courrante.
 bool updateAlways=true;
 
-//devient plus int�ressant plus tard dans l'exercice.
 //pour le moment, utilisez toujours LightPos[0]
 std::vector<Vec3Df> LightPos;
 //la lumi�re courrante (au d�but ceci vaut toujours 0)
@@ -59,6 +56,7 @@ void remplissageTex(){
 	std::cout << "Caméra " << CamPos << std::endl;
 	std::cout << "Lumière " << LightPos[0] << std::endl;
 	std::cout << "Lumière couleur " << LightColor[0] << std::endl;
+	
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
 

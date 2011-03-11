@@ -4,7 +4,7 @@
  * Header des fonctions d'éclairage
  *
  *  Created on: 10 mars 2011
- *      Author: benoit
+ *      Author: Benoit SEGUIN (dit "La Chèvre")
  */
 
 #ifndef LIGHTING_H_
@@ -22,6 +22,7 @@ public :
 	Rayon(Vec3Df o, Vec3Df d){
 		origine = o;
 		direction = d;
+		direction.normalize();
 	}
 
 };
