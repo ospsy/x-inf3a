@@ -13,13 +13,13 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 	while(! estSous(courant,im)){
 		courant+= (r.direction)*epsilon;
 	}
-
+	
 	// Recherche Binaire
 	float pas = epsilon/2;
 
 	for(int i = 0 ; i < nbPas ; i++) {
 		Vec3Df milieu;
-		milieu= courant-r.direction*pas;
+		milieu= courant-(r.direction)*pas;
 
 
 		if(estSous(milieu,im)){
@@ -28,12 +28,14 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 
 		pas= pas/2;
 	}
+	
 
 	return courant;
 }
 
 
 bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec){
+	
 	//On retrouve le point sur lequel le regard tombe
 	intersec = intersection(regard,im,epsilon,nbPas);
 	Rayon r2(lumiere,intersec-lumiere);
@@ -43,7 +45,9 @@ bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, in
 
 
 void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule){
+	
 	Rayon regard(PosCam, Vec3Df(x,y,0)-PosCam);
+	
 	Vec3Df intersec;
 
 	if(!eclairage(regard, PosLum, relief, epsilon,nbPas,intersec)){
