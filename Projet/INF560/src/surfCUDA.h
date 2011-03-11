@@ -10,4 +10,6 @@
  */
 void CUDAmakeIntegralImage(const IplImage* in, IplImage* out);
 
+void CUDAcalculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out, int octave, int intervals);
+
 #endif /*SURFCUDA_H_*/
