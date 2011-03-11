@@ -65,13 +65,13 @@ void remplissageTex(){
 			float realX = i/(float)(tex.sizeX);
 			float realY = j/(float)(tex.sizeY);
 
-			Vec3Df Couleur(0,0,0);
+			Vec3Df col(0,0,0);
 			float poids=0;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,Couleur,poids);
+				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
 			}
-			tex.set(i,j,Couleur);
+			tex.set(i,j,col);
 
 		}
 
@@ -92,7 +92,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
 
-	tex.resize(50,50);
+	tex.resize(100,100);
 	glGenTextures(1, &idCalculatedTexture);
 
 	glGenTextures(1, &idTextureCouleur);
