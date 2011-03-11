@@ -43,6 +43,7 @@ public:
 		if(y>=sizeY) y=sizeY-1;
 		int x0=(int)x;
 		int y0=(int)y;
+		return data[3*(y0+x0*sizeY)+color];
 		return data[3*(y0+x0*sizeY)+color]*(x0+1-x)*(y0+1-y)+
 				data[3*(y0+1+x0*sizeY)+color]*(x0+1-x)*(y0-y)+
 				data[3*(y0+1+(x0+1)*sizeY)+color]*(x0-x)*(y0-y)+
