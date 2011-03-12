@@ -6,12 +6,7 @@
  */
 
 #include "lighting.h"
-
-
-using namespace std;
-
-
-float epsilon = 0.001;
+float eps = 0.001;
 
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 
@@ -74,7 +69,7 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief
 
 float tangente(float x, float y, float theta, float sens, float pasX, float pasY, const Image & img){
 	
-	return (img.getInRealWorld(x+sens*pasX,y+sens*pasY)-img.getInRealWorld(x,y))/epsilon;
+	return (img.getInRealWorld(x+sens*pasX,y+sens*pasY)-img.getInRealWorld(x,y))/eps;
 
 }
 
@@ -87,8 +82,8 @@ bool Negal(float tangente1,float tangente2, float ToutPetit){
 float safetyRadius(float x, float y, float theta, const Image & img){
 	
 	//La valeur de la norme du pas considéré ici : nous pouvons nous permettre une valeur très inférieure à celui utilisé dans la version simpliste du programme
-	float pasX=(float) (epsilon*cos((double)theta));
-	float pasY=(float) (epsilon*sin((double)theta));
+	float pasX=(float) (eps*cos((double)theta));
+	float pasY=(float) (eps*sin((double)theta));
 	
 	//courantD et courantG vont nous permettre de remonter le long de la courbe suivant le plan défini par theta
 	Vec3Df courantD(x,y,img.getInRealWorld(x,y));
@@ -110,7 +105,7 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 		if(GD==0){
 		
 			//N'oublions pas que nous allons désormais vers la gauche
-			Vec3Df pasD(pasX/epsilon,pasY/epsilon,tangenteD);
+			Vec3Df pasD(pasX/eps,pasY/eps,tangenteD);
 			pasD.normalize();
 			pasD*=-tailleCase;
 
@@ -127,7 +122,7 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 
 		}else{
 		
-			Vec3Df pasG(-pasX/epsilon,-pasY/epsilon,tangenteG);
+			Vec3Df pasG(-pasX/eps,-pasY/eps,tangenteG);
 			pasG.normalize();
 			pasG*=-tailleCase;
 
@@ -138,7 +133,7 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 			float T = tangente(courantGt[0],courantGt[1],theta,-1,pasX,pasY,img);
 			if( Negal(T,tangenteD,ToutPetit)){
 				if(SolutionPartielle){
-					if(distance(sol,Vec3Df(x,y,img.getInRealWorld(x,y))) < distance(courantGt,Vec3Df(x,y,img.getInRealWorld(x,y)))){
+					if(Vec3Df::distance(sol,Vec3Df(x,y,img.getInRealWorld(x,y))) < Vec3Df::distance(courantGt,Vec3Df(x,y,img.getInRealWorld(x,y)))){
 						SolutionTrouvee=true;
 					}else{
 						sol = courantGt;
