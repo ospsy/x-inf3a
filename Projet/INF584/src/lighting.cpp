@@ -7,6 +7,12 @@
 
 #include "lighting.h"
 
+
+using namespace std;
+
+
+float epsilon = 0.001;
+
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 
 	Vec3Df courant = r.origine;
@@ -64,3 +70,101 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief
 	OriginalColor = (poidsCumule*OriginalColor+coul*poids2)/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
 }
+
+
+float tangente(float x, float y, float theta, float sens, float pasX, float pasY, const Image & img){
+	
+	return (img.getInRealWorld(x+sens*pasX,y+sens*pasY)-img.getInRealWorld(x,y))/epsilon;
+
+}
+
+bool Negal(float tangente1,float tangente2, float ToutPetit){
+	
+	return (tangente1-tangente2 > -ToutPetit && tangente1-tangente2 < ToutPetit); 
+
+}
+
+float safetyRadius(float x, float y, float theta, const Image & img){
+	
+	//La valeur de la norme du pas considéré ici : nous pouvons nous permettre une valeur très inférieure à celui utilisé dans la version simpliste du programme
+	float pasX=(float) (epsilon*cos((double)theta));
+	float pasY=(float) (epsilon*sin((double)theta));
+	
+	//courantD et courantG vont nous permettre de remonter le long de la courbe suivant le plan défini par theta
+	Vec3Df courantD(x,y,img.getInRealWorld(x,y));
+	Vec3Df courantG(x,y,img.getInRealWorld(x,y));
+	
+	float tangenteD = tangente(courantD[0],courantD[1],theta,1,pasX,pasY,img);
+	float tangenteG = tangente(courantG[0],courantG[1],theta,-1,pasX,pasY,img);
+	
+	float tailleCase = 1; /// A TROUVER
+	float ToutPetit = 0.0001;
+
+	bool SolutionTrouvee= false;
+	bool SolutionPartielle = false;
+	//Si GD=0, on checke à droite, sinon à gauche
+	int GD=0;
+	Vec3Df sol;
+	
+	while(!SolutionTrouvee){
+		if(GD==0){
+		
+			//N'oublions pas que nous allons désormais vers la gauche
+			Vec3Df pasD(pasX/epsilon,pasY/epsilon,tangenteD);
+			pasD.normalize();
+			pasD*=-tailleCase;
+
+			Vec3Df courantDt= courantD+pasD;
+			while(!estSous(courantDt,img))
+				courantDt+=pasD;
+			
+			float T = tangente(courantDt[0],courantDt[1],theta,1,pasX,pasY,img);
+			if( Negal(T,tangenteD,ToutPetit)){
+				sol = courantDt;
+				SolutionPartielle= true;
+			}		
+			GD=1;
+
+		}else{
+		
+			Vec3Df pasG(-pasX/epsilon,-pasY/epsilon,tangenteG);
+			pasG.normalize();
+			pasG*=-tailleCase;
+
+			Vec3Df courantGt= courantG+pasG;
+			while(!estSous(courantGt,img))
+				courantGt+=pasG;
+			
+			float T = tangente(courantGt[0],courantGt[1],theta,-1,pasX,pasY,img);
+			if( Negal(T,tangenteD,ToutPetit)){
+				if(SolutionPartielle){
+					if(distance(sol,Vec3Df(x,y,img.getInRealWorld(x,y))) < distance(courantGt,Vec3Df(x,y,img.getInRealWorld(x,y)))){
+						SolutionTrouvee=true;
+					}else{
+						sol = courantGt;
+						SolutionTrouvee= true;
+					}
+			}else{
+				if(SolutionPartielle)
+					SolutionTrouvee = true;
+			}
+			}
+
+			courantG[0]+=pasX;
+			courantG[1]+=pasY;
+
+			courantD[0]-=pasX;
+			courantD[1]-=pasY;
+
+			GD=0;
+			
+	}
+
+
+	}
+
+
+	return (float) sqrt((double)((sol[0]-x)*(sol[0]-x)+(sol[1]-y)*(sol[1]-y)));
+
+}
+

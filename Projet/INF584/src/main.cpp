@@ -60,8 +60,8 @@ void remplissageTex(){
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
 
-			float realX = i/(float)(tex.sizeX);
-			float realY = j/(float)(tex.sizeY);
+			float realY = i/(float)(tex.sizeX);
+			float realX = j/(float)(tex.sizeY);
 
 			Vec3Df col(0,0,0);
 			float poids=0;
