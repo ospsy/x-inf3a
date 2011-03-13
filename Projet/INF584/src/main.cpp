@@ -9,19 +9,16 @@
 #include "image.h"
 #include "lighting.h"
 #include "Vec3D.h"
+#include "safetyRadius.h"
 #include <vector>
 #include <sstream>
 
 using namespace std;
-void dealWithUserInput(int x, int y);
 Image relief;
 Image tex;
 Image couleur;
 unsigned int W_fen = 800;  // largeur fenetre
 unsigned int H_fen = 500;  // hauteur fenetre
-int nbPas = 10; // précision de la dichotomie
-float epsilon = 0.01; // largeur du pas
-
 
 float *** tableau;
 
@@ -71,7 +68,7 @@ void remplissageTex(){
 			float poids=0;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				lumiere3(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
+				//lumiere3(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
 				//lumiere2(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids,tableau);
 
 			}

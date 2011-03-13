@@ -27,10 +27,6 @@ public :
 
 };
 
-inline bool estSous(const Vec3Df courant, const Image & im){
-	return im.getInRealWorld(courant[0],courant[1])/255> courant[2];
-}
-
 //La valeur d'epsilon est celle du pas pour avancer
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas, float *** reglage);
 
@@ -58,6 +54,6 @@ void lumiere2(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relie
 
 void lumiere3(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule);
 
-float*** precomputation(const Image & I,int P);
+
 
 #endif /* LIGHTING_H_ */

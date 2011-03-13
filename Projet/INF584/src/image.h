@@ -79,6 +79,10 @@ public:
 	inline float getInRealWorld(float x, float y, int color=0) const{
 		return operator()(x*sizeX,y*sizeY,color);
 	}
+	inline bool estSous(const Vec3Df courant) const{
+		return getInRealWorld(courant[0],courant[1])/255> courant[2];
+	}
 };
+
 
 #endif
