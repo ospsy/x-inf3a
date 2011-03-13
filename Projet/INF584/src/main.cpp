@@ -70,7 +70,7 @@ void remplissageTex(){
 			float poids=0;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				//lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
+				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
 				lumiere2(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids,tableau);
 
 			}
