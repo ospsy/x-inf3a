@@ -78,6 +78,43 @@ void remplissageTex(Image& tex, Vec3Df pos, Vec3Df direction){
 /************************************************************
  * Fonction pour initialiser la scène
  ************************************************************/
+int readTab(const std::string& s, int sizeX, int sizeY, int sizeTheta){
+	ifstream f(s.c_str());
+	if (!f.is_open()){
+		cerr << "File not found" << endl;
+		return 1;
+	}
+	tableau = new float** [sizeX];
+	for (int i=0 ; i < sizeX ; i++){
+		tableau [i]= new float* [sizeY];
+		for (int j=0 ; j < sizeY ; j++){
+			tableau [i][j]= new float [sizeTheta];
+			for (int k = 0 ; k < sizeTheta ; k++){
+				f >> tableau[i][j][k] ;
+			}
+		}
+	}
+	f.close();
+	return 0;
+}
+
+int writeTab(const string& s, int sizeX, int sizeY, int sizeTheta){
+	ofstream f(s.c_str());
+	if (!f.is_open()){
+		cerr << "File not found" << endl;
+		return 1;
+	}
+	for (int i=0 ; i < sizeX ; i++){
+		for (int j=0 ; j < sizeY ; j++){
+			for (int k = 0 ; k < sizeTheta ; k++){
+				f << tableau[i][j][k] << " ";
+			}
+		}
+	}
+	f.close();
+	return 0;
+}
+
 void init(const char * fileNameRelief,const char * fileNameCouleur){
 	relief.load(fileNameRelief);
 	couleur.load(fileNameCouleur);
@@ -119,7 +156,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 
 void dessiner( )
 {
-	if(mode==MESH){
+	if(viewingMode==MESH){
 		int w=relief.sizeX;
 		int h=relief.sizeY;
 		for(int y=0;y<h-1;y++){
@@ -153,31 +190,31 @@ void dessiner( )
 				pos=Vec3Df(0,0,0);
 				direction=Vec3Df(1,0,1);
 				glPushMatrix();
-				glRotatef(-PI/2,1,0,0);
+				glRotatef(-90,1,0,0);
 				break;
 			case 2:
 				pos=Vec3Df(1,0,0);
 				direction=Vec3Df(0,1,1);
 				glPushMatrix();
 				glTranslatef(1,0,0);
-				glRotatef(-PI/2,1,0,0);
-				glRotatef(PI/2,0,1,0);
+				glRotatef(-90,1,0,0);
+				glRotatef(90,0,1,0);
 				break;
 			case 3:
 				pos=Vec3Df(1,1,0);
 				direction=Vec3Df(-1,0,1);
 				glPushMatrix();
 				glTranslatef(1,1,0);
-				glRotatef(-PI/2,1,0,0);
-				glRotatef(PI,0,1,0);
+				glRotatef(-90,1,0,0);
+				glRotatef(180,0,1,0);
 				break;
 			case 4:
 				pos=Vec3Df(0,1,0);
 				direction=Vec3Df(0,-1,1);
 				glPushMatrix();
 				glTranslatef(0,1,0);
-				glRotatef(-PI/2,1,0,0);
-				glRotatef(-PI/2,0,1,0);
+				glRotatef(-90,1,0,0);
+				glRotatef(-90,0,1,0);
 				break;
 			case 5:
 				pos=Vec3Df(0,0,0);

@@ -1,3 +1,8 @@
+#ifndef SAFETY_RADIUS_H
+
+#define SAFETY_RADIUS_H
+
+#include "image.h"
 
 /**
  * Precalcule le tableau des SafetyRadius
@@ -5,6 +10,4 @@
  */
 float*** precomputation(const Image & I,int P);
 
-int readTab(const std::string& s, int sizeX, int sizeY, int sizeTheta);
-
-int writeTab(const string& s, int sizeX, int sizeY, int sizeTheta);
+#endif //SAFETY_RADIUS_H
