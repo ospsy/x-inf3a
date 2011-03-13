@@ -147,13 +147,13 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 				Vec3Df L= intersec-lumieres[i];
 				L.normalize();
 				float facteurL = div*(Vec3Df::dotProduct(N,L));
-
+				/*
 				//Calcul de Blinn-Phong
 				Vec3Df H = (camera.direction+L)/2;
 				H.normalize();
 				float facteurBP = div*puissanceS(Vec3Df::dotProduct(H,N));
-
-				coul = (poids*coul+poids2*coul2*(facteurL+facteurBP))/(poids+poids2);
+				*/
+				coul = (poids*coul+poids2*coul2*(facteurL/*+facteurBP*/))/(poids+poids2);
 				poids= poids+poids2;
 				}		
 		
