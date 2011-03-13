@@ -68,7 +68,7 @@ void remplissageTex(Image& tex, Vec3Df pos, Vec3Df direction){
 			}
 			Rayon r(CamPos,Vec3Df(direction)-CamPos);
 
-			tex.set(i,j,lumiere(r, LightPos, LightColor, relief, couleur));
+			tex.set(i,j,lumiere(r, LightPos, LightColor, relief, couleur,tableau));
 
 		}
 }
