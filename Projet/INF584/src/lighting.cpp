@@ -144,7 +144,7 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 
 				//Calcul du Lambertien
 				Vec3Df N= normale(relief,xCol,yCol);
-				Vec3Df L= intersec-lumieres[i];
+				Vec3Df L= lumieres[i]-intersec;
 				L.normalize();
 				float facteurL = div*(Vec3Df::dotProduct(N,L));
 				/*
