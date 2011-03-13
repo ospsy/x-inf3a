@@ -11,6 +11,7 @@
 float eps = 0.001;
 
 float PI = 3.1415;
+float minimal = 0.002;
 
 Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, float*** reglage){
 	Vec3Df courant = r.origine;
@@ -161,7 +162,7 @@ bool estCompatible(float tangente, float xOr, float yOr,float xTest,float yTest,
 }
 
 bool dehors(const Image& img, Vec3Df vec){
-	return false;
+	return ((vec[0]>1 || vec[0]<0)||(vec[1]>1 || vec[1]<0));
 }
 
 Vec3Df opp(Vec3Df courant, const Image & img, Vec3Df pas){
@@ -207,13 +208,19 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 		pasD.normalize();
 		pasD*=-tailleCase;
 
-	while(!SolutionTrouvee){
+		bool Problem= false;
+
+	while(!(SolutionTrouvee||Problem)){
 
 		//On calcule les tangente aux deux points courants ainsi que la pas qui va nous permettre d'avancer suivant la tangente
 		// ATTENTION au sens de parcours !
 		float tangenteD = Tangente(courantD[0],courantD[1],theta,1,pasX,pasY,img);
 		float tangenteG = Tangente(courantG[0],courantG[1],theta,-1,pasX,pasY,img);
-			
+		
+		if(dehors(img,courantG)||dehors(img,courantD)){
+			Problem= true;
+		}
+		else{
 
 		if(SolutionPartielleG){
 		
@@ -278,7 +285,7 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 		}
 	
 	
-	
+		}
 	
 	}
 
@@ -353,7 +360,7 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 	*/
 
 
-	return min(rD,rG);
+	return minimal;
 
 }
 

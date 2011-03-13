@@ -31,6 +31,8 @@ inline bool estSous(const Vec3Df courant, const Image & im){
 	return im.getInRealWorld(courant[0],courant[1])/255> courant[2];
 }
 
+//La valeur d'epsilon est celle du pas pour avancer
+Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas, float *** reglage);
 
 //La valeur d'epsilon est celle du pas pour avancer
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas);
@@ -40,20 +42,20 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas);
 ////On retourne true ssi le point vu par notre regard est �clair�
 bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec);
 
+//regard repr�sente le rayon partant du regard, lumiere la position de la lumiere
+////On retourne true ssi le point vu par notre regard est �clair�
+bool eclairage2(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec, float *** reglage);
+
+
+
 //x et y sont les coordonn�es sur lesquelles on veut projet notre point
 // OriginalColor et poidsCumule nous informent sur la Color pour le moment allou�e au point tex(x,y) et le poids total des distances dans ce calcul
 void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule);
 
-/*
-Vec3Df tangente(float x, float y ,float theta, const Image & I1){
+//x et y sont les coordonn�es sur lesquelles on veut projet notre point
+// OriginalColor et poidsCumule nous informent sur la Color pour le moment allou�e au point tex(x,y) et le poids total des distances dans ce calcul
+void lumiere2(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule, float *** reglage);
 
-
-}
-
-
-float safetyRadius(float x, float y, const Image& I1, float theta){
-
-
-}*/
+float*** precomputation(const Image & I);
 
 #endif /* LIGHTING_H_ */
