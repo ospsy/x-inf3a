@@ -12,6 +12,10 @@
 
 #include "Vec3D.h"
 #include "image.h"
+#include <vector>
+
+//Ben c'est Pi quoi...
+#define PI 3.1415
 
 enum LightingMode{PASCONSTANT=0,RADIUS};
 LightingMode mode = PASCONSTANT;
