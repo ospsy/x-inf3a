@@ -140,19 +140,19 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 				float yCol = intersec[1];
 			//std::cout << "x,y=" << x << ","<< y << "|"<< xCol<<","<<yCol<<std::endl;
 				Vec3Df coul2 = Vec3Df(couleurs[i][0]*couleur.getInRealWorld(xCol,yCol,0),couleurs[i][1]*couleur.getInRealWorld(xCol,yCol,1),couleurs[i][2]*couleur.getInRealWorld(xCol,yCol,2));
-				float div = 10/(1+poids2);
+				//float div = 10/(1+poids2);
 
 				//Calcul du Lambertien
 				Vec3Df N= normale(relief,xCol,yCol);
 				Vec3Df L= lumieres[i]-intersec;
 				L.normalize();
-				float facteurL = div*(Vec3Df::dotProduct(N,L));
-				/*
+				float facteurL = /*div**/(Vec3Df::dotProduct(N,L));
+				
 				//Calcul de Blinn-Phong
 				Vec3Df H = (camera.direction+L)/2;
 				H.normalize();
-				float facteurBP = div*puissanceS(Vec3Df::dotProduct(H,N));
-				*/
+				float facteurBP = /*div**/puissanceS(Vec3Df::dotProduct(H,N));
+				
 				coul = (poids*coul+poids2*coul2*(facteurL/*+facteurBP*/))/(poids+poids2);
 				poids= poids+poids2;
 				}		
