@@ -66,7 +66,8 @@ void remplissageTex(Image& tex, Vec3Df pos, Vec3Df direction){
 			}else{
 				tmp+=Vec3Df(direction[0]*realX,direction[1]*realY,0);
 			}
-			Rayon r(CamPos,Vec3Df(direction)-CamPos);
+			cout << tmp << endl;
+			Rayon r(CamPos,tmp-CamPos);
 
 			tex.set(i,j,lumiere(r, LightPos, LightColor, relief, couleur,tableau));
 
@@ -178,7 +179,7 @@ void dessiner( )
 	}else{
 		Vec3Df pos;
 		Vec3Df direction;
-		for(int i=0;i<6;i++){
+		for(int i=5;i<6;i++){
 			switch (i) {
 			case 0:
 				pos=Vec3Df(0,0,1);
