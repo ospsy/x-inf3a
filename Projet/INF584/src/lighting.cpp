@@ -11,15 +11,13 @@
 float eps = 0.001;
 
 float PI = 3.1415;
-float *** reglage;
-float MaxLong,MaxLarg;
 
-Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas){
+Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, float*** reglage){
 	Vec3Df courant = r.origine;
 	
 	while(! estSous(courant,im)){
-		int i = (int) (courant[0]/MaxLong);
-		int j = (int) (courant[1]/MaxLarg);
+		int i = (int) (courant[0]/(float)im.sizeX);
+		int j = (int) (courant[1]/(float)im.sizeY);
 		int k = (int) (atan((double) (courant[1]/courant[0]))/PI);
 
 		courant+= (r.direction)*reglage[i][j][k];
@@ -73,12 +71,20 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 	return courant;
 }
 
+bool eclairage2(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec, float *** reglage){
+	
+	//On retrouve le point sur lequel le regard tombe
+	intersec = intersection2(regard,im,epsilon,nbPas,reglage);
+	Rayon r2(lumiere,intersec-lumiere);
+
+	return (Vec3Df::distance(intersec,intersection(r2,im,epsilon,nbPas)) < epsilon);
+}
 
 bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec){
 	
 	//On retrouve le point sur lequel le regard tombe
 	intersec = intersection(regard,im,epsilon,nbPas);
-	//intersec = intersection2(regard,im,epsilon,nbPas);
+	
 	Rayon r2(lumiere,intersec-lumiere);
 
 	return (Vec3Df::distance(intersec,intersection(r2,im,epsilon,nbPas)) < epsilon);
@@ -109,10 +115,9 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief
 ///// CALCUL DU SAFETY RADIUS
 
 
-
 float Tangente(float x, float y, float theta, float sens, float pasX, float pasY, const Image & img){
 	
-	return (img.getInRealWorld(x+sens*pasX,y+sens*pasY)-img.getInRealWorld(x,y))/eps;
+	return (img.getInRealWorld(x+sens*pasX,y+sens*pasY)-img.getInRealWorld(x,y))/(sens*eps);
 
 }
 
@@ -134,10 +139,14 @@ bool estCompatible(float tangente, float xOr, float yOr,float xTest,float yTest,
 	return false;
 }
 
+bool dehors(const Image& img, Vec3Df vec){
+	return false;
+}
+
 Vec3Df opp(Vec3Df courant, const Image & img, Vec3Df pas){
 
 	Vec3Df sol = courant+pas;
-	while(!estSous(sol,img))
+	while(!estSous(sol,img) && !dehors(img,sol))
 		sol+=pas;
 
 	return sol;
@@ -155,8 +164,9 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 	Vec3Df courantG(x,y,0);
 	
 		
-	float tailleCase = 1; /// A TROUVER
-	float ToutPetit = 0.0001;
+	float tailleCase = min(1/((float) img.sizeX),1/((float) img.sizeY));
+	
+	float ToutPetit = 0.001;
 
 	bool SolutionTrouvee= false;
 	//bool SolutionPartielle = false;
@@ -166,20 +176,23 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 	float rG= 100;
 	float rD= 100;
 
+		//ce pas va "vers la droite" (il est utilisé pour les points "à gauche" du point courant)
+		Vec3Df pasG(-pasX,-pasY,0);
+		pasG.normalize();
+		pasG*=-tailleCase;
+
+		//ce pas va "vers la droite" (il est utilisé pour les points "à droite" du point courant)
+		Vec3Df pasD(pasX,pasY,0);
+		pasD.normalize();
+		pasD*=-tailleCase;
+
 	while(!SolutionTrouvee){
 
 		//On calcule les tangente aux deux points courants ainsi que la pas qui va nous permettre d'avancer suivant la tangente
 		// ATTENTION au sens de parcours !
 		float tangenteD = Tangente(courantD[0],courantD[1],theta,1,pasX,pasY,img);
 		float tangenteG = Tangente(courantG[0],courantG[1],theta,-1,pasX,pasY,img);
-
-		Vec3Df pasG(-pasX/eps,-pasY/eps,tangenteG);
-		pasG.normalize();
-		pasG*=-tailleCase;
-
-		Vec3Df pasD(pasX/eps,pasY/eps,tangenteD);
-		pasD.normalize();
-		pasD*=-tailleCase;
+			
 
 		if(SolutionPartielleG){
 		
@@ -190,13 +203,13 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 				while(Vec3Df::distance(courantG,Vec3Df(x,y,0))< rPartiel){
 					Vec3Df oppose = opp(courantG,img,pasG);
 					estCompatible(tangenteG,x,y,courantG[0],courantG[1],img,oppose[0],oppose[1],theta,-1,pasX,pasY,ToutPetit,rPartiel);
-					courantG+=pasG;
+					courantG+=pasD;
 				}
 
 				while(Vec3Df::distance(courantD,Vec3Df(x,y,0))< rPartiel){
 					Vec3Df oppose = opp(courantD,img,pasD);
 					estCompatible(tangenteD,x,y,courantD[0],courantD[1],img,oppose[0],oppose[1],theta,1,pasX,pasY,ToutPetit,rPartiel);
-					courantD+=pasD;
+					courantD+=pasG;
 				}
 
 				return rPartiel;
@@ -206,7 +219,7 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 				while(Vec3Df::distance(courantD,Vec3Df(x,y,0))< rG){
 					Vec3Df oppose = opp(courantD,img,pasD);
 					estCompatible(tangenteD,x,y,courantD[0],courantD[1],img,oppose[0],oppose[1],theta,1,pasX,pasY,ToutPetit,rG);
-					courantD+=pasD;
+					courantD+=pasG;
 				}
 
 				return rG;
@@ -220,7 +233,7 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 				while(Vec3Df::distance(courantG,Vec3Df(x,y,0))< rD){
 					Vec3Df oppose = opp(courantG,img,pasG);
 					estCompatible(tangenteG,x,y,courantG[0],courantG[1],img,oppose[0],oppose[1],theta,-1,pasX,pasY,ToutPetit,rD);
-					courantG+=pasG;
+					courantG+=pasD;
 				}
 
 				return rD;
@@ -231,13 +244,13 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 				if(estCompatible(tangenteG,x,y,courantG[0],courantG[1],img,opposeG[0],opposeG[1],theta,-1,pasX,pasY,ToutPetit,rG))
 					SolutionPartielleG=true;
 				else
-					courantG+=pasG;
+					courantG+=pasD;
 
 				Vec3Df opposeD = opp(courantD,img,pasD);
 				if(estCompatible(tangenteD,x,y,courantD[0],courantD[1],img,opposeD[0],opposeD[1],theta,1,pasX,pasY,ToutPetit,rD))
 					SolutionPartielleD=true;
 				else
-					courantD+=pasD;
+					courantD+=pasG;
 			
 			}
 		
@@ -326,16 +339,20 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 
 float*** precomputation(const Image & I){
 
-	int N=255;
+	int N = I.sizeX;
+	int M = I.sizeY;
+	int P = 100;
+
+
 	float*** solution = new float** [N];
 	for (int i=0 ; i < N ; i++){
 		solution [i]= new float* [N];
 
 		for (int j=0 ; j < N ; j++){
-			solution [i][j]= new float [N];
+			solution [i][j]= new float [M];
 
-			for (int k = 0 ; k < N ; k++){
-				solution [i][j][k]=safetyRadius(MaxLong/N*i,MaxLarg/N*j,PI/N*k,I);
+			for (int k = 0 ; k < P ; k++){
+				solution [i][j][k]=safetyRadius(1/((float)N)*i,1/((float) M)*j,PI/((float)P)*k,I);
 			
 			}
 

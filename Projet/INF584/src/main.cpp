@@ -21,6 +21,9 @@ unsigned int H_fen = 500;  // hauteur fenetre
 int nbPas = 10; // précision de la dichotomie
 float epsilon = 0.01; // largeur du pas
 
+
+float *** tableau;
+
 //couleur du d�cors
 float BackgroundColor[]={0,0,0};
 // Diff�rents modes d'affichage
@@ -60,8 +63,8 @@ void remplissageTex(){
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
 
-			float realY = i/(float)(tex.sizeX);
-			float realX = j/(float)(tex.sizeY);
+			float realX = i/(float)(tex.sizeX);
+			float realY = j/(float)(tex.sizeY);
 
 			Vec3Df col(0,0,0);
 			float poids=0;
@@ -127,6 +130,7 @@ void dessiner( )
 			}
 		}
 	}else{
+		
 		remplissageTex();
 		glBindTexture(GL_TEXTURE_2D, idCalculatedTexture);
 		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
@@ -198,6 +202,7 @@ int main(int argc, char** argv)
 		init(argv[1],argv[2]);
 	}else{
 		init("relief.ppm","couleur.ppm");
+		tableau = precomputation(relief);
 	}
 
 	// cablage des callback
