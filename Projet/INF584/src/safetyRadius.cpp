@@ -15,8 +15,6 @@
 #define MINIMAL_RADIUS 0.002
 
 
-
-
 float Tangente(float x, float y, float theta, float sens, float pasX, float pasY, const Image & img){
 
 	return (img.getInRealWorld(x+sens*pasX,y+sens*pasY)-img.getInRealWorld(x,y))/(sens*NORME_PAS);
