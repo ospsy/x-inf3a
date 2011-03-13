@@ -71,7 +71,7 @@ void remplissageTex(){
 			float poids=0;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
+				lumiere3(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
 				//lumiere2(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids,tableau);
 
 			}
@@ -128,7 +128,8 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	relief.load(fileNameRelief);
 	couleur.load(fileNameCouleur);
 	LightPos.resize(1);
-	LightPos[0]=Vec3Df(1,0,3);
+	//LightPos[0]=Vec3Df(1,0,3);
+	LightPos[0]=Vec3Df(1,3,0.2);
 	LightColor.resize(1);
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
@@ -252,7 +253,7 @@ int main(int argc, char** argv)
 	if(argc == 3){
 		init(argv[1],argv[2]);
 	}else{
-		init("relief2.ppm","couleur2.ppm");
+		init("relief.ppm","couleur.ppm");
 	}
 
 	// cablage des callback
