@@ -18,7 +18,8 @@
 #define PI 3.1415
 
 enum LightingMode{PASCONSTANT=0,RADIUS};
-LightingMode mode = PASCONSTANT;
+//LightingMode lightingMode = PASCONSTANT;
+#define lightingMode PASCONSTANT
 
 class Rayon{
 

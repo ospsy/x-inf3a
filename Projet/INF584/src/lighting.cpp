@@ -119,7 +119,7 @@ float puissanceS(float f){
 }
 
 Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> couleurs, const Image& relief, const Image& couleur, float*** tableau){
-	if(mode==PASCONSTANT){
+	if(lightingMode==PASCONSTANT){
 
 		Vec3Df coul(0,0,0);
 		float poids=0;

@@ -14,42 +14,7 @@
 //Valeur minimale du SafetyRadius
 #define MINIMAL_RADIUS 0.002
 
-int readTab(const std::string& s, int sizeX, int sizeY, int sizeTheta){
-	ifstream f(s.c_str());
-	if (!f.is_open()){
-		cerr << "File not found" << endl;
-		return 1;
-	}
-	tableau = new float** [sizeX];
-	for (int i=0 ; i < sizeX ; i++){
-		tableau [i]= new float* [sizeY];
-		for (int j=0 ; j < sizeY ; j++){
-			tableau [i][j]= new float [sizeTheta];
-			for (int k = 0 ; k < sizeTheta ; k++){
-				f >> tableau[i][j][k] ;
-			}
-		}
-	}
-	f.close();
-	return 0;
-}
 
-int writeTab(const string& s, int sizeX, int sizeY, int sizeTheta){
-	ofstream f(s.c_str());
-	if (!f.is_open()){
-		cerr << "File not found" << endl;
-		return 1;
-	}
-	for (int i=0 ; i < sizeX ; i++){
-		for (int j=0 ; j < sizeY ; j++){
-			for (int k = 0 ; k < sizeTheta ; k++){
-				f << tableau[i][j][k] << " ";
-			}
-		}
-	}
-	f.close();
-	return 0;
-}
 
 
 float Tangente(float x, float y, float theta, float sens, float pasX, float pasY, const Image & img){
