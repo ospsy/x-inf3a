@@ -39,6 +39,7 @@ bool updateAlways=true;
 
 //pour le moment, utilisez toujours LightPos[0]
 std::vector<Vec3Df> LightPos;
+float theta=0;
 //la lumi�re courrante (au d�but ceci vaut toujours 0)
 unsigned int SelectedLight=0;
 //pas encore necessaire, plus tard, ca va servir pour avoir des lumi�res color�es
@@ -121,7 +122,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	couleur.load(fileNameCouleur);
 	LightPos.resize(1);
 	//LightPos[0]=Vec3Df(1,0,3);
-	LightPos[0]=Vec3Df(1,3,3);
+	LightPos[0]=Vec3Df(1,3,2);
 	LightColor.resize(1);
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
@@ -148,6 +149,8 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	glBindTexture(GL_TEXTURE_2D, idTextureCouleur);
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, couleur.sizeX, couleur.sizeY,
 			GL_RGB, GL_UNSIGNED_BYTE, couleur.data);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 }
 
 
@@ -177,6 +180,9 @@ void dessiner( )
 			}
 		}
 	}else{
+		theta+=0.03;
+		LightPos[0][0]=cos(theta)*2;
+		LightPos[0][1]=sin(theta)*2;
 		Vec3Df pos;
 		Vec3Df direction;
 		for(int i=0;i<5;i++){

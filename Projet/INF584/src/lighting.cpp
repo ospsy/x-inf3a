@@ -14,7 +14,7 @@
 //Nombre de pas dans la dichotomie
 #define NB_PAS 3
 // largeur du pas dans le calcul d'intersection
-#define EPSILON 0.01
+#define EPSILON 0.05
 //Valeur de la specularité
 #define SPECULARITE 2
 //Ben c'est Pi quoi...
@@ -24,14 +24,12 @@
 
 
 Vec3Df normale(const Image& img, float x, float y){
-	float dx=0.1;
-	Vec3Df vec1(dx,0,(img.getInRealWorld(x+dx,y)-img.getInRealWorld(x-dx,y))/(2*dx));
-	Vec3Df vec2(0,dx,(img.getInRealWorld(x,y+dx)-img.getInRealWorld(x,y-dx))/(2*dx));
-
-	Vec3Df solution = Vec3Df::crossProduct(vec1,vec2);
-	solution.normalize();
-
-	return solution;
+	float dx=1./img.sizeX;
+	Vec3Df vec1(1,0,(img.getInRealWorld(x+dx,y)-img.getInRealWorld(x-dx,y))/(255*2*dx));
+	Vec3Df vec2(0,1,(img.getInRealWorld(x,y+dx)-img.getInRealWorld(x,y-dx))/(255*2*dx));
+	vec1.normalize();
+	vec2.normalize();
+	return Vec3Df::crossProduct(vec1,vec2);
 }
 
 Vec3Df premierInter(Rayon r){
@@ -86,7 +84,7 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 	// Recherche Binaire
 	float pas = epsilon/2;
 
-	for(int i = 0 ; i < nbPas ; i++) {
+	while(pas >1./im.sizeX) {
 		Vec3Df milieu;
 		milieu= courant-(r.direction)*pas;
 
@@ -121,7 +119,7 @@ Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, 
 	// Recherche Binaire
 	float pas = reglage[i][j][k]/2;
 
-	for(int i = 0 ; i < nbPas ; i++) {
+	while(pas >1./im.sizeX) {
 		Vec3Df milieu;
 		milieu= courant-(r.direction)*pas;
 
@@ -178,7 +176,7 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 		Vec3Df coul(0,0,0);
 		float poids=0;
 
-		for(int i=0 ; i< lumieres.size() ; i++){
+		for(unsigned int i=0 ; i< lumieres.size() ; i++){
 			
 			Vec3Df intersec;
 			float poids2;
@@ -204,16 +202,14 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 				Vec3Df L= lumieres[i]-intersec;
 				L.normalize();
 				float facteurL = /*div**/(Vec3Df::dotProduct(N,L));
-				
 				//Calcul de Blinn-Phong
-				Vec3Df H = (camera.direction+L);
+				Vec3Df H = (-camera.direction+L);
 				H.normalize();
 				float facteurBP = /*div**/puissanceS(Vec3Df::dotProduct(H,N));
 				
 				coul = (poids*coul+poids2*coul2*(facteurL+facteurBP)/2)/(poids+poids2);
 				poids= poids+poids2;
-				}		
-		
+				}
 		
 		}
 

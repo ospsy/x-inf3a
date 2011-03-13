@@ -12,7 +12,7 @@
 //Ben c'est Pi quoi...
 #define PI 3.1415
 //Valeur minimale du SafetyRadius
-#define MINIMAL_RADIUS 0.002
+#define MINIMAL_RADIUS 0.01
 #define TOUT_PETIT 0.01 
 
 
@@ -26,6 +26,7 @@ inline bool nearlyEgal(float tangente1,float tangente2){
 bool dehors(const Image& img, Vec3Df vec){
 	return ((vec[0]>1 || vec[0]<0)||(vec[1]>1 || vec[1]<0));
 }
+
 
 
 float sRadius(float x, float y, float theta, const Image & img){
@@ -43,31 +44,40 @@ float sRadius(float x, float y, float theta, const Image & img){
 
 	bool SolutionTrouvee=false;
 
-	while(!SolutionTrouvee){
+	float radius=MINIMAL_RADIUS;
+	while(true){
 		courantD+=Vec3Df(pasX,pasY,0);
 
 		if(dehors(img,courantD)){
-		return MINIMAL_RADIUS;
+			return radius;
 		}
 
 		float tangenteD = img.tangente(courantD[0],courantD[1],theta);
 
-		Vec3Df oppose=courantD;
+		Vec3Df oppose=Vec3Df(x,y,0);
 
+		bool notFound=false;
 		while(! img.estSous(oppose)){
 			oppose+= pasG;
-			if(oppose[0]>1 || oppose[0]<0 || oppose[1]>1 || oppose[1]<0)
+			if(oppose[0]>1 || oppose[0]<0 || oppose[1]>1 || oppose[1]<0){
+				notFound=true;
 				break;
+			}
 		}
-		if(Vec3Df::dotProduct(oppose-Vec3Df(x,y,0),courantD-Vec3Df(x,y,0))>0)
-			return MINIMAL_RADIUS;
+		//si on a pas trouvé de correspondant on continue plus loin
+		if(notFound){
+			if(SolutionTrouvee)
+				return radius;
+			else
+				continue;
+		}
 
 		float tangenteOpp= img.tangente(oppose[0],oppose[1],theta);
-
-		if(nearlyEgal(tangenteOpp,tangenteD) && Vec3Df::distance(oppose,courantD)>TOUT_PETIT)
-			return Vec3Df::distance(Vec3Df(x,y,0),courantD);
-
+		if(nearlyEgal(tangenteOpp,tangenteD)){
+			SolutionTrouvee=true;
+			radius=Vec3Df::distance(Vec3Df(x,y,0),courantD);
 		}
+	}
 
 }
 
