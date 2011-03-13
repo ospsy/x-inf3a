@@ -45,8 +45,16 @@ bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, in
 ////On retourne true ssi le point vu par notre regard est �clair�
 bool eclairage2(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec, float *** reglage);
 
-
-Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> couleurs, const Image& relief, const Image& couleur);
+/**
+ * Renvoit la couleur obtenur suivant le rayon demandée
+ * camera : Rayon étudié
+ * lumieres : positions des lumières
+ * couleurs : couleurs des lumières
+ * relief : image representant le relief de l'objet
+ * couleurs : image representant la couleur de l'objet
+ * tableau : argument optionel du tableau de precalcul des safetyradius
+ */
+Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> couleurs, const Image& relief, const Image& couleur, float*** tableau=NULL);
 
 /*
 

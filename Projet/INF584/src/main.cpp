@@ -14,9 +14,6 @@
 #include <sstream>
 
 using namespace std;
-Image relief;
-Image tex;
-Image couleur;
 unsigned int W_fen = 800;  // largeur fenetre
 unsigned int H_fen = 500;  // hauteur fenetre
 
@@ -29,7 +26,10 @@ enum Mode{ MESH=0,TEXTURE};
 int NB_MODES=2;
 Mode mode=MESH;
 
-GLuint idCalculatedTexture;
+Image relief;
+Image tex[6];
+Image couleur;
+GLuint idCalculatedTexture[6];
 GLuint idTextureCouleur;
 
 //selon la vitesse de l'ordinateur on recalcule l'eclairage a chaque frame.
@@ -51,32 +51,26 @@ Vec3Df CamPos = Vec3Df(0.0f,0.0f,-4.0f);
 
 #include "interaction.h"
 
-void remplissageTex(){
-	std::cout << "Debut remplissage" << std::endl;
-
-	std::cout << "Caméra " << CamPos << std::endl;
-	std::cout << "Lumière " << LightPos[0] << std::endl;
-	std::cout << "Lumière couleur " << LightColor[0] << std::endl;
+void remplissageTex(Image& tex, Vec3Df pos, Vec3Df direction){
 
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
 
 			float realX = i/(float)(tex.sizeX);
 			float realY = j/(float)(tex.sizeY);
-
-			Vec3Df col(0,0,0);
-			float poids=0;
-
-			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				//lumiere3(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
-				//lumiere2(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids,tableau);
-
+			Vec3Df tmp(pos);
+			if(direction[0]==0){
+				tmp+=Vec3Df(0,direction[1]*realX,direction[2]*realY);
+			}else if (direction[1]==0){
+				tmp+=Vec3Df(direction[0]*realX,0,direction[2]*realY);
+			}else{
+				tmp+=Vec3Df(direction[0]*realX,direction[1]*realY,0);
 			}
-			tex.set(i,j,col);
+			Rayon r(CamPos,Vec3Df(direction)-CamPos);
+
+			tex.set(i,j,lumiere(r, LightPos, LightColor, relief, couleur));
 
 		}
-
-	std::cout << "Fin remplissage" << std::endl;
 }
 
 
@@ -84,43 +78,6 @@ void remplissageTex(){
 /************************************************************
  * Fonction pour initialiser la scène
  ************************************************************/
-int readTab(const std::string& s, int sizeX, int sizeY, int sizeTheta){
-	ifstream f(s.c_str());
-	if (!f.is_open()){
-		cerr << "File not found" << endl;
-		return 1;
-	}
-	tableau = new float** [sizeX];
-	for (int i=0 ; i < sizeX ; i++){
-		tableau [i]= new float* [sizeY];
-		for (int j=0 ; j < sizeY ; j++){
-			tableau [i][j]= new float [sizeTheta];
-			for (int k = 0 ; k < sizeTheta ; k++){
-				f >> tableau[i][j][k] ;
-			}
-		}
-	}
-	f.close();
-	return 0;
-}
-
-int writeTab(const string& s, int sizeX, int sizeY, int sizeTheta){
-	ofstream f(s.c_str());
-	if (!f.is_open()){
-		cerr << "File not found" << endl;
-		return 1;
-	}
-	for (int i=0 ; i < sizeX ; i++){
-		for (int j=0 ; j < sizeY ; j++){
-			for (int k = 0 ; k < sizeTheta ; k++){
-				f << tableau[i][j][k] << " ";
-			}
-		}
-	}
-	f.close();
-	return 0;
-}
-
 void init(const char * fileNameRelief,const char * fileNameCouleur){
 	relief.load(fileNameRelief);
 	couleur.load(fileNameCouleur);
@@ -131,7 +88,10 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
 
-	tex.resize(100,100);
+	for(int i=0;i<6;i++){
+		tex[i].resize(100,100);
+	}
+
 	int P=100;
 	std::ostringstream out;
 	out << fileNameRelief << "_" << fileNameCouleur << "_" << P;
@@ -144,7 +104,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	}else{
 		cout << "Lecture de " << s << "réussie" << endl;
 	}
-	glGenTextures(1, &idCalculatedTexture);
+	glGenTextures(6, &idCalculatedTexture);
 
 	glGenTextures(1, &idTextureCouleur);
 	glBindTexture(GL_TEXTURE_2D, idTextureCouleur);
@@ -179,24 +139,53 @@ void dessiner( )
 			}
 		}
 	}else{
+		Vec3Df pos;
+		Vec3Df direction;
+		for(int i=0;i<6;i++){
+			switch (i) {
+				case 0:
+					pos=Vec3Df(0,0,1);
+					direction=Vec3Df(1,1,0);
+					break;
+				case 1:
+					pos=Vec3Df(0,0,0);
+					direction=Vec3Df(1,0,1);
+					break;
+				case 2:
+					pos=Vec3Df(1,0,0);
+					direction=Vec3Df(0,1,1);
+					break;
+				case 3:
+					pos=Vec3Df(1,1,0);
+					direction=Vec3Df(-1,0,1);
+					break;
+				case 4:
+					pos=Vec3Df(0,1,0);
+					direction=Vec3Df(0,-1,1);
+					break;
+				case 5:
+					pos=Vec3Df(0,0,0);
+					direction=Vec3Df(1,1,0);
+					break;
+			}
+			remplissageTex(tex[i],pos,direction);
 
-		remplissageTex();
-		glBindTexture(GL_TEXTURE_2D, idCalculatedTexture);
-		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
-				GL_RGB, GL_UNSIGNED_BYTE, tex.data);
-		glEnable(GL_TEXTURE_2D);
-		glBegin(GL_QUADS);
-		glTexCoord2f(0,0);
-		glVertex2f(0,0);
-		glTexCoord2f(0,1);
-		glVertex2f(0,1);
-		glTexCoord2f(1,1);
-		glVertex2f(1,1);
-		glTexCoord2f(1,0);
-		glVertex2f(1,0);
-		glEnd();
-		glDisable(GL_TEXTURE_2D);
-		//mode=MESH;
+			glBindTexture(GL_TEXTURE_2D, idCalculatedTexture[i]);
+			gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex[i].sizeX, tex[i].sizeY,
+					GL_RGB, GL_UNSIGNED_BYTE, tex[i].data);
+			glEnable(GL_TEXTURE_2D);
+			glBegin(GL_QUADS);
+			glTexCoord2f(0,0);
+			glVertex2f(0,0);
+			glTexCoord2f(0,1);
+			glVertex2f(0,1);
+			glTexCoord2f(1,1);
+			glVertex2f(1,1);
+			glTexCoord2f(1,0);
+			glVertex2f(1,0);
+			glEnd();
+			glDisable(GL_TEXTURE_2D);
+		}
 	}
 
 }
