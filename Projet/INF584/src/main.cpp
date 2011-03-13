@@ -22,9 +22,9 @@ float *** tableau;
 //couleur du d�cors
 float BackgroundColor[]={0,0,0};
 // Diff�rents modes d'affichage
-enum Mode{ MESH=0,TEXTURE};
+enum ViewingMode{ MESH=0,TEXTURE};
 int NB_MODES=2;
-Mode mode=MESH;
+ViewingMode viewingMode=MESH;
 
 Image relief;
 Image tex[6];
@@ -104,7 +104,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	}else{
 		cout << "Lecture de " << s << "réussie" << endl;
 	}
-	glGenTextures(6, &idCalculatedTexture);
+	glGenTextures(6, idCalculatedTexture);
 
 	glGenTextures(1, &idTextureCouleur);
 	glBindTexture(GL_TEXTURE_2D, idTextureCouleur);
@@ -155,7 +155,7 @@ void dessiner( )
 				direction=Vec3Df(1,0,1);
 				glPushMatrix();
 				glPushMatrix();
-				glRotatef(-PI/2,0,0);
+				glRotatef(-PI/2,1,0,0);
 				break;
 			case 2:
 				pos=Vec3Df(1,0,0);
