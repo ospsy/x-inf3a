@@ -10,6 +10,7 @@
 #include "lighting.h"
 #include "Vec3D.h"
 #include <vector>
+#include <sstream>
 
 using namespace std;
 void dealWithUserInput(int x, int y);
@@ -70,8 +71,8 @@ void remplissageTex(){
 			float poids=0;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				//lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
-				lumiere2(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids,tableau);
+				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
+				//lumiere2(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids,tableau);
 
 			}
 			tex.set(i,j,col);
@@ -127,19 +128,23 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	relief.load(fileNameRelief);
 	couleur.load(fileNameCouleur);
 	LightPos.resize(1);
-	LightPos[0]=Vec3Df(0,0,3);
+	LightPos[0]=Vec3Df(1,0,3);
 	LightColor.resize(1);
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
 
 	tex.resize(100,100);
 	int P=100;
-	if(readTab("precomputation",relief.sizeX,relief.sizeY,P)!=0){
+	std::ostringstream out;
+	out << fileNameRelief << "_" << fileNameCouleur << "_" << P;
+	string s=out.str();
+
+	if(readTab(s,relief.sizeX,relief.sizeY,P)!=0){
 		tableau = precomputation(relief,P);
-		writeTab("precomputation",relief.sizeX,relief.sizeY,P);
+		writeTab(s,relief.sizeX,relief.sizeY,P);
 		cout << "Sauvegarde terminée" << endl;
 	}else{
-		cout << "Lecture de precomputation réussie" << endl;
+		cout << "Lecture de " << s << "réussie" << endl;
 	}
 	glGenTextures(1, &idCalculatedTexture);
 
@@ -247,7 +252,7 @@ int main(int argc, char** argv)
 	if(argc == 3){
 		init(argv[1],argv[2]);
 	}else{
-		init("relief.ppm","couleur.ppm");
+		init("relief2.ppm","couleur2.ppm");
 	}
 
 	// cablage des callback

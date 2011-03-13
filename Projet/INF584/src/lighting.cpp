@@ -93,12 +93,12 @@ bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, in
 
 void lumiere2(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule, float*** reglage){
 	
-	Rayon regard(PosCam, Vec3Df(x,y,0)-PosCam);
+	Rayon regard(PosCam, Vec3Df(y,x,0)-PosCam);
 	
 	Vec3Df intersec;
 
 	if(!eclairage2(regard, PosLum, relief, epsilon,nbPas,intersec,reglage)){
-		std::cout << "x,y=" << x << ","<< y << "pas éclairé" << std::endl;
+		//std::cout << "x,y=" << x << ","<< y << "pas éclairé" << std::endl;
 		return;
 	}
 	float poids2 = Vec3Df::distance(PosLum,intersec);
