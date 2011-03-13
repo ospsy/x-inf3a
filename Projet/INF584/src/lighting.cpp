@@ -115,12 +115,12 @@ void lumiere2(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relie
 
 void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule){
 	
-	Rayon regard(PosCam, Vec3Df(x,y,0)-PosCam);
+	Rayon regard(PosCam, Vec3Df(y,x,0)-PosCam);
 	
 	Vec3Df intersec;
 
 	if(!eclairage(regard, PosLum, relief, epsilon,nbPas,intersec)){
-		std::cout << "x,y=" << x << ","<< y << "pas éclairé" << std::endl;
+		//std::cout << "x,y=" << x << ","<< y << "pas éclairé" << std::endl;
 		return;
 	}
 	float poids2 = Vec3Df::distance(PosLum,intersec);
@@ -365,28 +365,29 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 }
 
 
-float*** precomputation(const Image & I){
+float*** precomputation(const Image & I, int P){
 
 	int N = I.sizeX;
 	int M = I.sizeY;
-	int P = 100;
 
-
+	float min=100,max=0;
 	float*** solution = new float** [N];
 	for (int i=0 ; i < N ; i++){
 		solution [i]= new float* [N];
-
+		std::cout << "Precomputation : " << (float)i/N*100 <<"%"<< std::endl;
 		for (int j=0 ; j < N ; j++){
 			solution [i][j]= new float [M];
 
 			for (int k = 0 ; k < P ; k++){
 				solution [i][j][k]=safetyRadius(1/((float)N)*i,1/((float) M)*j,PI/((float)P)*k,I);
-			
+				if(solution [i][j][k]>max) max=solution [i][j][k];
+				if(solution [i][j][k]<min) min=solution [i][j][k];
 			}
 
 		}
 	
 	}
-	
+	std::cout << "Minimum : "<< min << std::endl;
+	std::cout << "Maximum : "<< max << std::endl;
 	return solution;
 }

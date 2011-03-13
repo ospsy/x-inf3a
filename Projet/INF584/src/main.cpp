@@ -59,7 +59,7 @@ void remplissageTex(){
 	std::cout << "Caméra " << CamPos << std::endl;
 	std::cout << "Lumière " << LightPos[0] << std::endl;
 	std::cout << "Lumière couleur " << LightColor[0] << std::endl;
-	
+
 	for (int i=0 ; i < tex.sizeX ; i++)
 		for(int j=0 ; j < tex.sizeY;j++){
 
@@ -70,7 +70,7 @@ void remplissageTex(){
 			float poids=0;
 
 			for(unsigned int it = 0 ; it < LightPos.size() ; it++){
-				lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
+				//lumiere(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids);
 				lumiere2(CamPos,LightPos[it],LightColor[it],relief,couleur,realX,realY,epsilon,nbPas,col,poids,tableau);
 
 			}
@@ -86,6 +86,43 @@ void remplissageTex(){
 /************************************************************
  * Fonction pour initialiser la scène
  ************************************************************/
+int readTab(const std::string& s, int sizeX, int sizeY, int sizeTheta){
+	ifstream f(s.c_str());
+	if (!f.is_open()){
+		cerr << "File not found" << endl;
+		return 1;
+	}
+	tableau = new float** [sizeX];
+	for (int i=0 ; i < sizeX ; i++){
+		tableau [i]= new float* [sizeY];
+		for (int j=0 ; j < sizeY ; j++){
+			tableau [i][j]= new float [sizeTheta];
+			for (int k = 0 ; k < sizeTheta ; k++){
+				f >> tableau[i][j][k] ;
+			}
+		}
+	}
+	f.close();
+	return 0;
+}
+
+int writeTab(const string& s, int sizeX, int sizeY, int sizeTheta){
+	ofstream f(s.c_str());
+	if (!f.is_open()){
+		cerr << "File not found" << endl;
+		return 1;
+	}
+	for (int i=0 ; i < sizeX ; i++){
+		for (int j=0 ; j < sizeY ; j++){
+			for (int k = 0 ; k < sizeTheta ; k++){
+				f << tableau[i][j][k] << " ";
+			}
+		}
+	}
+	f.close();
+	return 0;
+}
+
 void init(const char * fileNameRelief,const char * fileNameCouleur){
 	relief.load(fileNameRelief);
 	couleur.load(fileNameCouleur);
@@ -96,6 +133,14 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	SelectedLight=0;
 
 	tex.resize(100,100);
+	int P=100;
+	if(readTab("precomputation",relief.sizeX,relief.sizeY,P)!=0){
+		tableau = precomputation(relief,P);
+		writeTab("precomputation",relief.sizeX,relief.sizeY,P);
+		cout << "Sauvegarde terminée" << endl;
+	}else{
+		cout << "Lecture de precomputation réussie" << endl;
+	}
 	glGenTextures(1, &idCalculatedTexture);
 
 	glGenTextures(1, &idTextureCouleur);
@@ -103,7 +148,6 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, couleur.sizeX, couleur.sizeY,
 			GL_RGB, GL_UNSIGNED_BYTE, couleur.data);
 }
-
 
 
 /************************************************************
@@ -132,7 +176,7 @@ void dessiner( )
 			}
 		}
 	}else{
-		
+
 		remplissageTex();
 		glBindTexture(GL_TEXTURE_2D, idCalculatedTexture);
 		gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex.sizeX, tex.sizeY,
@@ -204,7 +248,6 @@ int main(int argc, char** argv)
 		init(argv[1],argv[2]);
 	}else{
 		init("relief.ppm","couleur.ppm");
-		tableau = precomputation(relief);
 	}
 
 	// cablage des callback
