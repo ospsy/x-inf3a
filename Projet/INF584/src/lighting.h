@@ -56,6 +56,8 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief
 // OriginalColor et poidsCumule nous informent sur la Color pour le moment allou�e au point tex(x,y) et le poids total des distances dans ce calcul
 void lumiere2(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule, float *** reglage);
 
+void lumiere3(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule);
+
 float*** precomputation(const Image & I,int P);
 
 #endif /* LIGHTING_H_ */
