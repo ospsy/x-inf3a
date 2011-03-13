@@ -12,6 +12,7 @@ float eps = 0.001;
 
 float PI = 3.1415;
 float minimal = 0.002;
+int specularite =2;
 
 Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, float*** reglage){
 	Vec3Df courant = r.origine;
@@ -156,7 +157,7 @@ void lumiere3(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relie
 	Vec3Df intersec;
 
 	float poids2 = Vec3Df::distance(PosLum,intersec);
-	float petiteps=0.15;
+	float petiteps=0.1;
 
 	if(!eclairage(regard, PosLum, relief, epsilon,nbPas,intersec)){
 		OriginalColor=(poidsCumule*OriginalColor+petiteps*Vec3Df(couleur.getInRealWorld(intersec[0],intersec[1],0),couleur.getInRealWorld(intersec[0],intersec[1],1),couleur.getInRealWorld(intersec[0],intersec[1],2))*poids2)/(poids2+poidsCumule);
@@ -174,7 +175,7 @@ void lumiere3(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relie
 	Vec3Df L= PosLum-Vec3Df(x,y,0);
 	L.normalize();
 
-	OriginalColor = (poidsCumule*OriginalColor+coul*div*poids2*Vec3Df::dotProduct(N,L))/(poids2+poidsCumule);
+	OriginalColor = (poidsCumule*OriginalColor+coul*div*poids2*(Vec3Df::dotProduct(N,L)+Vec3Df::))/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
 	}
 }
