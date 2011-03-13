@@ -58,7 +58,7 @@ bool eclairage2(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, i
  * couleurs : image representant la couleur de l'objet
  * tableau : argument optionel du tableau de precalcul des safetyradius
  */
-Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> couleurs, const Image& relief, const Image& couleur, float*** tableau=NULL);
+Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> couleurs, const Image& relief, const Image& couleur, float*** tableau);
 
 /*
 
