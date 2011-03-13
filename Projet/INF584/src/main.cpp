@@ -148,12 +148,10 @@ void dessiner( )
 				direction=Vec3Df(1,1,0);
 				glPushMatrix();
 				glTranslatef(0,0,1);
-				glPushMatrix();
 				break;
 			case 1:
 				pos=Vec3Df(0,0,0);
 				direction=Vec3Df(1,0,1);
-				glPushMatrix();
 				glPushMatrix();
 				glRotatef(-PI/2,1,0,0);
 				break;
@@ -162,29 +160,28 @@ void dessiner( )
 				direction=Vec3Df(0,1,1);
 				glPushMatrix();
 				glTranslatef(1,0,0);
-				glPushMatrix();
-				glRotatef(-PI/2,PI/2,0);
+				glRotatef(-PI/2,1,0,0);
+				glRotatef(PI/2,0,1,0);
 				break;
 			case 3:
 				pos=Vec3Df(1,1,0);
 				direction=Vec3Df(-1,0,1);
 				glPushMatrix();
 				glTranslatef(1,1,0);
-				glPushMatrix();
-				glRotatef(-PI/2,PI,0);
+				glRotatef(-PI/2,1,0,0);
+				glRotatef(PI,0,1,0);
 				break;
 			case 4:
 				pos=Vec3Df(0,1,0);
 				direction=Vec3Df(0,-1,1);
 				glPushMatrix();
 				glTranslatef(0,1,0);
-				glPushMatrix();
-				glRotatef(-PI/2,-PI/2,0);
+				glRotatef(-PI/2,1,0,0);
+				glRotatef(-PI/2,0,1,0);
 				break;
 			case 5:
 				pos=Vec3Df(0,0,0);
 				direction=Vec3Df(1,1,0);
-				glPushMatrix();
 				glPushMatrix();
 				break;
 			}
@@ -206,7 +203,6 @@ void dessiner( )
 			glEnd();
 			glDisable(GL_TEXTURE_2D);
 
-			glPopMatrix();
 			glPopMatrix();
 		}
 	}
