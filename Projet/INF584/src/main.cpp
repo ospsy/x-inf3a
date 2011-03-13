@@ -121,7 +121,7 @@ void init(const char * fileNameRelief,const char * fileNameCouleur){
 	couleur.load(fileNameCouleur);
 	LightPos.resize(1);
 	//LightPos[0]=Vec3Df(1,0,3);
-	LightPos[0]=Vec3Df(1,3,0.2);
+	LightPos[0]=Vec3Df(1,3,3);
 	LightColor.resize(1);
 	LightColor[0]=Vec3Df(1,1,1);
 	SelectedLight=0;
@@ -179,7 +179,7 @@ void dessiner( )
 	}else{
 		Vec3Df pos;
 		Vec3Df direction;
-		for(int i=5;i<6;i++){
+		for(int i=0;i<5;i++){
 			switch (i) {
 			case 0:
 				pos=Vec3Df(0,0,1);
@@ -191,30 +191,30 @@ void dessiner( )
 				pos=Vec3Df(0,0,0);
 				direction=Vec3Df(1,0,1);
 				glPushMatrix();
-				glRotatef(-90,1,0,0);
+				glRotatef(90,1,0,0);
 				break;
 			case 2:
 				pos=Vec3Df(1,0,0);
 				direction=Vec3Df(0,1,1);
 				glPushMatrix();
 				glTranslatef(1,0,0);
-				glRotatef(-90,1,0,0);
-				glRotatef(90,0,1,0);
+				glRotatef(90,1,0,0);
+				glRotatef(+90,0,1,0);
 				break;
 			case 3:
 				pos=Vec3Df(1,1,0);
 				direction=Vec3Df(-1,0,1);
 				glPushMatrix();
 				glTranslatef(1,1,0);
-				glRotatef(-90,1,0,0);
-				glRotatef(180,0,1,0);
+				glRotatef(90,1,0,0);
+				glRotatef(-180,0,1,0);
 				break;
 			case 4:
 				pos=Vec3Df(0,1,0);
 				direction=Vec3Df(0,-1,1);
 				glPushMatrix();
 				glTranslatef(0,1,0);
-				glRotatef(-90,1,0,0);
+				glRotatef(90,1,0,0);
 				glRotatef(-90,0,1,0);
 				break;
 			case 5:
