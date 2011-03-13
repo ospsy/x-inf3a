@@ -175,7 +175,7 @@ void lumiere3(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relie
 	Vec3Df L= PosLum-Vec3Df(x,y,0);
 	L.normalize();
 
-	OriginalColor = (poidsCumule*OriginalColor+coul*div*poids2*(Vec3Df::dotProduct(N,L)+Vec3Df::))/(poids2+poidsCumule);
+	OriginalColor = (poidsCumule*OriginalColor+coul*div*poids2*(Vec3Df::dotProduct(N,L)))/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
 	}
 }
