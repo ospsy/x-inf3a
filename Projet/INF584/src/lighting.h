@@ -13,6 +13,9 @@
 #include "Vec3D.h"
 #include "image.h"
 
+enum LightingMode{PASCONSTANT=0,RADIUS};
+LightingMode mode = PASCONSTANT;
+
 class Rayon{
 
 public :
@@ -43,6 +46,9 @@ bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, in
 bool eclairage2(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec, float *** reglage);
 
 
+Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> couleurs, const Image& relief, const Image& couleur);
+
+/*
 
 //x et y sont les coordonn�es sur lesquelles on veut projet notre point
 // OriginalColor et poidsCumule nous informent sur la Color pour le moment allou�e au point tex(x,y) et le poids total des distances dans ce calcul
@@ -53,7 +59,7 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief
 void lumiere2(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule, float *** reglage);
 
 void lumiere3(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule);
-
+*/
 
 
 #endif /* LIGHTING_H_ */
