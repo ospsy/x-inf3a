@@ -45,6 +45,17 @@ Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, 
 
 }
 
+Vec3Df normale(const Image& img, float x, float y){
+	float dx=0.1;
+	Vec3Df vec1(dx,0,(img.getInRealWorld(x+dx,y)-img.getInRealWorld(x-dx,y))/(2*dx));
+	Vec3Df vec2(0,dx,(img.getInRealWorld(x,y+dx)-img.getInRealWorld(x,y-dx))/(2*dx));
+
+	Vec3Df solution = Vec3Df::crossProduct(vec1,vec2);
+	solution.normalize();
+
+	return solution;
+}
+
 
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 
@@ -108,7 +119,9 @@ void lumiere2(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relie
 	//std::cout << "x,y=" << x << ","<< y << "|"<< xCol<<","<<yCol<<std::endl;
 	Vec3Df coul = Vec3Df(ColorLum[0]*couleur.getInRealWorld(xCol,yCol,0),ColorLum[1]*couleur.getInRealWorld(xCol,yCol,1),ColorLum[2]*couleur.getInRealWorld(xCol,yCol,2));
 
-	OriginalColor = (poidsCumule*OriginalColor+coul*poids2)/(poids2+poidsCumule);
+	float div = 5/(1+poids2*poids2);
+
+	OriginalColor = (poidsCumule*OriginalColor+coul*div*poids2)/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
 }
 
@@ -130,9 +143,43 @@ void lumiere(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief
 	//std::cout << "x,y=" << x << ","<< y << "|"<< xCol<<","<<yCol<<std::endl;
 	Vec3Df coul = Vec3Df(ColorLum[0]*couleur.getInRealWorld(xCol,yCol,0),ColorLum[1]*couleur.getInRealWorld(xCol,yCol,1),ColorLum[2]*couleur.getInRealWorld(xCol,yCol,2));
 
-	OriginalColor = (poidsCumule*OriginalColor+coul*poids2)/(poids2+poidsCumule);
+	float div = 5/(1+poids2*poids2);
+
+	OriginalColor = (poidsCumule*OriginalColor+coul*div*poids2)/(poids2+poidsCumule);
 	poidsCumule = poids2+poidsCumule;
 }
+
+void lumiere3(Vec3Df PosCam, Vec3Df PosLum, Vec3Df ColorLum, const Image & relief, const Image & couleur, float x, float y, float epsilon, int nbPas, Vec3Df & OriginalColor, float & poidsCumule){
+	
+	Rayon regard(PosCam, Vec3Df(x,y,0)-PosCam);
+	
+	Vec3Df intersec;
+
+	float poids2 = Vec3Df::distance(PosLum,intersec);
+	float petiteps=0.15;
+
+	if(!eclairage(regard, PosLum, relief, epsilon,nbPas,intersec)){
+		OriginalColor=(poidsCumule*OriginalColor+petiteps*Vec3Df(couleur.getInRealWorld(intersec[0],intersec[1],0),couleur.getInRealWorld(intersec[0],intersec[1],1),couleur.getInRealWorld(intersec[0],intersec[1],2))*poids2)/(poids2+poidsCumule);
+		poidsCumule = poids2+poidsCumule;
+	}
+	else{
+		float xCol = intersec[0];
+		float yCol = intersec[1];
+		//std::cout << "x,y=" << x << ","<< y << "|"<< xCol<<","<<yCol<<std::endl;
+		Vec3Df coul = Vec3Df(ColorLum[0]*couleur.getInRealWorld(xCol,yCol,0),ColorLum[1]*couleur.getInRealWorld(xCol,yCol,1),ColorLum[2]*couleur.getInRealWorld(xCol,yCol,2));
+
+	float div = 10/(1+poids2);
+
+	Vec3Df N= normale(relief,xCol,yCol);
+	Vec3Df L= PosLum-Vec3Df(x,y,0);
+	L.normalize();
+
+	OriginalColor = (poidsCumule*OriginalColor+coul*div*poids2*Vec3Df::dotProduct(N,L))/(poids2+poidsCumule);
+	poidsCumule = poids2+poidsCumule;
+	}
+}
+
+
 
 ///// CALCUL DU SAFETY RADIUS
 
