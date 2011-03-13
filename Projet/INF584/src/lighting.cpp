@@ -8,6 +8,7 @@
 #include "lighting.h"
 #include <math.h>
 #include <vector>
+#include <cmath>
 
 
 //Nombre de pas dans la dichotomie
@@ -33,12 +34,54 @@ Vec3Df normale(const Image& img, float x, float y){
 	return solution;
 }
 
+Vec3Df premierInter(Rayon r){
+	std::vector<Vec3Df> normales;
+	std::vector<float> d;
+
+	normales.push_back(Vec3Df(0,0,1));
+	normales.push_back(Vec3Df(1,0,0));
+	normales.push_back(Vec3Df(0,1,0));
+	normales.push_back(Vec3Df(1,0,0));
+	normales.push_back(Vec3Df(0,1,0));
+	normales.push_back(Vec3Df(0,0,1));
+	d.push_back(-1);
+	d.push_back(0);
+	d.push_back(-1);
+	d.push_back(-1);
+	d.push_back(0);
+	d.push_back(0);
+
+	float lambda=100;
+	Vec3Df pt;
+	for(int i=0;i<6;i++){
+		float tmp=Vec3Df::dotProduct(normales[i],r.direction);
+		if(tmp==0) continue;
+		float tmp2=-(d[i]+Vec3Df::dotProduct(normales[i],r.origine))/tmp;
+		if(lambda>tmp2){
+			Vec3Df tmpPt=r.origine+(tmp2+0.001)*r.direction;
+			if(!(tmpPt[0]>1 || tmpPt[0]<0 || tmpPt[1]>1 || tmpPt[1]<0 || tmpPt[2]>1 || tmpPt[2]<0)){
+				lambda=tmp2;
+				pt=tmpPt;
+			}
+		}
+	}
+	return pt;
+}
+
+
 Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 
-	Vec3Df courant = r.origine;
+	Vec3Df courant = premierInter(r);
 	while(! im.estSous(courant)){
 		courant+= (r.direction)*epsilon;
+
+		if(courant[0]>1 || courant[0]<0 || courant[1]>1 || courant[1]<0){
+		
+			return Vec3Df(-1,-1,-1);
+		
+		}
 	}
+	//cout << "hello" << endl;
 	
 	// Recherche Binaire
 	float pas = epsilon/2;
@@ -60,18 +103,23 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 }
 
 Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, float*** reglage){
-	Vec3Df courant = r.origine;
+	Vec3Df courant = premierInter(r);
 	
+	int i,j,k;
 	while(! im.estSous(courant)){
-		int i = (int) (courant[0]/(float)im.sizeX);
-		int j = (int) (courant[1]/(float)im.sizeY);
-		int k = (int) (atan((double) (courant[1]/courant[0]))/PI);
+		i = (int) (courant[0]/(float)im.sizeX);
+		j = (int) (courant[1]/(float)im.sizeY);
+		k = (int) fmod(atan2(courant[0],courant[1])/(2*PI)+1,1);
 
 		courant+= (r.direction)*reglage[i][j][k];
+
+		if(courant[0]>1 || courant[0]<0 || courant[1]>1 || courant[1]<0)
+		
+			return Vec3Df(-1,-1,-1);
 	}
 	
 	// Recherche Binaire
-	float pas = epsilon/2;
+	float pas = reglage[i][j][k]/2;
 
 	for(int i = 0 ; i < nbPas ; i++) {
 		Vec3Df milieu;
@@ -91,11 +139,14 @@ Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, 
 
 }
 
+
 bool eclairage(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, int nbPas, Vec3Df & intersec){
 	
 	//On retrouve le point sur lequel le regard tombe
 	intersec = intersection(regard,im,epsilon,nbPas);
 	
+	if (intersec[0]==-1) return false;
+
 	Rayon r2(lumiere,intersec-lumiere);
 
 	return (Vec3Df::distance(intersec,intersection(r2,im,epsilon,nbPas)) < epsilon);
@@ -105,6 +156,9 @@ bool eclairage2(Rayon regard, Vec3Df lumiere, const Image & im, float epsilon, i
 	
 	//On retrouve le point sur lequel le regard tombe
 	intersec = intersection2(regard,im,epsilon,nbPas,reglage);
+	if(intersec[0]==-1){
+		return false;
+	}
 	Rayon r2(lumiere,intersec-lumiere);
 
 	return (Vec3Df::distance(intersec,intersection(r2,im,epsilon,nbPas)) < epsilon);
@@ -130,6 +184,9 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 			float poids2;
 			
 			if(!eclairage(camera, lumieres[i],relief,EPSILON,NB_PAS,intersec)){
+				if(intersec[0]==-1){
+					return Vec3Df(0,0,0);
+				}
 				poids2 = Vec3Df::distance(lumieres[i],intersec);
 				coul=(poids*coul+NOIR*Vec3Df(couleur.getInRealWorld(intersec[0],intersec[1],0),couleur.getInRealWorld(intersec[0],intersec[1],1),couleur.getInRealWorld(intersec[0],intersec[1],2))*poids2)/(poids2+poids);
 				poids = poids2+poids;
@@ -153,7 +210,7 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 				H.normalize();
 				float facteurBP = /*div**/puissanceS(Vec3Df::dotProduct(H,N));
 				
-				coul = (poids*coul+poids2*coul2*(facteurL/*+facteurBP*/))/(poids+poids2);
+				coul = (poids*coul+poids2*coul2*(facteurL+facteurBP)/2)/(poids+poids2);
 				poids= poids+poids2;
 				}		
 		
@@ -173,6 +230,8 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 			float poids2;
 			
 			if(!eclairage2(camera, lumieres[i],relief,EPSILON,NB_PAS,intersec,tableau)){
+				if(intersec[0]==-1)
+					return Vec3Df(0,0,0);
 				poids2 = Vec3Df::distance(lumieres[i],intersec);
 				coul=(poids*coul+NOIR*Vec3Df(couleur.getInRealWorld(intersec[0],intersec[1],0),couleur.getInRealWorld(intersec[0],intersec[1],1),couleur.getInRealWorld(intersec[0],intersec[1],2))*poids2)/(poids2+poids);
 				poids = poids2+poids;

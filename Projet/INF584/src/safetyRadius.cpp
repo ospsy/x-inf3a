@@ -13,45 +13,65 @@
 #define PI 3.1415
 //Valeur minimale du SafetyRadius
 #define MINIMAL_RADIUS 0.002
+#define TOUT_PETIT 0.01 
 
 
-float Tangente(float x, float y, float theta, float sens, float pasX, float pasY, const Image & img){
 
-	return (img.getInRealWorld(x+sens*pasX,y+sens*pasY)-img.getInRealWorld(x,y))/(sens*NORME_PAS);
+inline bool nearlyEgal(float tangente1,float tangente2){
 
-}
+	return (tangente1-tangente2 > -TOUT_PETIT && tangente1-tangente2 < TOUT_PETIT);
 
-bool Negal(float tangente1,float tangente2, float ToutPetit){
-
-	return (tangente1-tangente2 > -ToutPetit && tangente1-tangente2 < ToutPetit);
-
-}
-
-
-bool estCompatible(float tangente, float xOr, float yOr,float xTest,float yTest, const Image& img, float x, float y, float theta, float sens, float pasX, float pasY, float ToutPetit, float & r){
-
-	float tan = Tangente(x,y,theta,sens,pasX,pasY,img);
-
-	if (Negal(tan,tangente,ToutPetit)){
-		r = min((float) min(sqrt((double)((xOr-x)*(xOr-x)+(yOr-y)*(yOr-y))),sqrt((double)((xTest-x)*(xTest-x)+(yTest-y)*(yTest-y)))),r);
-		return true;
-	}
-	return false;
 }
 
 bool dehors(const Image& img, Vec3Df vec){
 	return ((vec[0]>1 || vec[0]<0)||(vec[1]>1 || vec[1]<0));
 }
 
-Vec3Df opp(Vec3Df courant, const Image & img, Vec3Df pas){
 
-	Vec3Df sol = courant+pas;
-	while(!img.estSous(sol) && !dehors(img,sol))
-		sol+=pas;
+float sRadius(float x, float y, float theta, const Image & img){
 
-	return sol;
+	float pasX=(float) (NORME_PAS*cos((double)theta));
+	float pasY=(float) (NORME_PAS*sin((double)theta));
+
+	//courantD et courantG vont nous permettre de remonter le long de la courbe suivant le plan défini par theta
+	Vec3Df courantD(x,y,0);
+	float tailleCase = min(1/((float) img.sizeX),1/((float) img.sizeY));
+
+	Vec3Df pasG(pasX,pasY,0);
+	pasG.normalize();
+	pasG*=-tailleCase;
+
+	bool SolutionTrouvee=false;
+
+	while(!SolutionTrouvee){
+		courantD+=Vec3Df(pasX,pasY,0);
+
+		if(dehors(img,courantD)){
+		return MINIMAL_RADIUS;
+		}
+
+		float tangenteD = img.tangente(courantD[0],courantD[1],theta);
+
+		Vec3Df oppose=courantD;
+
+		while(! img.estSous(oppose)){
+			oppose+= pasG;
+			if(oppose[0]>1 || oppose[0]<0 || oppose[1]>1 || oppose[1]<0)
+				break;
+		}
+		if(Vec3Df::dotProduct(oppose-Vec3Df(x,y,0),courantD-Vec3Df(x,y,0))>0)
+			return MINIMAL_RADIUS;
+
+		float tangenteOpp= img.tangente(oppose[0],oppose[1],theta);
+
+		if(nearlyEgal(tangenteOpp,tangenteD) && Vec3Df::distance(oppose,courantD)>TOUT_PETIT)
+			return Vec3Df::distance(Vec3Df(x,y,0),courantD);
+
+		}
 
 }
+
+/*
 
 float safetyRadius(float x, float y, float theta, const Image & img){
 
@@ -235,13 +255,13 @@ float safetyRadius(float x, float y, float theta, const Image & img){
 
 
 	}
-	*/
+	
 
 
 	return MINIMAL_RADIUS;
 
 }
-
+*/
 
 float*** precomputation(const Image & I, int P){
 
@@ -257,7 +277,7 @@ float*** precomputation(const Image & I, int P){
 			solution [i][j]= new float [M];
 
 			for (int k = 0 ; k < P ; k++){
-				solution [i][j][k]=safetyRadius(1/((float)N)*i,1/((float) M)*j,PI/((float)P)*k,I);
+				solution [i][j][k]=sRadius(1/((float)N)*i,1/((float) M)*j,2*PI/((float)P)*k,I);
 				if(solution [i][j][k]>max) max=solution [i][j][k];
 				if(solution [i][j][k]<min) min=solution [i][j][k];
 			}

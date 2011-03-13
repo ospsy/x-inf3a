@@ -82,6 +82,11 @@ public:
 	inline bool estSous(const Vec3Df courant) const{
 		return getInRealWorld(courant[0],courant[1])/255> courant[2];
 	}
+
+	inline float tangente(float x, float y, float theta) const{
+		return (operator()(x*sizeX+1,y*sizeY,0)-operator()(x*sizeX,y*sizeY,0))*sizeX*cos(theta)+
+			(operator()(x*sizeX,y*sizeY+1,0)-operator()(x*sizeX,y*sizeY,0))*sizeY*sin(theta);
+	}
 };
 
 
