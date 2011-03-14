@@ -27,7 +27,7 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 	{
 		power *= 2 ;
 	}
-	int borderSize = (3*(power*intervals + 1) + 1) /2 ;
+	int borderSize = 3*(power*(intervals+1) + 1) /2 ;
 	
 	for (int inter=0 ; inter<intervals ; inter++)
 	{
@@ -108,7 +108,7 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 				
 				int dxy = lobe00 + lobe11 - lobe10 - lobe01 ;
 				
-				((int*)(current->imageData + current->widthStep*x))[y] = (int)((dxx*dyy- (0.9*dxy)*(0.9*dxy))/area) ;
+				((int*)(current->imageData + current->widthStep*x))[y] = (int)((dxx*dyy- (0.9*dxy)*(0.9*dxy))/(area*area)) ;
 			}
 	}
 }
@@ -117,7 +117,7 @@ int main ( int argc, char **argv )
 {
   cvNamedWindow( "My Window", 1 );
   cvNamedWindow( "My Window 2", 1 );
-  IplImage *img = cvLoadImage("lena_1024.jpg",CV_LOAD_IMAGE_GRAYSCALE);
+  IplImage *img = cvLoadImage("lena_600.jpg",CV_LOAD_IMAGE_GRAYSCALE);
   if(!img){
   	std::cout << "impossible de charger l'image, aborting..." << std::endl;
   	return 1;
