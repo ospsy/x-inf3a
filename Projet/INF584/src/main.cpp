@@ -302,7 +302,7 @@ int main(int argc, char** argv)
 	if(argc == 3){
 		init(argv[1],argv[2]);
 	}else{
-		init("relief.ppm","couleur.ppm");
+		init("relief2.ppm","couleur2.ppm");
 	}
 
 	// cablage des callback
