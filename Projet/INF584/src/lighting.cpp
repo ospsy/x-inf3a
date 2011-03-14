@@ -84,7 +84,7 @@ Vec3Df intersection(const Rayon r, const Image & im, float epsilon, int nbPas){
 	// Recherche Binaire
 	float pas = epsilon/2;
 
-	while(pas >1./im.sizeX) {
+	while(pas >im.sizeX) {
 		Vec3Df milieu;
 		milieu= courant-(r.direction)*pas;
 
@@ -119,7 +119,7 @@ Vec3Df intersection2(const Rayon r, const Image & im, float epsilon, int nbPas, 
 	// Recherche Binaire
 	float pas = reglage[i][j][k]/2;
 
-	while(pas >1./im.sizeX) {
+	while(pas >im.sizeX) {
 		Vec3Df milieu;
 		milieu= courant-(r.direction)*pas;
 
@@ -247,7 +247,7 @@ Vec3Df lumiere(Rayon camera, std::vector<Vec3Df> lumieres, std::vector<Vec3Df> c
 				float facteurL = div*(Vec3Df::dotProduct(N,L));
 
 				//Calcul de Blinn-Phong
-				Vec3Df H = (camera.direction+L)/2;
+				Vec3Df H = (-camera.direction+L)/2;
 				H.normalize();
 				float facteurBP = div*puissanceS(Vec3Df::dotProduct(H,N));
 

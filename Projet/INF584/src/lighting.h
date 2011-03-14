@@ -19,7 +19,7 @@
 
 enum LightingMode{PASCONSTANT=0,RADIUS};
 //LightingMode lightingMode = PASCONSTANT;
-#define lightingMode PASCONSTANT
+#define lightingMode RADIUS
 
 class Rayon{
 
