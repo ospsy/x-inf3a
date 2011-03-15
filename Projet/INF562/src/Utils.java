@@ -34,7 +34,7 @@ public class Utils {
 		
 		while (debut || he != premier)
 		{
-			debut = true ;
+			debut = false ;
 			Face<Point_3> f = he.getFace() ;
 			
 			Vector_3 n = vecteurNormal (f) ;
