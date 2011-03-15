@@ -1,18 +1,23 @@
+import java.awt.Color;
 import java.util.HashMap;
+import java.util.LinkedList;
+
+import com.sun.corba.se.impl.encoding.OSFCodeSetRegistry.Entry;
 
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
-import Jcg.polyhedron.Face;
 import Jcg.polyhedron.Halfedge;
+import Jcg.polyhedron.MeshRepresentation;
 import Jcg.polyhedron.Polyhedron_3;
 import Jcg.polyhedron.Vertex;
+import Jcg.viewer.MeshViewer;
 
 
 public class GaussianCourbureEstimator extends CourbureEstimator {
 	HashMap<Vertex<Point_3>, Double> courbureMap;
 	
-	public GaussianCourbureEstimator(Polyhedron_3<Point_3> mesh) {
-		this.mesh=mesh;
+	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
+		this.poly=poly;
 		courbureMap= new HashMap<Vertex<Point_3>, Double>();
 	}
 	
@@ -46,6 +51,24 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 				break;
 		}
 		courbureMap.put(v, 3*(2*Math.PI-totalAngle)/totalSum) ;
+	}
+	
+	void show(){
+		LinkedList<Point_3> pts = new LinkedList<Point_3>();
+		Color[] col = new Color[courbureMap.size()];
+		int i=0;
+		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : courbureMap.entrySet()) {
+			pts.add(e.getKey().getPoint());
+			if(e.getValue()>0){
+				float tmp = (float) (Math.atan(e.getValue())*2/Math.PI);
+				col[i]=new Color(1, 1-tmp, 1-tmp);
+			}else{
+				float tmp = (float) (-Math.atan(e.getValue())*2/Math.PI);
+				col[i]=new Color(1-tmp, 1, 1-tmp);
+			}
+			i++;
+		}
+		new MeshViewer(pts,col);
 	}
 
 }
