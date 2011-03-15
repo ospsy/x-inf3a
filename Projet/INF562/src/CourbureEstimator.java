@@ -4,7 +4,7 @@ import Jcg.polyhedron.Vertex;
 
 
 public abstract class CourbureEstimator {
-	private Polyhedron_3<Point_3> mesh;
+	protected Polyhedron_3<Point_3> mesh;
 
 	public abstract double compareTo(CourbureEstimator ce);
 
