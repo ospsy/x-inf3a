@@ -1,6 +1,6 @@
 #include "surf.h"
 
-std::list<std::vector<int> > findExtrema(const IplImage** data, int intervals){
+std::list<std::vector<int> > findExtrema(IplImage** data, int intervals){
 	std::list<std::vector<int> > result;
 	for(int i=1;i<intervals-1;i++){
 		for (int x = 1; x < data[i]->width-1; ++x) {

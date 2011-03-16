@@ -19,7 +19,7 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 
 #define THRESOLD 200
 
-std::list<std::vector<int> > findExtrema(const IplImage** data, int intervals);
+std::list<std::vector<int> > findExtrema(IplImage** data, int intervals);
 
 // Acces au pixel x,y d'une image
 #define getPixel(in, x, y) ((uint*)( ((in)->imageData) + ((in)->widthStep) * (x))) [(y)]
