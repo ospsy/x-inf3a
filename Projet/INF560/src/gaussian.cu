@@ -13,69 +13,70 @@ __global__ void CUDAcalculateGaussianDerivative2(uint* integral, uint* out, int 
   int x = blockIdx.x * blockDim.x + threadIdx.x; 
   int y = blockIdx.y * blockDim.y + threadIdx.y;
   if ( x < width-borderSize && y < height-borderSize && x >= borderSize && y >= borderSize ){
-  	int lobeGauche = 0, lobeCentre = 0, lobeDroit = 0 ;
-	lobeGauche += getPixel(integral, pitch, x-(lobe+1)/2, y + lobe-1) ;
-	lobeGauche -= getPixel(integral, pitch, x-(lobe+1)/2, y - lobe) ;
-	lobeGauche += getPixel(integral, pitch, x-(lobe+1)/2 - lobe, y + lobe) ;
-	lobeGauche -= getPixel(integral, pitch, x-(lobe+1)/2 - lobe, y + lobe-1) ;
+  	// Derivee selon x
+				int lobeGauche = 0, lobeCentre = 0, lobeDroit = 0 ;
+				lobeGauche += getPixel(integral,pitch, x-(lobe+1)/2, y + lobe-1) ;
+				lobeGauche -= getPixel(integral,pitch, x-(lobe+1)/2, y - lobe) ;
+				lobeGauche += getPixel(integral,pitch, x-(lobe+1)/2 - lobe, y - lobe) ;
+				lobeGauche -= getPixel(integral,pitch, x-(lobe+1)/2 - lobe, y + lobe-1) ;
 
-	lobeCentre += getPixel(integral, pitch, x-(lobe+1)/2, y - lobe) ;
-	lobeCentre -= getPixel(integral, pitch, x-(lobe+1)/2, y + lobe-1) ;
-	lobeCentre += getPixel(integral, pitch, x+(lobe-1)/2, y + lobe-1) ;
-	lobeCentre -= getPixel(integral, pitch, x+(lobe-1)/2, y - lobe) ;
+				lobeCentre += getPixel(integral,pitch, x-(lobe+1)/2, y - lobe) ;
+				lobeCentre -= getPixel(integral,pitch, x-(lobe+1)/2, y + lobe-1) ;
+				lobeCentre += getPixel(integral,pitch, x+(lobe-1)/2, y + lobe-1) ;
+				lobeCentre -= getPixel(integral,pitch, x+(lobe-1)/2, y - lobe) ;
 				
-	lobeDroit += getPixel(integral, pitch, x+(lobe-1)/2, y - lobe) ;
-	lobeDroit -= getPixel(integral, pitch, x+(lobe-1)/2, y + lobe-1) ;
-	lobeDroit += getPixel(integral, pitch, x+(lobe-1)/2 + lobe, y + lobe-1) ;
-	lobeDroit -= getPixel(integral, pitch, x+(lobe-1)/2 + lobe, y - lobe) ;
-	
-	int dxx = lobeCentre - lobeDroit - lobeGauche ;
-	
-					// Derivee selon y
+				lobeDroit += getPixel(integral,pitch, x+(lobe-1)/2, y - lobe) ;
+				lobeDroit -= getPixel(integral,pitch, x+(lobe-1)/2, y + lobe-1) ;
+				lobeDroit += getPixel(integral,pitch, x+(lobe-1)/2 + lobe, y + lobe-1) ;
+				lobeDroit -= getPixel(integral,pitch, x+(lobe-1)/2 + lobe, y - lobe) ;
+				
+				int dxx = lobeCentre - lobeDroit - lobeGauche ;
+				
+				// Derivee selon y
 				int lobeHaut = 0, lobeBas = lobeCentre = 0 ;
-				lobeHaut += getPixel(integral, pitch, x-lobe, y - (3*lobe +1)/2) ;
-				lobeHaut -= getPixel(integral, pitch, x+lobe-1, y - (3*lobe +1)/2) ;
-				lobeHaut += getPixel(integral, pitch, x+lobe-1, y - (lobe +1)/2) ;
-				lobeHaut -= getPixel(integral, pitch, x-lobe, y - (lobe +1)/2) ;
+				lobeHaut += getPixel(integral,pitch, x-lobe, y - (3*lobe +1)/2) ;
+				lobeHaut -= getPixel(integral,pitch, x+lobe-1, y - (3*lobe +1)/2) ;
+				lobeHaut += getPixel(integral,pitch, x+lobe-1, y - (lobe +1)/2) ;
+				lobeHaut -= getPixel(integral,pitch, x-lobe, y - (lobe +1)/2) ;
 				
-				lobeCentre += getPixel(integral, pitch, x-lobe, y - (lobe +1)/2) ;
-				lobeCentre -= getPixel(integral, pitch, x+lobe-1, y - (lobe +1)/2) ;
-				lobeCentre += getPixel(integral, pitch, x+lobe-1, y + (lobe -1)/2) ;
-				lobeCentre += getPixel(integral, pitch, x-lobe, y + (lobe -1)/2) ;
+				lobeCentre += getPixel(integral,pitch, x-lobe, y - (lobe +1)/2) ;
+				lobeCentre -= getPixel(integral,pitch, x+lobe-1, y - (lobe +1)/2) ;
+				lobeCentre += getPixel(integral,pitch, x+lobe-1, y + (lobe -1)/2) ;
+				lobeCentre -= getPixel(integral,pitch, x-lobe, y + (lobe -1)/2) ;
 				
-				lobeBas += getPixel(integral, pitch, x-lobe, y + (lobe -1)/2) ;
-				lobeBas -= getPixel(integral, pitch, x+lobe-1, y + (lobe -1)/2) ;
-				lobeBas += getPixel(integral, pitch, x+lobe-1, y + (3*lobe -1)/2) ;
-				lobeBas -= getPixel(integral, pitch, x-lobe, y + (3*lobe -1)/2) ;
+				lobeBas += getPixel(integral,pitch, x-lobe, y + (lobe -1)/2) ;
+				lobeBas -= getPixel(integral,pitch, x+lobe-1, y + (lobe -1)/2) ;
+				lobeBas += getPixel(integral,pitch, x+lobe-1, y + (3*lobe -1)/2) ;
+				lobeBas -= getPixel(integral,pitch, x-lobe, y + (3*lobe -1)/2) ;
 				
 				int dyy = lobeCentre - lobeHaut - lobeBas ;
 				
 				// Derivee selon xy
 				int lobe00=0, lobe01=0, lobe10=0, lobe11=0;
 				
-				lobe00 += getPixel(integral, pitch, x-lobe-1, y-lobe -1) ;
-				lobe00 -= getPixel(integral, pitch, x-1, y-lobe -1) ;
-				lobe00 += getPixel(integral, pitch, x-1, y-1) ;
-				lobe00 -= getPixel(integral, pitch, x-lobe-1, y-1) ;
+				lobe00 += getPixel(integral,pitch, x-lobe-1, y-lobe -1) ;
+				lobe00 -= getPixel(integral,pitch, x-1, y-lobe -1) ;
+				lobe00 += getPixel(integral,pitch, x-1, y-1) ;
+				lobe00 -= getPixel(integral,pitch, x-lobe-1, y-1) ;
 				
-				lobe01 += getPixel(integral, pitch, x, y-lobe-1) ;
-				lobe01 -= getPixel(integral, pitch, x, y-1) ;
-				lobe01 += getPixel(integral, pitch, x+lobe, y-1) ;
-				lobe01 -= getPixel(integral, pitch, x+lobe, y-lobe-1) ;
+				lobe01 += getPixel(integral,pitch, x, y-lobe-1) ;
+				lobe01 -= getPixel(integral,pitch, x, y-1) ;
+				lobe01 += getPixel(integral,pitch, x+lobe, y-1) ;
+				lobe01 -= getPixel(integral,pitch, x+lobe, y-lobe-1) ;
 				
-				lobe10 += getPixel(integral, pitch, x-lobe-1, y) ;
-				lobe10 -= getPixel(integral, pitch, x-1, y) ;
-				lobe10 += getPixel(integral, pitch, x-1, y+lobe) ;
-				lobe10 -= getPixel(integral, pitch, x-lobe-1, y+lobe) ;
+				lobe10 += getPixel(integral,pitch, x-lobe-1, y) ;
+				lobe10 -= getPixel(integral,pitch, x-1, y) ;
+				lobe10 += getPixel(integral,pitch, x-1, y+lobe) ;
+				lobe10 -= getPixel(integral,pitch, x-lobe-1, y+lobe) ;
 
-				lobe11 += getPixel(integral, pitch, x, y) ;
-				lobe11 -= getPixel(integral, pitch, x, y+lobe) ;
-				lobe11 += getPixel(integral, pitch, x+lobe, y) ;
-				lobe11 -= getPixel(integral, pitch, x+lobe, y+lobe) ;
+				lobe11 += getPixel(integral,pitch, x, y) ;
+				lobe11 -= getPixel(integral,pitch, x, y+lobe) ;
+				lobe11 -= getPixel(integral,pitch, x+lobe, y) ;
+				lobe11 += getPixel(integral,pitch, x+lobe, y+lobe) ;
 				
 				int dxy = lobe00 + lobe11 - lobe10 - lobe01 ;
 				
-				getPixel(out, pitch, x, y) = (int)((dxx*dyy- (0.9*dxy)*(0.9*dxy))/area) ;
+				getPixel(out,pitch,x,y) = (int)((dxx*dyy- (0.9*dxy)*(0.9*dxy))/(area*area)) ;
   }
   else{
   	getPixel(out, pitch, x, y) =0;
@@ -110,7 +111,7 @@ void CUDAcalculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** 
 	{
 		power *= 2 ;
 	}
-	int borderSize = (3*(power*intervals + 1) + 1) /2 ;
+	int borderSize = (3*(power*intervals + 1))/2+1  ;
 	
 	dim3 dimBlock( blocksize, blocksize );
     dim3 dimGrid( imageIntegrale->width/blocksize, imageIntegrale->height/blocksize);
