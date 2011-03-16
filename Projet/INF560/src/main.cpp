@@ -26,39 +26,39 @@ int main ( int argc, char **argv )
 //    }
 //  }
   //filtres gaussiens
-  IplImage *imgs[6], *imgs2[6];
-  for(int i=0;i<6;i++){
+  int intervals=6;
+  IplImage *imgs[intervals], *imgs2[intervals];
+  for(int i=0;i<intervals;i++){
   	imgs[i]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
   	imgs2[i]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
   }
   clock_t timer=clock();
-  calculateGaussianDerivative(img2,imgs,0,6);
+  calculateGaussianDerivative(img2,imgs,0,intervals);
   std::cout << "calculateGaussianDerivative : " << 1000*(float)(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
-  CUDAcalculateGaussianDerivative(img2,imgs2,0,6);
+  CUDAcalculateGaussianDerivative(img2,imgs2,0,intervals);
   
-  //cvShowImage( "My Window 4", imgs[1] );
-  //cvShowImage( "My Window 5", imgs[2] );
   int i=30;
   	for(int j=0;j<img->width;j++){
   		//if(((int*)( imgs[0]->imageData + imgs[0]->widthStep * i)) [j] != ((int*)( imgs2[0]->imageData + imgs2[0]->widthStep * i)) [j])
   		//std::cout << i << "," << j << " "<< ((int*)( imgs[0]->imageData + imgs[0]->widthStep * i)) [j] << " "<< ((int*)( imgs2[0]->imageData + imgs2[0]->widthStep * i)) [j] << std::endl;
     }
   
+  //recherche d'extremas
+  timer=clock();
+  std::list<std::vector<int> > maxs(findExtrema(imgs,intervals));
+  std::cout << "findExtrema : " << 1000*(float)(clock()-timer)/(float)CLOCKS_PER_SEC <<"ms"<< std::endl;
+  
   //affichage
   IplImage *imgsShow[6];
-  {
-  	imgsShow[0]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
-  	cvScale(imgs[0],imgsShow[0],100);
-  	cvShowImage( "My Window 3", imgsShow[0] );
-  	imgsShow[1]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
-  	cvScale(imgs2[0],imgsShow[1],100);
-  	cvShowImage( "My Window 4", imgsShow[1] );
-  	imgsShow[2]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
-  	cvScale(imgs[1],imgsShow[2],100);
-  	cvShowImage( "My Window 5", imgsShow[2] );
-  	imgsShow[3]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
-  	cvScale(imgs2[1],imgsShow[3],100);
-  	cvShowImage( "My Window 6", imgsShow[3] );
+  std::list<vector<int> >::iterator tmp=maxs.begin();
+  for (int i = 1; i < 4; ++i) {
+  	imgsShow[i]=cvCreateImage(cvSize(img->width,img->height),IPL_DEPTH_32S,1);
+  	cvScale(imgs[i],imgsShow[i],100);
+  	while(tmp!=maxs.end() && (*tmp)[0]==i){
+  		cvCircle(imgsShow[i], cvPoint((*tmp)[2],(*tmp)[1]), 10, cvScalar(0,255,0), 1);
+  		tmp++;
+  	}
+  	cvShowImage( "1"+i, imgsShow[i] );
   }
   
   cvWaitKey();
