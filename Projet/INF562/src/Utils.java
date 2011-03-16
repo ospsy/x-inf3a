@@ -1,5 +1,5 @@
-import Jcg.geometry.Vector_3;
 import Jcg.geometry.Point_3;
+import Jcg.geometry.Vector_3;
 import Jcg.polyhedron.Face;
 import Jcg.polyhedron.Halfedge;
 import Jcg.polyhedron.Vertex;
