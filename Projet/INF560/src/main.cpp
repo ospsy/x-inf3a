@@ -8,7 +8,6 @@
 
 int main ( int argc, char **argv )
 {
-  cvNamedWindow( "My Window", 1 );
   IplImage *img = cvLoadImage("lena_600.jpg",CV_LOAD_IMAGE_GRAYSCALE);
   if(!img){
   	std::cout << "impossible de charger l'image, aborting..." << std::endl;
@@ -39,13 +38,11 @@ int main ( int argc, char **argv )
   
   //cvShowImage( "My Window 4", imgs[1] );
   //cvShowImage( "My Window 5", imgs[2] );
-  for(int i=0;i<img->height;i++){
+  int i=30;
   	for(int j=0;j<img->width;j++){
-  		i=j;
   		//if(((int*)( imgs[0]->imageData + imgs[0]->widthStep * i)) [j] != ((int*)( imgs2[0]->imageData + imgs2[0]->widthStep * i)) [j])
-  		std::cout << i << "," << j << " "<< ((int*)( imgs[0]->imageData + imgs[0]->widthStep * i)) [j] << " "<< ((int*)( imgs2[0]->imageData + imgs2[0]->widthStep * i)) [j] << std::endl;
+  		//std::cout << i << "," << j << " "<< ((int*)( imgs[0]->imageData + imgs[0]->widthStep * i)) [j] << " "<< ((int*)( imgs2[0]->imageData + imgs2[0]->widthStep * i)) [j] << std::endl;
     }
-  }
   
   //affichage
   IplImage *imgsShow[6];

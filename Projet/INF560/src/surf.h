@@ -16,16 +16,16 @@ void makeIntegralImage(const IplImage* in, IplImage* out);
 void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out, int octave, int intervals);
 
 // Acces au pixel x,y d'une image
-//#define getPixel(in, x, y) ((uint*)( ((in)->imageData) + ((in)->widthStep) * (x))) [(y)]
-inline uint getPixel(const IplImage* in, int x, int y)
-{
-	// Pixel en dehors de l'image
-	if (x < 0 || x >= in->width || y < 0 || y >= in->height){
-		std::cout << "En dehords des bords.\n" ;
-		return 0 ;
-	}
-	return ((uint*)( (in->imageData) + (in->widthStep) * x)) [y] ;
-}
+#define getPixel(in, x, y) ((uint*)( ((in)->imageData) + ((in)->widthStep) * (x))) [(y)]
+//inline uint getPixel(const IplImage* in, int x, int y)
+//{
+//	// Pixel en dehors de l'image
+////	if (x < 0 || x >= in->width || y < 0 || y >= in->height){
+////		std::cout << "En dehords des bords.\n" ;
+////		return 0 ;
+////	}
+//	return ((uint*)( (in->imageData) + (in->widthStep) * x)) [y] ;
+//}
 
 
 
