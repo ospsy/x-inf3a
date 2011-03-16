@@ -1,9 +1,8 @@
 import java.util.LinkedList;
-import Jama.Matrix;
 
+import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
-import Jcg.polyhedron.Face;
 import Jcg.polyhedron.Halfedge;
 import Jcg.polyhedron.Vertex;
 
@@ -30,7 +29,7 @@ public class Taubin extends CourbureEstimator {
 		while (debut || he != premier)
 		{
 			debut = false ;
-			Face<Point_3> f = he.getFace() ;
+		
 			voisins.add(he.getNext().getVertex()) ;
 			
 			he = he.getNext().getNext().getOpposite() ; // En supposant qu'il s'agit d'un triangle
@@ -64,7 +63,7 @@ public class Taubin extends CourbureEstimator {
 		surfaces[i] = Math.sqrt(v1.crossProduct(v2).squaredLength().doubleValue()) / 2 ;
 		w += surfaces[i]*2 ;
 		
-		// RŽcupŽration des projections des voisins sur le plan tangent
+		// Rï¿½cupï¿½ration des projections des voisins sur le plan tangent
 		Matrix m = new Matrix(3,3) ;
 		i = 0 ;
 		for (Vertex<Point_3> vertex : voisins) {
@@ -90,6 +89,12 @@ public class Taubin extends CourbureEstimator {
 			
 			i++ ;
 		}
+		
+	}
+
+	@Override
+	void show() {
+		// TODO Auto-generated method stub
 		
 	}
 

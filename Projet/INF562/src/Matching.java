@@ -4,8 +4,6 @@ import Jcg.geometry.Point_3;
 import Jcg.polyhedron.LoadMesh;
 import Jcg.polyhedron.MeshRepresentation;
 import Jcg.polyhedron.Polyhedron_3;
-import Jcg.polyhedron.Vertex;
-import Jcg.viewer.MeshViewer;
 
 
 public class Matching {
