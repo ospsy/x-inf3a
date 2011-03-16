@@ -4,6 +4,8 @@
 #include <cv.h>
 #include <highgui.h>
 #include <iostream>
+#include <list>
+#include <vector>
 
 /**
  * Crée l'image intégrale, l'image de sortie doit déjà être créé
@@ -14,6 +16,10 @@ void makeIntegralImage(const IplImage* in, IplImage* out);
 
 // Calcul de les derivees gaussiennes d'ordre 2
 void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out, int octave, int intervals);
+
+#define THRESOLD 200
+
+std::list<std::vector<int> > findExtrema(const IplImage** data, int intervals);
 
 // Acces au pixel x,y d'une image
 #define getPixel(in, x, y) ((uint*)( ((in)->imageData) + ((in)->widthStep) * (x))) [(y)]
