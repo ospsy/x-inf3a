@@ -12,4 +12,8 @@ void CUDAmakeIntegralImage(const IplImage* in, IplImage* out);
 
 void CUDAcalculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out, int octave, int intervals);
 
+// Acces au pixel x,y d'une image
+#define getPixel(in,pitch,x,y) ( ((uint*)((char*)(in) + (pitch)*(x)))[(y)] )
+
+
 #endif /*SURFCUDA_H_*/

@@ -1,13 +1,10 @@
 #include <cutil.h>
 #include <stdlib.h>
 #include <iostream>
-#include <cv.h>
+#include "surfCUDA.h"
 #include <ctime>
 
 const int blocksize = 10;
-
-// Acces au pixel x,y d'une image
-#define getPixel(in,pitch,x,y) ( ((uint*)((char*)(in) + (pitch)*(x)))[(y)] )
 
 __global__ void CUDAcalculateGaussianDerivative2(uint* integral, uint* out, int width, int height, int pitch , int lobe, int area, int borderSize) {
   int x = blockIdx.x * blockDim.x + threadIdx.x; 
