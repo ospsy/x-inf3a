@@ -1,6 +1,4 @@
-#include <cv.h>
-#include <highgui.h>
-#include <iostream>
+#include "surf.h"
 
 void makeIntegralImage(const IplImage* in, IplImage* out){
 	if(in->depth!=IPL_DEPTH_8U || out->depth!=IPL_DEPTH_32S){
