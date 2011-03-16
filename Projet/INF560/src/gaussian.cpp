@@ -9,7 +9,7 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 	{
 		power *= 2 ;
 	}
-	int borderSize = 3*(power*(intervals+1) + 1) /2 ;
+	int borderSize = (3*(power*intervals + 1))/2+1  ;
 	
 	for (int inter=0 ; inter<intervals ; inter++)
 	{
@@ -27,11 +27,10 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 				// On calcule la reponse des differents filtres
 				
 				// Derivee selon x
-				// Lobe de gauche
 				int lobeGauche = 0, lobeCentre = 0, lobeDroit = 0 ;
 				lobeGauche += getPixel(imageIntegrale, x-(lobe+1)/2, y + lobe-1) ;
 				lobeGauche -= getPixel(imageIntegrale, x-(lobe+1)/2, y - lobe) ;
-				lobeGauche += getPixel(imageIntegrale, x-(lobe+1)/2 - lobe, y + lobe) ;
+				lobeGauche += getPixel(imageIntegrale, x-(lobe+1)/2 - lobe, y - lobe) ;
 				lobeGauche -= getPixel(imageIntegrale, x-(lobe+1)/2 - lobe, y + lobe-1) ;
 
 				lobeCentre += getPixel(imageIntegrale, x-(lobe+1)/2, y - lobe) ;
@@ -56,7 +55,7 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 				lobeCentre += getPixel(imageIntegrale, x-lobe, y - (lobe +1)/2) ;
 				lobeCentre -= getPixel(imageIntegrale, x+lobe-1, y - (lobe +1)/2) ;
 				lobeCentre += getPixel(imageIntegrale, x+lobe-1, y + (lobe -1)/2) ;
-				lobeCentre += getPixel(imageIntegrale, x-lobe, y + (lobe -1)/2) ;
+				lobeCentre -= getPixel(imageIntegrale, x-lobe, y + (lobe -1)/2) ;
 				
 				lobeBas += getPixel(imageIntegrale, x-lobe, y + (lobe -1)/2) ;
 				lobeBas -= getPixel(imageIntegrale, x+lobe-1, y + (lobe -1)/2) ;
@@ -85,8 +84,8 @@ void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out,
 
 				lobe11 += getPixel(imageIntegrale, x, y) ;
 				lobe11 -= getPixel(imageIntegrale, x, y+lobe) ;
-				lobe11 += getPixel(imageIntegrale, x+lobe, y) ;
-				lobe11 -= getPixel(imageIntegrale, x+lobe, y+lobe) ;
+				lobe11 -= getPixel(imageIntegrale, x+lobe, y) ;
+				lobe11 += getPixel(imageIntegrale, x+lobe, y+lobe) ;
 				
 				int dxy = lobe00 + lobe11 - lobe10 - lobe01 ;
 				
