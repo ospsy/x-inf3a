@@ -18,5 +18,5 @@ ${CUDA_CUT_INCLUDE_DIR}
 ${OpenCV_INCLUDE_DIR}
 ${CUDA_INCLUDE_DIRS}
 )
-CUDA_ADD_EXECUTABLE( Projet integral.cu gaussian.cu main.cpp calculus.cpp )
+CUDA_ADD_EXECUTABLE( Projet integral.cu gaussian.cu main.cpp integral.cpp gaussian.cpp)
 TARGET_LINK_LIBRARIES( Projet ${OpenCV_LIBS} ${CUDA_LIBRARIES} )
