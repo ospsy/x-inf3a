@@ -43,7 +43,7 @@ public class TenseurCourbure {
 		Matrix Wvi ;
 		if (nMoins.norm2() > nPlus.norm2()) Wvi = nMoins.times(1. / nMoins.norm2()) ;
 		else Wvi = nPlus.times(1. / nPlus.norm2()) ;
-		Matrix Qvi = Matrix.identity(3, 1).minus(Wvi.times(Wvi.transpose()).times(2)) ; 
+		Matrix Qvi = Matrix.identity(3, 3).minus(Wvi.times(Wvi.transpose()).times(2)) ; 
 		
 		// Diagonalisation de la sous-matrice 2x2
 		Matrix m = Qvi.transpose().times(kappa.times(Qvi)).getMatrix(1, 2, 1, 2) ;
