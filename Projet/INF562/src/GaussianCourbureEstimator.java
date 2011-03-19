@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
@@ -12,16 +13,32 @@ import Jcg.viewer.MeshViewer;
 
 public class GaussianCourbureEstimator extends CourbureEstimator {
 	HashMap<Vertex<Point_3>, Double> courbureMap;
+	static final int signatureSize=512;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
 		courbureMap= new HashMap<Vertex<Point_3>, Double>();
+		weightMap= new HashMap<Vertex<Point_3>, Double>();
 	}
 	
 	@Override
 	public double compareTo(CourbureEstimator ce) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public double getAverage(){
+		double result=0;
+		double total=0;
+		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : weightMap.entrySet()) {
+			result+=e.getValue()*
+		}
+	}
+	
+	public double[] getSignature(){
+		double[] result= new double[signatureSize];
+		
+		return result;
 	}
 
 	@Override
@@ -47,6 +64,7 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			if(he==premier) //tour terminé
 				break;
 		}
+		weightMap.put(v, totalSum);
 		courbureMap.put(v, 3*(2*Math.PI-totalAngle)/totalSum) ;
 	}
 	
