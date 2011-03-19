@@ -11,7 +11,7 @@ import Jcg.polyhedron.Vertex;
 public class Taubin extends CourbureEstimator {
 	
 	// Variables
-	HashMap<Vertex<Point_3>>
+	
 	
 
 	@Override
