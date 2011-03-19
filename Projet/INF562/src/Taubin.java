@@ -5,6 +5,7 @@ import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
 import Jcg.polyhedron.Halfedge;
+import Jcg.polyhedron.Polyhedron_3;
 import Jcg.polyhedron.Vertex;
 
 
@@ -12,9 +13,17 @@ public class Taubin extends CourbureEstimator {
 	
 	// Variables
 	static final int tailleSignature = 512 ;
+	static final double moyenneCourbure = 0.2 ; // Coefficient dans le Arctan
 	HashMap<Vertex<Point_3>, TenseurCourbure> courbureMap;
 	double[][] signature ;
 	
+	// Constructeur
+	public Taubin (Polyhedron_3<Point_3> poly) {
+		this.poly=poly;
+		courbureMap= new HashMap<Vertex<Point_3>, TenseurCourbure>();
+		weightMap= new HashMap<Vertex<Point_3>, Double>();
+		signature = new double [tailleSignature][tailleSignature] ;
+	}
 
 	@Override
 	public double compareTo(CourbureEstimator ce) {
@@ -72,6 +81,9 @@ public class Taubin extends CourbureEstimator {
 		surfaces[i] = Math.sqrt(v1.crossProduct(v2).squaredLength().doubleValue()) / 2 ;
 		w += surfaces[i]*2 ;
 		
+		// w est la somme des surface avoisinantes fois deux ;
+		weightMap.put(v, w/2) ;
+		
 		// R�cup�ration des projections des voisins sur le plan tangent
 		Matrix Mvi = new Matrix(3,3) ;
 		i = 0 ;
@@ -101,7 +113,47 @@ public class Taubin extends CourbureEstimator {
 	
 	public void computeSignature ()
 	{
-		signature = new double [512][512] ; 
+		
+		// On calcule la moyenne des courbures
+		int nVertex = 0 ;
+		double courbureMoyenne = 0 ;
+		for(TenseurCourbure k : courbureMap.values()){
+			courbureMoyenne += k.getEigenvalue(1) + k.getEigenvalue(2) ;
+			nVertex++ ;
+		}
+		courbureMoyenne /= 2*nVertex ;
+		
+		// On recense chaque courbure
+		double sommeSignatures = 0 ; // Pour normaliser
+		for(TenseurCourbure k : courbureMap.values()){
+			double dx = (Math.atan(moyenneCourbure * k.getEigenvalue(1)/courbureMoyenne)/Math.PI + 0.5) * tailleSignature ;
+			double dy = (Math.atan(moyenneCourbure * k.getEigenvalue(2)/courbureMoyenne)/Math.PI + 0.5) * tailleSignature ;
+			int x = (int) dx ;
+			int y = (int) dy ;
+			double px = x - dx + 1 ; // Ponderation dans l'arrondi inferieur pour x
+			double py = y - dy + 1 ; // Ponderation dans l'arrondi inferieur pour y
+			if (x == 511) px = 1 ; // Effets de bord
+			if (y == 511) py = 1 ;
+			if (x >= 0 && y >= 0 && x < 512 && y < 512) // On ne sait jamais...
+			{
+				double w = weightMap.get(k.point) ;
+				signature[y][x] = signature[x][y] = signature[x][y] + px*py*w ;
+				if (y+1 < 512) signature[y+1][x] = signature[x][y+1] = signature[x][y+1] + px*(1-py)*w ;
+				if (x+1 < 512) signature[y][x+1] = signature[x+1][y] = signature[x+1][y] + (1-px)*py*w ;
+				if (x+1 < 512 && y+1 < 512) signature[y+1][x+1] = signature[x+1][y+1] = signature[x+1][y+1] + (1-px)*(1-py)*w ;
+				sommeSignatures += w ;
+			}
+		}
+		
+		// On normalise
+		for (int i=0 ; i<tailleSignature ; i++)
+			for (int j=0 ; j<tailleSignature ; j++)
+				{
+					signature[i][j] /= sommeSignatures ;
+				}
+		
+		
+		
 	}
 
 	@Override
