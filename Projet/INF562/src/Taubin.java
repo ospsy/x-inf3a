@@ -1,7 +1,6 @@
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
@@ -12,7 +11,9 @@ import Jcg.polyhedron.Vertex;
 public class Taubin extends CourbureEstimator {
 	
 	// Variables
+	static final int tailleSignature = 512 ;
 	HashMap<Vertex<Point_3>, TenseurCourbure> courbureMap;
+	double[][] signature ;
 	
 
 	@Override
@@ -96,6 +97,11 @@ public class Taubin extends CourbureEstimator {
 		
 		// on l'ajoute dans la hashmap des courbures
 		courbureMap.put(v, new TenseurCourbure(v, Mvi, mNormal)) ;
+	}
+	
+	public void computeSignature ()
+	{
+		signature = new double [512][512] ; 
 	}
 
 	@Override
