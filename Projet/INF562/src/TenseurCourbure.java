@@ -27,7 +27,6 @@ public class TenseurCourbure {
 	// Mthodes d'accs
 	public Matrix getTenseur() { return kappa ;}
 	public double getEigenvalue(int i) { return eigenvalue[i] ;}
-	
 	public Matrix getEigenvector(int i) { return kappa.getMatrix(0, 2, i, i) ;}
 	
 }
