@@ -97,10 +97,8 @@ public class Taubin extends CourbureEstimator {
 			double wij = surfaces[i]+surfaces[j] ;
 			double kij = vij.innerProduct(normal).doubleValue()*2/(vij.squaredLength().doubleValue()) ;
 			
-			Matrix mVij = new Matrix (3,1) ;
-			mVij.set(0, 0, vij.getX().doubleValue()) ;
-			mVij.set(1, 0, vij.getY().doubleValue()) ;
-			mVij.set(2, 0, vij.getZ().doubleValue()) ;
+			double[][] array = {{vij.getX().doubleValue()},{vij.getY().doubleValue()},{vij.getZ().doubleValue()}} ; 
+			Matrix mVij = new Matrix (array) ;
 			Matrix Tij = Matrix.identity(3, 3).minus(mNormal.times(mNormal.transpose())).times(mVij) ;
 			Tij = Tij.times(1./Tij.norm2()) ;
 			
@@ -167,12 +165,13 @@ public class Taubin extends CourbureEstimator {
 		for (int i=0 ; i<tailleSignature ; i++)
 			for (int j=0 ; j<tailleSignature ; j++)
 			{
-				pts.add(new Point_3(i, j, signature[i][j]*10)) ;
-				col[k] = new Color(1, 1, 0);
+				pts.push(new Point_3((double) i, (double) j, signature[i][j]*10)) ;
+				col[k] = new Color(1.0f, 1.0f, 1.0f) ;
 				k++ ;
 			}
+		//pts.add(new Point_3(10,5,10)) ;
 
-		new MeshViewer(pts,col);
+		new MeshViewer(pts, col);
 	}
 
 }
