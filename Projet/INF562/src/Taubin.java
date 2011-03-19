@@ -1,3 +1,4 @@
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import Jama.EigenvalueDecomposition;
@@ -11,7 +12,7 @@ import Jcg.polyhedron.Vertex;
 public class Taubin extends CourbureEstimator {
 	
 	// Variables
-	
+	HashMap<Vertex<Point_3>, TenseurCourbure> courbureMap;
 	
 
 	@Override
