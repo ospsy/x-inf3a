@@ -47,8 +47,11 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 		}
 		average/=total;
 		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : courbureMap.entrySet()) {
-			int indice=(int)(Math.atan(e.getValue()*signatureAverage/average)*signatureSize/Math.PI+signatureSize/2);
-			signature[indice]+=weightMap.get(e.getKey())/total;
+			double indicef=(Math.atan(e.getValue()*signatureAverage/average)*signatureSize/Math.PI+signatureSize/2);
+			int indice=(int)indicef;
+			double weight=weightMap.get(e.getKey())/total;
+			signature[indice]+=(indicef-indice+1)*weight;
+			signature[indice+1]+=(indicef-indice)*weight;
 		}
 	}
 
