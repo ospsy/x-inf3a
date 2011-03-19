@@ -26,8 +26,12 @@ public class Matching {
 		//Calcul de la courbure
 		CourbureEstimator estimator = new GaussianCourbureEstimator(poly);
 		estimator.computeCurvature();
-		estimator.computeSignature();
 		System.out.println(estimator.compareTo(estimator));
+		
+		//Calcul de la courbure (Taubin)
+		CourbureEstimator estimatorTaubin = new Taubin(poly);
+		//estimator.computeCurvature();
+		
 		//Affichage du mesh texturé par la courbure
 		estimator.show();
 	}
