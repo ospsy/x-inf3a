@@ -9,6 +9,10 @@ import Jcg.polyhedron.Vertex;
 
 
 public class Taubin extends CourbureEstimator {
+	
+	// Variables
+	HashMap<Vertex<Point_3>>
+	
 
 	@Override
 	public double compareTo(CourbureEstimator ce) {
@@ -121,6 +125,21 @@ public class Taubin extends CourbureEstimator {
 		Matrix T2p = Qvi.getMatrix(0, 2, 2, 2) ;
 		T1 = T1p.times(x1).plus(T2p.times(y1)) ;
 		T2 = T1p.times(x2).plus(T2p.times(y2)) ;
+		
+		// On s'arrange pour que l'orientation (T1, T2, mNormal) soit directe
+		Matrix base = new Matrix(3,3) ;
+		base.setMatrix(0, 2, 0, 0, mNormal) ;
+		base.setMatrix(0, 2, 1, 1, T1) ;
+		base.setMatrix(0, 2, 2, 2, T2) ;
+		if (base.det() < 0)
+		{
+			Matrix temp = T1 ;
+			T1 = T2 ;
+			T2 = temp ;
+			double t = vp1 ; 
+			vp1 = vp2 ; 
+			vp2 = t ;
+		}
 	}
 
 	@Override
