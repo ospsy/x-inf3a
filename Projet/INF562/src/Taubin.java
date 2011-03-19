@@ -94,53 +94,8 @@ public class Taubin extends CourbureEstimator {
 			i++ ;
 		}
 		
-		// Calcul de la matrice de Householder
-		double[][] array = {{1},{0},{0}} ;
-		Matrix e1 = new Matrix (array) ;
-		Matrix nMoins = e1.minus(mNormal) ;
-		Matrix nPlus = e1.plus(mNormal) ;
-		Matrix Wvi ;
-		if (nMoins.norm2() > nPlus.norm2()) Wvi = nMoins.times(1. / nMoins.norm2()) ;
-		else Wvi = nPlus.times(1. / nPlus.norm2()) ;
-		Matrix Qvi = Matrix.identity(3, 1).minus(Wvi.times(Wvi.transpose()).times(2)) ; 
-		
-		// Diagonalisation de la sous-matrice 2x2
-		Matrix m = Qvi.transpose().times(Mvi.times(Qvi)).getMatrix(1, 2, 1, 2) ;
-		double a = m.get(0,0) ;
-		double b = m.get(0,1) ;
-		double c = m.get(1,1) ;
-		double delta = (a - b)*(a - b) + 4*c*c ;
-		double vp1 = (a + b + Math.sqrt(delta))/2 ;
-		double vp2 = (a + b - Math.sqrt(delta))/2 ;
-		double y1 = - (a - vp1)/c ; // le vecteur est (x,y) avec x = 1. Il reste ˆ normaliser
-		double x1 = 1. / Math.sqrt(1 + y1*y1) ;
-		y1 = y1 / Math.sqrt(1 + y1*y1) ;
-		// L'autre vecteur est -y, x
-		double x2 = -y1 ;
-		double y2 = x1 ;
-		
-		// Vecteurs propres de Mvi
-		Matrix T1 = new Matrix(3,0) ;
-		Matrix T2 = new Matrix(3,0) ;
-		Matrix T1p = Qvi.getMatrix(0, 2, 1, 1) ;
-		Matrix T2p = Qvi.getMatrix(0, 2, 2, 2) ;
-		T1 = T1p.times(x1).plus(T2p.times(y1)) ;
-		T2 = T1p.times(x2).plus(T2p.times(y2)) ;
-		
-		// On s'arrange pour que l'orientation (T1, T2, mNormal) soit directe
-		Matrix base = new Matrix(3,3) ;
-		base.setMatrix(0, 2, 0, 0, mNormal) ;
-		base.setMatrix(0, 2, 1, 1, T1) ;
-		base.setMatrix(0, 2, 2, 2, T2) ;
-		if (base.det() < 0)
-		{
-			Matrix temp = T1 ;
-			T1 = T2 ;
-			T2 = temp ;
-			double t = vp1 ; 
-			vp1 = vp2 ; 
-			vp2 = t ;
-		}
+		// on l'ajoute dans la hashmap des courbures
+		courbureMap.put(v, new TenseurCourbure(v, Mvi, mNormal)) ;
 	}
 
 	@Override
