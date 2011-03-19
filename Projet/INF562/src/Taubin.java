@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
 
@@ -7,6 +8,7 @@ import Jcg.geometry.Vector_3;
 import Jcg.polyhedron.Halfedge;
 import Jcg.polyhedron.Polyhedron_3;
 import Jcg.polyhedron.Vertex;
+import Jcg.viewer.MeshViewer;
 
 
 public class Taubin extends CourbureEstimator {
@@ -158,8 +160,19 @@ public class Taubin extends CourbureEstimator {
 
 	@Override
 	void show() {
-		// TODO Auto-generated method stub
+		LinkedList<Point_3> pts = new LinkedList<Point_3>();
+		Color[] col = new Color[tailleSignature*tailleSignature];
 		
+		int k = 0 ;
+		for (int i=0 ; i<tailleSignature ; i++)
+			for (int j=0 ; j<tailleSignature ; j++)
+			{
+				pts.add(new Point_3(i, j, signature[i][j]*10)) ;
+				col[k] = new Color(1, 1, 0);
+				k++ ;
+			}
+
+		new MeshViewer(pts,col);
 	}
 
 }

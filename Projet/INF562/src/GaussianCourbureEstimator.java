@@ -16,7 +16,7 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 	public double[] signature;
 	public double average;
 	static final int signatureSize=512;
-	static final double signatureAverage=0.2;
+	static final double signatureAverage=-0.2;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
