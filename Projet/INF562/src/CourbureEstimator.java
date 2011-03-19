@@ -16,8 +16,10 @@ public abstract class CourbureEstimator {
 			computeCurvatureAtVertex(v);
 		}
 	}
+	public abstract void computeSignature();
 
 	protected abstract void computeCurvatureAtVertex(Vertex<Point_3> v);
+	
 	
 	abstract void show();
 }
