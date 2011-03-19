@@ -13,32 +13,43 @@ import Jcg.viewer.MeshViewer;
 
 public class GaussianCourbureEstimator extends CourbureEstimator {
 	HashMap<Vertex<Point_3>, Double> courbureMap;
+	public double[] signature;
+	public double average;
 	static final int signatureSize=512;
+	static final double signatureAverage=-0.2;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
 		courbureMap= new HashMap<Vertex<Point_3>, Double>();
 		weightMap= new HashMap<Vertex<Point_3>, Double>();
+		signature= new double[signatureSize];
 	}
 	
 	@Override
 	public double compareTo(CourbureEstimator ce) {
-		// TODO Auto-generated method stub
-		return 0;
+		if(!(ce instanceof GaussianCourbureEstimator))
+			System.err.println("Pas le bon type");
+		double[] s=((GaussianCourbureEstimator)ce).signature;
+		double err=0;
+		for(int i=0;i<signatureSize;i++){
+			double tmp=signature[i]-s[i];
+			err+=tmp*tmp;
+		}
+		return err;
 	}
 	
-	public double getAverage(){
-		double result=0;
+	public void computeSignature(){
+		//moyenne et poids total
 		double total=0;
 		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : weightMap.entrySet()) {
-			result+=e.getValue()*
+			average+=e.getValue()*courbureMap.get(e.getKey());
+			total+=e.getValue();
 		}
-	}
-	
-	public double[] getSignature(){
-		double[] result= new double[signatureSize];
-		
-		return result;
+		average/=total;
+		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : courbureMap.entrySet()) {
+			int indice=(int)(Math.atan(e.getValue()*signatureAverage/average)*signatureSize/Math.PI+signatureSize/2);
+			signature[indice]+=weightMap.get(e.getKey())/total;
+		}
 	}
 
 	@Override
@@ -75,10 +86,10 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : courbureMap.entrySet()) {
 			pts.add(e.getKey().getPoint());
 			if(e.getValue()>0){
-				float tmp = (float) (Math.atan(e.getValue()/100)*2/Math.PI);
+				float tmp = (float) (Math.atan(e.getValue()*signatureAverage/average)*2/Math.PI);
 				col[i]=new Color(1, 1-tmp, 1-tmp);
 			}else{
-				float tmp = (float) (-Math.atan(e.getValue()/100)*2/Math.PI);
+				float tmp = (float) (-Math.atan(e.getValue()*signatureAverage/average)*2/Math.PI);
 				col[i]=new Color(1-tmp, 1, 1-tmp);
 			}
 			i++;
