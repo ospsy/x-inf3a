@@ -1,3 +1,4 @@
+import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
 import Jcg.polyhedron.Face;
@@ -46,5 +47,13 @@ public class Utils {
 		// On normalise le vecteur normal
 		normal = normal.divisionByScalar(Math.sqrt(normal.squaredLength().doubleValue())) ;
 		return normal ;
+	}
+	
+	// Conversion d'une matrice en vecteur
+	public static Vector_3 Matrix2Vector(Matrix m)
+	{
+		if (m.getRowDimension() != 3 || m.getColumnDimension() != 1) return null ;
+		
+		else return new Vector_3 (m.get(0,0), m.get(1,0), m.get(2,0)) ;
 	}
 }
