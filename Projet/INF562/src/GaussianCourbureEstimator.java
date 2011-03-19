@@ -57,10 +57,10 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : courbureMap.entrySet()) {
 			pts.add(e.getKey().getPoint());
 			if(e.getValue()>0){
-				float tmp = (float) (Math.atan(e.getValue())*2/Math.PI);
+				float tmp = (float) (Math.atan(e.getValue()/100)*2/Math.PI);
 				col[i]=new Color(1, 1-tmp, 1-tmp);
 			}else{
-				float tmp = (float) (-Math.atan(e.getValue())*2/Math.PI);
+				float tmp = (float) (-Math.atan(e.getValue()/100)*2/Math.PI);
 				col[i]=new Color(1-tmp, 1, 1-tmp);
 			}
 			i++;
