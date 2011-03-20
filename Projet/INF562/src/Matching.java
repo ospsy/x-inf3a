@@ -17,7 +17,7 @@ public class Matching {
 
 	public static void main (String[] args) throws IOException {
 		
-		test1() ;
+		test2() ;
 	}
 	
 	public static void test1() {
@@ -80,7 +80,7 @@ public class Matching {
     		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF2+" chargé!");
 
-		String fichierOFF3="chair.off";
+		String fichierOFF3="sphere.off";
 		MeshRepresentation mesh3 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF3);
 		LoadMesh<Point_3> load3D3=new LoadMesh<Point_3>();
@@ -104,6 +104,10 @@ public class Matching {
 		estimator1.show();
 		estimator2.show();
 		estimator3.show();
+		
+		new MeshViewer(poly1) ;
+		new MeshViewer(poly2) ;
+		new MeshViewer(poly3) ;
 	}
 
 }
