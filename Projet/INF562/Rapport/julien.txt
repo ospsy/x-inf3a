@@ -13,3 +13,8 @@ Nous voulons pouvoir évaluer la correspondance entre deux maillages, et ce de ma
 
 \section{Comparer deux courbures}
 Les méthodes présentées nous fournissent un \textit{descripteur de courbure}, mais comment les comparer ? Notre difficulté majeure réside dans le choix de la distance à utiliser : si nos descripteurs sont remis à l'échelle en alignant les moyennes de chaque distribution, la simple distance euclidienne entre les deux vecteurs à comparer nous donne des résultats vraiment décevants. Par exemple, essayant de corréler \texttt{tanglecube.off} avec \texttt{tanglecube\_fin.off} (censés se ressembler très fortement) et \texttt{tanglecube.off} avec \texttt{skull.off} (n'ayant vraiment rien à voir), les deux distances n'ont qu'un rapport de 5 environ. Conceptuellement, deux pics ``éloignés'' dans la distribution sont aussi mal corrélés que deux pics ``proches''.
+
+
+\section{Organisation du code}
+Nous choisissons d'implémenter deux versions différentes de la courbure, nous utilisons donc une classe abstraite \texttt{CourbureEstimator} qui comporte essentiellement une méthode \texttt{double compareTo(CourbureEstimator c)} renvoyant la distance entre les deux maillages, et une méthode \texttt{void computeSignature()} qui évalue la courbure suivant la méthode utilisée. Deux classes l'implémentent : \texttt{GaussianCourbureEstimator}
+pour la méthode de Gauss, et \texttt{Taubin} pour le tenseur de courbure. Le programme principal se situe dans la classe \texttt{Matching}
