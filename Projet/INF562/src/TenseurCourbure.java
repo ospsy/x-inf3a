@@ -1,3 +1,4 @@
+import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.polyhedron.Vertex;
@@ -21,7 +22,13 @@ public class TenseurCourbure {
 		Matrix[] ev = {normal, null, null} ;
 		eigenvector = ev ;
 		eigenvalue = new double[3] ;
-		computeEigenvectors() ;
+		this.computeEigenvectors() ;
+		
+		// Valeurs propres (vérif)
+		EigenvalueDecomposition egc = new EigenvalueDecomposition(kappa) ;
+		double[] d = egc.getRealEigenvalues() ;
+		System.out.println(d[0] + ", " + d[1] + ", " + d[2]) ;
+
 	}
 	
 	// Méthodes d'accès
@@ -50,10 +57,11 @@ public class TenseurCourbure {
 		double a = m.get(0,0) ;
 		double b = m.get(0,1) ;
 		double c = m.get(1,1) ;
-		double delta = (a - b)*(a - b) + 4*c*c ;
-		double vp1 = (a + b + Math.sqrt(delta))/2 ;
-		double vp2 = (a + b - Math.sqrt(delta))/2 ;
-		double y1 = - (a - vp1)/c ; // le vecteur est (x,y) avec x = 1. Il reste à normaliser
+		//System.out.println(kappa.get(0,0)) ;
+		double delta = (a - c)*(a - c) + 4*b*b ;
+		double vp1 = (a + c + Math.sqrt(delta))/2 ;
+		double vp2 = (a + c - Math.sqrt(delta))/2 ;
+		double y1 = - (a - vp1)/b ; // le vecteur est (x,y) avec x = 1. Il reste à normaliser
 		double x1 = 1. / Math.sqrt(1 + y1*y1) ;
 		y1 = y1 / Math.sqrt(1 + y1*y1) ;
 		// L'autre vecteur est -y, x
@@ -83,10 +91,14 @@ public class TenseurCourbure {
 			vp2 = t ;
 		}
 		
+		
+		//System.out.println(vp1 + " " + vp2) ;
+		
 		// Ajustement des valeurs
 		eigenvector[1] = T1 ;
 		eigenvector[2] = T2 ;
 		double[] arrayVp = {0, vp1, vp2} ;
+		//double[] arrayVp = {0, Math.random()*10, Math.random()*10} ;
 		eigenvalue = arrayVp ;
 	}
 	

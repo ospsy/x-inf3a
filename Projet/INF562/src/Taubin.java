@@ -14,10 +14,11 @@ import Jcg.viewer.MeshViewer;
 public class Taubin extends CourbureEstimator {
 	
 	// Variables
-	static final int tailleSignature = 512 ;
-	static final double moyenneCourbure = 0.2 ; // Coefficient dans le Arctan
+	static final int tailleSignature = 64 ;
+	static final double moyenneCourbure = 1 ; // Coefficient dans le Arctan
 	HashMap<Vertex<Point_3>, TenseurCourbure> courbureMap;
 	double[][] signature ;
+	double maxSignature ;
 	
 	// Constructeur
 	public Taubin (Polyhedron_3<Point_3> poly) {
@@ -30,32 +31,34 @@ public class Taubin extends CourbureEstimator {
 	@Override
 	public double compareTo(CourbureEstimator ce) {
 		// TODO Auto-generated method stub
-		return 0;
+		return 0 ;
 	}
 
 	@Override
-	protected void computeCurvatureAtVertex(Vertex<Point_3> v) {
-		
+	protected void computeCurvatureAtVertex(final Vertex<Point_3> v) 
+	{	
 		// Vecteur normal
 		Vector_3 normal = Utils.vecteurNormal(v) ;
 		double[][] arrayNormal = {{normal.getX().doubleValue()},{normal.getY().doubleValue()},{normal.getZ().doubleValue()}} ;
 		Matrix mNormal = new Matrix (arrayNormal) ;
+		//System.out.println(normal.toString()) ;
 		
 		// Liste des voisins
 		LinkedList<Vertex<Point_3>> voisins = new LinkedList<Vertex<Point_3>>() ; 
-		Halfedge<Point_3> he = v.getHalfedge(), premier = he ;
+		Halfedge<Point_3> he = v.getHalfedge() ;
+		Halfedge<Point_3> premier = he ;
 		boolean debut = true ;
-		
 		while (debut || he != premier)
 		{
 			debut = false ;
-		
 			voisins.add(he.getNext().getVertex()) ;
 			
-			he = he.getNext().getNext().getOpposite() ; // En supposant qu'il s'agit d'un triangle
+			//System.out.println(he.getFace().degree()) ;
+			
+			he = he.getNext().getOpposite() ;
 		}
-		
 		int nVoisins = voisins.size() ;
+		
 		
 		// Calcul des surfaces
 		double[] surfaces = new double[nVoisins] ;
@@ -63,7 +66,8 @@ public class Taubin extends CourbureEstimator {
 		Vertex<Point_3> premierVoisin = null ;
 		Vertex<Point_3> precedent = voisins.get(0) ;
 		double w = 0 ; // Somme des surfaces
-		for (Vertex<Point_3> vertex : voisins) {
+		for (Vertex<Point_3> vertex : voisins)
+		{
 			// Cas du premier vertex
 			if (premierVoisin == null)
 			{
@@ -74,6 +78,7 @@ public class Taubin extends CourbureEstimator {
 			Vector_3 v1 = (Vector_3) vertex.getPoint().minus(v.getPoint()) ;
 			Vector_3 v2 = (Vector_3) precedent.getPoint().minus(v.getPoint()) ;
 			surfaces[i] = Math.sqrt(v1.crossProduct(v2).squaredLength().doubleValue()) / 2 ;
+			//System.out.println(v1.getX() + " " + v2.getX() + " " + surfaces[i]) ;
 			w += surfaces[i]*2 ;
 			i++ ;
 			precedent = vertex ;
@@ -91,11 +96,12 @@ public class Taubin extends CourbureEstimator {
 		i = 0 ;
 		for (Vertex<Point_3> vertex : voisins) {
 			
-			Vector_3 vij = (Vector_3) v.getPoint().minus(vertex.getPoint()) ;
+			Vector_3 vij = (Vector_3) vertex.getPoint().minus(v.getPoint()) ;
 			
 			int j = (i-1 + nVoisins) % nVoisins ;
 			double wij = surfaces[i]+surfaces[j] ;
 			double kij = vij.innerProduct(normal).doubleValue()*2/(vij.squaredLength().doubleValue()) ;
+			//System.out.println("dedzf : " + kij) ;
 			
 			double[][] array = {{vij.getX().doubleValue()},{vij.getY().doubleValue()},{vij.getZ().doubleValue()}} ; 
 			Matrix mVij = new Matrix (array) ;
@@ -134,22 +140,24 @@ public class Taubin extends CourbureEstimator {
 			double py = y - dy + 1 ; // Ponderation dans l'arrondi inferieur pour y
 			if (x == 511) px = 1 ; // Effets de bord
 			if (y == 511) py = 1 ;
-			if (x >= 0 && y >= 0 && x < 512 && y < 512) // On ne sait jamais...
+			if (x >= 0 && y >= 0 && x < tailleSignature && y < tailleSignature) // On ne sait jamais...
 			{
 				double w = weightMap.get(k.point) ;
 				signature[y][x] = signature[x][y] = signature[x][y] + px*py*w ;
-				if (y+1 < 512) signature[y+1][x] = signature[x][y+1] = signature[x][y+1] + px*(1-py)*w ;
-				if (x+1 < 512) signature[y][x+1] = signature[x+1][y] = signature[x+1][y] + (1-px)*py*w ;
-				if (x+1 < 512 && y+1 < 512) signature[y+1][x+1] = signature[x+1][y+1] = signature[x+1][y+1] + (1-px)*(1-py)*w ;
+				if (y+1 < tailleSignature) signature[y+1][x] = signature[x][y+1] = signature[x][y+1] + px*(1-py)*w ;
+				if (x+1 < tailleSignature) signature[y][x+1] = signature[x+1][y] = signature[x+1][y] + (1-px)*py*w ;
+				if (x+1 < tailleSignature && y+1 < tailleSignature) signature[y+1][x+1] = signature[x+1][y+1] = signature[x+1][y+1] + (1-px)*(1-py)*w ;
 				sommeSignatures += w ;
 			}
 		}
 		
 		// On normalise
+		maxSignature = 0 ;
 		for (int i=0 ; i<tailleSignature ; i++)
 			for (int j=0 ; j<tailleSignature ; j++)
 				{
 					signature[i][j] /= sommeSignatures ;
+					if (signature[i][j] > maxSignature) maxSignature = signature[i][j] ;
 				}
 		
 		
@@ -165,8 +173,8 @@ public class Taubin extends CourbureEstimator {
 		for (int i=0 ; i<tailleSignature ; i++)
 			for (int j=0 ; j<tailleSignature ; j++)
 			{
-				pts.push(new Point_3((double) i, (double) j, signature[i][j]*10)) ;
-				col[k] = new Color(1.0f, 1.0f, 1.0f) ;
+				pts.push(new Point_3((double) (i-tailleSignature/2)/10, (double) (j-tailleSignature/2)/10, signature[i][j]*100)) ;
+				col[k] = new Color((float) (signature[i][j]/maxSignature), 1.0f-(float) (signature[i][j]/maxSignature), 1.0f) ;
 				k++ ;
 			}
 		//pts.add(new Point_3(10,5,10)) ;
