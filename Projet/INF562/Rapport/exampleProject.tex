@@ -27,12 +27,9 @@ Nous souhaitions au d\'epart d\'evelopper un jeu de sculpture, avec des formes \
 %\end{figure}
 
 
+\section{La m\'ethode employ\'ee}
 
-\section{Organisation du code}
-
-Nous choisissons d'implémenter deux versions différentes de la courbure, nous utilisons donc une classe abstraite \texttt{CourbureEstimator} qui comporte essentiellement une méthode \texttt{double compareTo(CourbureEstimator c)} renvoyant la distance entre les deux maillages, et une méthode \texttt{void computeSignature()} qui évalue la courbure suivant la méthode utilisée. Deux classes l'implémentent : \texttt{GaussianCourbureEstimator}
-
-pour la méthode de Gauss, et \texttt{Taubin} pour le tenseur de courbure. Le programme principal se situe dans la classe \texttt{Matching}
+Nous voulons pouvoir évaluer la correspondance entre deux maillages, et ce de manière invariante par changement d'échelle. Nous nous sommes alors intéressés à la courbure du maillage, et plus précisément à la distribution des courbures. Nous calculons donc une courbure en chaque point du maillage, puis avec ces courbures, une signature. Les méthodes de calcul de courbure sont variées et nous en avons implémenté deux : la courbure de Gauss~\cite{rugis} et le tenseur de courbure par la méthode de Taubin~\cite{taubin}.
 
 
 \section{Courbure de Gauss}
@@ -46,11 +43,11 @@ Comme l'on essaye de traiter le problème en étant indépendant par rapport à 
 
 \section{Taubin}
 
-\subsection{\'Evaluer le tenseur de courbure}
 
-Une seconde méthode consiste à utiliser l'algorithme de Taubin ~\cite{taubin} pour évaluer un tenseur de courbure sur notre maillage. Ce tenseur représente l'application bilinéaire en un point du maillage, qui à un vecteur direction (dans le plan tangent à la surface) associe la valeur de la courbure suivant cette direction. C'est un donc tenseur 2x2 que l'on va diagonaliser.
-\\\\
-Sa base de diagonalisation est constituée des deux directions principales de courbure (orthogonales dans cette approximation). Les valeurs propres associÈes sont les courbures selon ces directions et servent à comparer deux maillages.
+\subsection{\'Evaluer le tenseur de courbure}
+ Une seconde méthode consiste à utiliser la méthode de Taubin ~\cite{taubin} pour évaluer un tenseur de courbure sur notre maillage. Ce tenseur représente l'application bilinéaire en un point du maillage, qui à un vecteur direction (dans le plan tangent à la surface) associe la valeur de la courbure suivant cette direction. C'est un donc tenseur 2x2 que l'on va diagonaliser.
+ Sa base de diagonalisation est constituée des deux directions principales de courbure (orthogonales dans cette approximation). Les valeurs propres associées sont les courbures selon ces directions et servent à comparer deux maillages.
+
 
 \subsection{Calcul de la signature}
 
@@ -88,9 +85,13 @@ Pour chaque vertex v\\
 On termine en appliquant un flou gaussien sur la signature, qui est au départ très bruitée.
 
 \section{Comparer deux courbures}
-
+Les méthodes présentées nous fournissent un \textit{descripteur de courbure}, mais comment les comparer ? Notre difficulté majeure réside dans le choix de la distance à utiliser : si nos descripteurs sont remis à l'échelle en alignant les moyennes de chaque distribution, la simple distance euclidienne entre les deux vecteurs à comparer nous donne des résultats vraiment décevants. Par exemple, essayant de corréler \texttt{tanglecube.off} avec \texttt{tanglecube\_fin.off} (censés se ressembler très fortement) et \texttt{tanglecube.off} avec \texttt{skull.off} (n'ayant vraiment rien à voir), les deux distances n'ont qu'un rapport de 5 environ. Conceptuellement, deux pics ``éloignés'' dans la distribution sont aussi mal corrélés que deux pics ``proches''.
 
 \section{Organisation du code}
+
+Nous choisissons d'implémenter deux versions différentes de la courbure, nous utilisons donc une classe abstraite \texttt{CourbureEstimator} qui comporte essentiellement une méthode \texttt{double compareTo(CourbureEstimator c)} renvoyant la distance entre les deux maillages, et une méthode \texttt{void computeSignature()} qui évalue la courbure suivant la méthode utilisée. Deux classes l'implémentent : \texttt{GaussianCourbureEstimator}
+
+pour la méthode de Gauss, et \texttt{Taubin} pour le tenseur de courbure. Le programme principal se situe dans la classe \texttt{Matching}
 
 
 \section{Conclusion}
