@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import Jama.Matrix;
 import Jcg.geometry.Point_3;
@@ -18,7 +19,7 @@ public class Taubin extends CourbureEstimator {
 	static final double moyenneCourbure = 1 ; // Coefficient dans le Arctan
 	HashMap<Vertex<Point_3>, TenseurCourbure> courbureMap;
 	double[][] signature ;
-	double maxSignature ;
+	static double maxSignature ;
 	
 	// Constructeur
 	public Taubin (Polyhedron_3<Point_3> poly) {
@@ -156,6 +157,7 @@ public class Taubin extends CourbureEstimator {
 			if (x >= 0 && y >= 0 && x < tailleSignature && y < tailleSignature) // On ne sait jamais...
 			{
 				double w = weightMap.get(k.point) ;
+				//System.out.println(px*(1-py)*w) ;
 				signature[y][x] = signature[x][y] = signature[x][y] + px*py*w ;
 				if (y+1 < tailleSignature) signature[y+1][x] = signature[x][y+1] = signature[x][y+1] + px*(1-py)*w ;
 				if (x+1 < tailleSignature) signature[y][x+1] = signature[x+1][y] = signature[x+1][y] + (1-px)*py*w ;
@@ -165,7 +167,7 @@ public class Taubin extends CourbureEstimator {
 		}
 		
 		// On normalise
-		maxSignature = 0 ;
+		//maxSignature = 0 ;
 		for (int i=0 ; i<tailleSignature ; i++)
 			for (int j=0 ; j<tailleSignature ; j++)
 				{
@@ -179,16 +181,16 @@ public class Taubin extends CourbureEstimator {
 
 	@Override
 	void show() {
-		LinkedList<Point_3> pts = new LinkedList<Point_3>();
+		Vector<Point_3> pts = new Vector<Point_3>();
 		Color[] col = new Color[tailleSignature*tailleSignature];
 		
 		int k = 0 ;
 		for (int i=0 ; i<tailleSignature ; i++)
 			for (int j=0 ; j<tailleSignature ; j++)
 			{
-				pts.push(new Point_3((double) (i-tailleSignature/2)/10, (double) (j-tailleSignature/2)/10, signature[i][j]*100)) ;
-				float a = 0.8f;
-				col[col.length-k-1] = new Color(((float) (a*signature[i][j]/maxSignature))%1,a*( 1.0f-(float) (signature[i][j]/maxSignature))%1, 1.0f) ;
+				pts.add(new Point_3((double) (i-tailleSignature/2)/10, (double) (j-tailleSignature/2)/10, signature[i][j]*100)) ;
+				//System.out.println(signature[i][j]*100) ;
+				col[k] = new Color((int) (signature[i][j]/maxSignature * 255), 255 - (int) (signature[i][j]/maxSignature * 255), 255) ;
 				//col[k] = new Color(0.0f, 1.0f, 1.0f) ;
 				k++ ;
 			}
