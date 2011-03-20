@@ -141,11 +141,14 @@ public class Taubin extends CourbureEstimator {
 		// On calcule la moyenne des courbures
 		int nVertex = 0 ;
 		double courbureMoyenne = 0 ;
+		double wTot=0 ; // Poids total des points
 		for(TenseurCourbure k : courbureMap.values()){
-			courbureMoyenne += k.getEigenvalue(1) + k.getEigenvalue(2) ;
+			double poids = weightMap.get(k.point) ;
+			courbureMoyenne += (k.getEigenvalue(1) + k.getEigenvalue(2))*poids/2 ;
+			wTot += poids ;
 			nVertex++ ;
 		}
-		courbureMoyenne /= 2*nVertex ;
+		courbureMoyenne /= wTot ;
 		
 		// On recense chaque courbure
 		double sommeSignatures = 0 ; // Pour normaliser

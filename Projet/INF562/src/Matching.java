@@ -99,7 +99,7 @@ public class Matching {
 		estimator3.computeCurvature();
 		estimator3.computeSignature();
 		System.out.println("tanglecube - tanglecube_fin : " + estimator1.compareTo(estimator2));
-		//System.out.println("tanglecube - chair : " + estimator1.compareTo(estimator3));
+		System.out.println("tanglecube - chair : " + estimator1.compareTo(estimator3));
 
 		estimator1.show();
 		estimator2.show();
