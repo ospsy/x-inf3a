@@ -1,0 +1,3 @@
+\subsection{\'Evaluer le tenseur de courbure}
+ Une seconde méthode consiste à utiliser la méthode de Taubin ~\cite{taubin} pour évaluer un tenseur de courbure sur notre maillage. Ce tenseur représente l'application bilinéaire en un point du maillage, qui à un vecteur direction (dans le plan tangent à la surface) associe la valeur de la courbure suivant cette direction. C'est un donc tenseur 2x2 que l'on va diagonaliser.
+ Sa base de diagonalisation est constituée des deux directions principales de courbure (orthogonales dans cette approximation). Les valeurs propres associées sont les courbures selon ces directions et servent à comparer deux maillages.
