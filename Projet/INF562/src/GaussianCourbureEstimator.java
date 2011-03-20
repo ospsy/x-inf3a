@@ -15,8 +15,8 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 	HashMap<Vertex<Point_3>, Double> courbureMap;
 	public double[] signature;
 	public double average;
-	static final int signatureSize=512;
-	static final double signatureAverage=-0.2;
+	static final int signatureSize=2048;
+	static final double signatureAverage=-0.4;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
