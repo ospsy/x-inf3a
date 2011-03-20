@@ -1,0 +1,6 @@
+
+La première manière et la plus simple de calculer la courbure en un point est la courbure de Gauss. En version discrète, elle s'exprime par la formule suivante :
+ \[ \kappa_G(v) = \frac{3(\sum_{i}\theta_{i}-2\pi)}{\sum_{i}  Aire(F_{i})}  \]
+Cette formule permet d'obtenir instantanément le produit des courbures principales. Ainsi, en effectuant un passage sur chacun des points on obtient une distribution de la courbure de Gauss du maillage. 
+
+Comme l'on essaye de traiter le problème en étant indépendant par rapport à l'échelle, on impose une certaine moyenne à la distribution des courbures. On divise donc toutes les valeurs par la moyenne désirée, puis grâce à un $ arctan $ on peut transposer l'intervalle non borné des courbures dans un intervalle $ \left[ -1 ; 1 \right]  $.
