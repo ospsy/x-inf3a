@@ -1,0 +1,13 @@
+\begin{thebibliography}{1}
+
+\bibitem{rugis}
+Reinhard~Klette John~Rugis.
+\newblock Surface curvature extraction for 3d image analysis or surface
+  rendering.
+
+\bibitem{taubin}
+Gabriel Taubin.
+\newblock Estimating the tensor of curvature of a surface from a polyhedral
+  approximation.
+
+\end{thebibliography}
