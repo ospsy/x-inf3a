@@ -17,7 +17,7 @@ public class Matching {
 
 	public static void main (String[] args) throws IOException {
 		
-		test2() ;
+		test1() ;
 	}
 	
 	public static void test1() {
@@ -36,18 +36,31 @@ public class Matching {
     	Polyhedron_3<Point_3> poly2=
     		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF2+" chargé!");
-		
+
+		String fichierOFF3="chair.off";
+		MeshRepresentation mesh3 = new MeshRepresentation();
+		mesh2.readOffFile(fichierOFF3);
+		LoadMesh<Point_3> load3D3=new LoadMesh<Point_3>();
+    	Polyhedron_3<Point_3> poly3=
+    		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
+		System.out.println("Fichier "+fichierOFF3+" chargé!");
+
 		//Calcul de la courbure
-		CourbureEstimator estimator1 = new GaussianCourbureEstimator(poly1);
+		GaussianCourbureEstimator estimator1 = new GaussianCourbureEstimator(poly1);
 		estimator1.computeCurvature();
 		estimator1.computeSignature();
-		CourbureEstimator estimator2 = new GaussianCourbureEstimator(poly2);
+		GaussianCourbureEstimator estimator2 = new GaussianCourbureEstimator(poly2);
 		estimator2.computeCurvature();
 		estimator2.computeSignature();
-		System.out.println(estimator1.compareTo(estimator2));
+		GaussianCourbureEstimator estimator3 = new GaussianCourbureEstimator(poly3);
+		estimator3.computeCurvature();
+		estimator3.computeSignature();
+		System.out.println("tanglecube - tanglecube_fin : " + estimator1.compareTo(estimator2));
+		System.out.println("tanglecube - chair : " + estimator1.compareTo(estimator3));
 
 		estimator1.show();
 		estimator2.show();
+		estimator3.show();
 	}
 	
 	public static void test2() {
