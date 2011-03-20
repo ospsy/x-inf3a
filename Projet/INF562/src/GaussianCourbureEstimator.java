@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
 
+import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
 import Jcg.polyhedron.Halfedge;
@@ -19,6 +20,7 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 	public double average;
 	static final int signatureSize=128;
 	static final double signatureAverage=-0.5;
+	static int tailleGauss = 5 ;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
@@ -48,6 +50,7 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			total+=e.getValue();
 		}
 		average/=total;
+		System.out.println("Courbure moyenne : "+average);
 		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : courbureMap.entrySet()) {
 			double indicef=(Math.atan(e.getValue()*signatureAverage/average)*signatureSize/Math.PI+signatureSize/2);
 			int indice=(int)indicef;
@@ -55,6 +58,15 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			signature[indice]+=(indicef-indice+1)*weight;
 			signature[indice+1]+=(indicef-indice)*weight;
 		}
+		// On applique un filtre de Gauss
+		double[] signatureBis = new double[signatureSize] ;
+		Matrix gauss = Masque.MasqueGauss(1.3, tailleGauss) ;
+		for (int i=tailleGauss/2 ; i<signatureSize-tailleGauss/2 ; i++){
+			signatureBis[i] = 0 ;
+			for (int k=0 ; k<tailleGauss ; k++)
+					signatureBis[i]+= signature[i+k-tailleGauss/2]* gauss.get(k, 0) ;
+		}
+		signature = signatureBis ;
 	}
 
 	@Override
