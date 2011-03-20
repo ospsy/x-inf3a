@@ -64,7 +64,7 @@ public class Matching {
 	}
 	
 	public static void test2() {
-		String fichierOFF1="tanglecube.off";
+		String fichierOFF1="bague.off";
 		MeshRepresentation mesh1 = new MeshRepresentation();
 		mesh1.readOffFile(fichierOFF1);
     	LoadMesh<Point_3> load3D=new LoadMesh<Point_3>();
@@ -72,7 +72,7 @@ public class Matching {
     		load3D.createPolyhedron(mesh1.points,mesh1.faceDegrees,mesh1.faces,mesh1.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF1+" chargé!");
 		
-		String fichierOFF2="tanglecube_fin.off";
+		String fichierOFF2="torus.off";
 		MeshRepresentation mesh2 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF2);
 		LoadMesh<Point_3> load3D2=new LoadMesh<Point_3>();

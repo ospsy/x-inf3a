@@ -1,16 +1,23 @@
-This is pdfTeX, Version 3.1415926-1.40.9 (MiKTeX 2.7) (preloaded format=pdflatex 2010.12.11)  20 MAR 2011 13:07
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009) (format=pdflatex 2010.4.22)  20 MAR 2011 18:48
 entering extended mode
-**F:/Mes*Documents/Code/Java/INF562/Projet/Rapport/exampleProject.tex
-("F:/Mes Documents/Code/Java/INF562/Projet/Rapport/exampleProject.tex"
+ %&-line parsing enabled.
+**exampleProject.tex
+(./exampleProject.tex
 LaTeX2e <2009/09/24>
-Babel <v3.8l> and hyphenation patterns for english, dumylang, nohyphenation, ge
-rman, ngerman, german-x-2009-06-19, ngerman-x-2009-06-19, french, loaded.
-(llncs.cls
+Babel <v3.8l> and hyphenation patterns for english, usenglishmax, dumylang, noh
+yphenation, german-x-2009-06-19, ngerman-x-2009-06-19, ancientgreek, ibycus, ar
+abic, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danish, dutc
+h, esperanto, estonian, farsi, finnish, french, galician, german, ngerman, mono
+greek, greek, hungarian, icelandic, indonesian, interlingua, irish, italian, ku
+rmanji, latin, latvian, lithuanian, mongolian, mongolian2a, bokmal, nynorsk, po
+lish, portuguese, romanian, russian, sanskrit, serbian, slovak, slovenian, span
+ish, swedish, turkish, ukenglish, ukrainian, uppersorbian, welsh, loaded.
+(./llncs.cls
 Document Class: llncs 2004/08/17 v2.14 
  LaTeX document class for Lecture Notes in Computer Science
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\base\article.cls"
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\base\size10.clo"
+(/usr/local/texlive/2009/texmf-dist/tex/latex/base/size10.clo
 File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
@@ -25,7 +32,7 @@ File: size10.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 \belowcaptionskip=\skip42
 \bibindent=\dimen102
 )
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\tools\multicol.sty"
+(/usr/local/texlive/2009/texmf-dist/tex/latex/tools/multicol.sty
 Package: multicol 2008/12/05 v1.6h multicolumn formatting (FMi)
 \c@tracingmulticols=\count87
 \mult@box=\box26
@@ -123,32 +130,34 @@ LaTeX Font Info:    Redeclaring math symbol \Omega on input line 370.
 \c@remark=\count114
 \headlineindent=\dimen123
 )
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\graphics\graphicx.sty"
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/graphicx.sty
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\graphics\keyval.sty"
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/keyval.sty
 Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
 \KV@toks@=\toks18
 )
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\graphics\graphics.sty"
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/graphics.sty
 Package: graphics 2009/02/05 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\graphics\trig.sty"
+(/usr/local/texlive/2009/texmf-dist/tex/latex/graphics/trig.sty
 Package: trig 1999/03/16 v1.09 sin cos tan (DPC)
 )
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\00miktex\graphics.cfg"
-File: graphics.cfg 2007/01/18 v1.5 graphics configuration of teTeX/TeXLive
+(/usr/local/texlive/2009/texmf-dist/tex/latex/latexconfig/graphics.cfg
+File: graphics.cfg 2009/08/28 v1.8 graphics configuration of TeX Live
 )
 Package graphics Info: Driver file: pdftex.def on input line 91.
 
-("C:\Program Files (x86)\MiKTeX 2.7\tex\latex\pdftex-def\pdftex.def"
-File: pdftex.def 2010/11/26 v0.05c Graphics/color for pdfTeX
+(/usr/local/texlive/2009/texmf-dist/tex/latex/pdftex-def/pdftex.def
+File: pdftex.def 2009/08/25 v0.04m Graphics/color for pdfTeX
 \Gread@gobject=\count115
 ))
 \Gin@req@height=\dimen124
 \Gin@req@width=\dimen125
 )
-(exampleProject.aux)
+(./exampleProject.aux)
+\openout1 = `exampleProject.aux'.
+
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 3.
 LaTeX Font Info:    ... okay on input line 3.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 3.
@@ -162,7 +171,7 @@ LaTeX Font Info:    ... okay on input line 3.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 3.
 LaTeX Font Info:    ... okay on input line 3.
 
-("C:\Program Files (x86)\MiKTeX 2.7\tex\context\base\supp-pdf.mkii"
+(/usr/local/texlive/2009/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count116
 \scratchdimen=\dimen126
@@ -179,45 +188,39 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <7> on input line 11.
 LaTeX Font Info:    External font `cmex10' loaded for size
 (Font)              <5> on input line 11.
-Missing character: There is no à in font cmr9!
-Missing character: There is no … in font cmbx9!
+Missing character: There is no Ã in font cmr9!
+Missing character: There is no   in font cmr9!
 
 Overfull \hbox (4.64182pt too wide) in paragraph at lines 14--15
 []\OT1/cmr/m/n/9 Le \OT1/cmr/m/it/9 match-ing de formes \OT1/cmr/m/n/9 est un p
-robleme recurrent de geometrie
+robl^^Reme r^^Securrent de g^^Seom^^Setrie
  []
 
-(exampleProject.bbl
-! Misplaced alignment tab character &.
-l.4 John Rugis &
-                ~Reinhard Klette.
-I can't figure out why you would want to use a tab mark
-here. If you just want an ampersand, the remedy is
-simple: Just type `I\&' now. But if some right brace
-up above has ended a previous alignment prematurely,
-you're probably due for more error messages, and you
-might try typing `S' now just to see what is salvageable.
 
-) [1
+LaTeX Warning: Citation `rugis' on page 1 undefined on input line 32.
 
-{C:/ProgramData/MiKTeX/2.7/pdftex/config/pdftex.map}] (exampleProject.aux) ) 
+(./exampleProject.bbl) [1
+
+{/usr/local/texlive/2009/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] (./exam
+pleProject.aux) ) 
 Here is how much of TeX's memory you used:
- 1319 strings out of 95304
- 15553 string characters out of 1182824
- 73916 words of memory out of 1500000
- 4568 multiletter control sequences out of 110000
- 5802 words of font info for 21 fonts, out of 3000000 for 5000
- 14 hyphenation exceptions out of 8191
- 29i,4n,21p,652b,140s stack positions out of 5000i,500n,10000p,200000b,50000s
-<C:
-/Program Files (x86)/MiKTeX 2.7/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/P
-rogram Files (x86)/MiKTeX 2.7/fonts/type1/public/amsfonts/cm/cmbx9.pfb><C:/Prog
-ram Files (x86)/MiKTeX 2.7/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program
- Files (x86)/MiKTeX 2.7/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Program Fil
-es (x86)/MiKTeX 2.7/fonts/type1/public/amsfonts/cm/cmti9.pfb>
-Output written on exampleProject.pdf (1 page, 77498 bytes).
+ 1265 strings out of 493848
+ 15461 string characters out of 3149207
+ 72761 words of memory out of 3000000
+ 4586 multiletter control sequences out of 15000+200000
+ 6110 words of font info for 22 fonts, out of 3000000 for 9000
+ 714 hyphenation exceptions out of 8191
+ 29i,4n,21p,603b,140s stack positions out of 5000i,500n,10000p,200000b,50000s
+</usr/local/texlive/2009/texmf-dist/fonts/type1/public/amsfont
+s/cm/cmbx10.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/public/amsfonts
+/cm/cmbx12.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/public/amsfonts/
+cm/cmbx9.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/public/amsfonts/cm
+/cmr10.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/public/amsfonts/cm/c
+mr9.pfb></usr/local/texlive/2009/texmf-dist/fonts/type1/public/amsfonts/cm/cmti
+9.pfb>
+Output written on exampleProject.pdf (1 page, 84690 bytes).
 PDF statistics:
- 26 PDF objects out of 1000 (max. 8388607)
- 0 named destinations out of 1000 (max. 131072)
+ 30 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
