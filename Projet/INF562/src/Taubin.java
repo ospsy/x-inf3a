@@ -42,7 +42,7 @@ public class Taubin extends CourbureEstimator {
 			for (int j=0 ; j<tailleSignature ; j++)
 			{
 				double diff = (te.signature[i][j] - signature[i][j]) ;
-				signature[i][j] = Math.abs(signature[i][j] - te.signature[i][j]) ;
+				//signature[i][j] = Math.abs(signature[i][j] - te.signature[i][j]) ;
 				distanceEuclidienne += diff*diff ;
 			}
 		
