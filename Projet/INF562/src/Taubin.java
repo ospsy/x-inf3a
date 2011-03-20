@@ -1,6 +1,4 @@
 import java.awt.Color;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -22,6 +20,7 @@ public class Taubin extends CourbureEstimator {
 	HashMap<Vertex<Point_3>, TenseurCourbure> courbureMap;
 	double[][] signature ;
 	static double maxSignature ;
+	static int tailleGauss = 5 ;
 	
 	// Constructeur
 	public Taubin (Polyhedron_3<Point_3> poly) {
@@ -41,6 +40,7 @@ public class Taubin extends CourbureEstimator {
 			for (int j=0 ; j<tailleSignature ; j++)
 			{
 				double diff = (te.signature[i][j] - signature[i][j]) ;
+				signature[i][j] = Math.abs(signature[i][j] - te.signature[i][j]) ;
 				distanceEuclidienne += diff*diff ;
 			}
 		
@@ -177,6 +177,20 @@ public class Taubin extends CourbureEstimator {
 					if (signature[i][j] > maxSignature) maxSignature = signature[i][j] ;
 				}
 		
+		// On applique un filtre de Gauss
+		double[][] signatureBis = new double[tailleSignature][tailleSignature] ;
+		Matrix gauss = Masque.MasqueGauss(1.3, tailleGauss) ;
+		for (int i=tailleGauss/2 ; i<tailleSignature-tailleGauss/2 ; i++)
+			for (int j=tailleGauss/2 ; j<tailleSignature-tailleGauss/2 ; j++)
+			{
+				signatureBis[i][j] = 0 ;
+				for (int k=0 ; k<tailleGauss ; k++)
+					for (int l=0 ; l<tailleGauss ; l++)
+					{
+						signatureBis[i][j] += signature[i+k-tailleGauss/2][j+l-tailleGauss/2] * gauss.get(k, l) ;
+					}
+			}
+		signature = signatureBis ;
 		
 		
 	}
@@ -200,7 +214,7 @@ public class Taubin extends CourbureEstimator {
 
 		new MeshViewer(pts, col);
 	}
-	
+
 	void print(String fileName){
 		FileWriter fw;
 		try {
