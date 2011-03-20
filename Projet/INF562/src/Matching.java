@@ -11,17 +11,15 @@ import Jcg.polyhedron.Polyhedron_3;
 import Jcg.polyhedron.Vertex;
 import Jcg.viewer.MeshViewer;
 
-
 public class Matching {
 
+	public static void main(String[] args) throws IOException {
 
-	public static void main (String[] args) throws IOException {
-		
-		test2() ;
+		test2();
 	}
-	
+
 	public static void test1() {
-		String fichierOFF1="tanglecube.off";
+		String fichierOFF1="torus.off";
 		MeshRepresentation mesh1 = new MeshRepresentation();
 		mesh1.readOffFile(fichierOFF1);
     	LoadMesh<Point_3> load3D=new LoadMesh<Point_3>();
@@ -29,7 +27,7 @@ public class Matching {
     		load3D.createPolyhedron(mesh1.points,mesh1.faceDegrees,mesh1.faces,mesh1.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF1+" chargé!");
 		
-		String fichierOFF2="tanglecube_fin.off";
+		String fichierOFF2="torus5.off";
 		MeshRepresentation mesh2 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF2);
 		LoadMesh<Point_3> load3D2=new LoadMesh<Point_3>();
@@ -37,7 +35,7 @@ public class Matching {
     		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF2+" chargé!");
 
-		String fichierOFF3="chair.off";
+		String fichierOFF3="torus3.off";
 		MeshRepresentation mesh3 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF3);
 		LoadMesh<Point_3> load3D3=new LoadMesh<Point_3>();
@@ -61,34 +59,38 @@ public class Matching {
 		estimator1.show();
 		estimator2.show();
 		estimator3.show();
+		
+		estimator1.print(fichierOFF1+".dat");
+		estimator2.print(fichierOFF2+".dat");
+		estimator3.print(fichierOFF3+".dat");
 	}
-	
+
 	public static void test2() {
-		String fichierOFF1="tanglecube.off";
+		String fichierOFF1 = "torus.off";
 		MeshRepresentation mesh1 = new MeshRepresentation();
 		mesh1.readOffFile(fichierOFF1);
-    	LoadMesh<Point_3> load3D=new LoadMesh<Point_3>();
-    	Polyhedron_3<Point_3> poly1=
-    		load3D.createPolyhedron(mesh1.points,mesh1.faceDegrees,mesh1.faces,mesh1.sizeHalfedges);
-		System.out.println("Fichier "+fichierOFF1+" chargé!");
-		
-		String fichierOFF2="tanglecube_fin.off";
+		LoadMesh<Point_3> load3D = new LoadMesh<Point_3>();
+		Polyhedron_3<Point_3> poly1 = load3D.createPolyhedron(mesh1.points,
+				mesh1.faceDegrees, mesh1.faces, mesh1.sizeHalfedges);
+		System.out.println("Fichier " + fichierOFF1 + " chargé!");
+
+		String fichierOFF2 = "chair.off";
 		MeshRepresentation mesh2 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF2);
-		LoadMesh<Point_3> load3D2=new LoadMesh<Point_3>();
-    	Polyhedron_3<Point_3> poly2=
-    		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
-		System.out.println("Fichier "+fichierOFF2+" chargé!");
+		LoadMesh<Point_3> load3D2 = new LoadMesh<Point_3>();
+		Polyhedron_3<Point_3> poly2 = load3D2.createPolyhedron(mesh2.points,
+				mesh2.faceDegrees, mesh2.faces, mesh2.sizeHalfedges);
+		System.out.println("Fichier " + fichierOFF2 + " chargé!");
 
-		String fichierOFF3="chair.off";
+		String fichierOFF3 = "skull.off";
 		MeshRepresentation mesh3 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF3);
-		LoadMesh<Point_3> load3D3=new LoadMesh<Point_3>();
-    	Polyhedron_3<Point_3> poly3=
-    		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
-		System.out.println("Fichier "+fichierOFF3+" chargé!");
+		LoadMesh<Point_3> load3D3 = new LoadMesh<Point_3>();
+		Polyhedron_3<Point_3> poly3 = load3D2.createPolyhedron(mesh2.points,
+				mesh2.faceDegrees, mesh2.faces, mesh2.sizeHalfedges);
+		System.out.println("Fichier " + fichierOFF3 + " chargé!");
 
-		//Calcul de la courbure
+		// Calcul de la courbure
 		Taubin estimator1 = new Taubin(poly1);
 		estimator1.computeCurvature();
 		estimator1.computeSignature();
@@ -98,16 +100,22 @@ public class Matching {
 		Taubin estimator3 = new Taubin(poly3);
 		estimator3.computeCurvature();
 		estimator3.computeSignature();
-		System.out.println("tanglecube - tanglecube_fin : " + estimator1.compareTo(estimator2));
-		System.out.println("tanglecube - chair : " + estimator1.compareTo(estimator3));
+		System.out.println(fichierOFF1+" - "+fichierOFF2+" : "
+				+ estimator1.compareTo(estimator2));
+		 System.out.println(fichierOFF1+" - "+fichierOFF3+" : " +
+		 estimator1.compareTo(estimator3));
 
 		estimator1.show();
 		estimator2.show();
 		estimator3.show();
-		
-		/*new MeshViewer(poly1) ;
-		new MeshViewer(poly2) ;
-		new MeshViewer(poly3) ;*/
+		estimator1.print(fichierOFF1+".tdat");
+		estimator2.print(fichierOFF2+".tdat");
+		estimator3.print(fichierOFF3+".tdat");
+
+		/*
+		 * new MeshViewer(poly1) ; new MeshViewer(poly2) ; new MeshViewer(poly3)
+		 * ;
+		 */
 	}
 
 }
