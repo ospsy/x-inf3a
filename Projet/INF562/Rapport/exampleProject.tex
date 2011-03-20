@@ -1,6 +1,10 @@
 \documentclass{llncs}
 \usepackage{graphicx}
 \usepackage[utf8]{inputenc}
+%\usepackage{float} -> pour l'alignement des images
+
+\setlength{\parindent}{0 mm}
+
 
 \begin{document}
 
@@ -69,25 +73,75 @@ Quand à l'indépendance vis-à-vis de l'échelle, nous avons choisi d’effectu
 \\\\
 Formellement, l’algorithme de construction de la signature est le suivant :
 \\\\
-\begin{ttfamily}
-MC : moyenne des courbures\\
-Pour chaque vertex v\\
-\indent Soient c1(v), c2(v) les valeurs propres de courbure\\
-\indent Soient i = floor(c1(v) / MC), j = floor(c2(v) / MC)\\
-\indent Faire signature(i,j) += w(v)
-\end{ttfamily}
-\\\\
-Au final, la signature obtenue est une courbe discrétisée à deux dimensions. Les maximas de cette coube correspondent aux couples de courbures que l'on retrouve le plus souvent sur le maillage.
-%si on veut faire une figure (ceci est un commentaire => retirer les % pour decommenter)
-\begin{figure}
-\center
-\includegraphics[bb=0 0 800 600, width=5cm]{img/taubin.png}
-\caption{Exemple de signature obtenue}
-\end{figure}
+\begin{verbatim}
+MC : moyenne des courbures
+Pour chaque vertex v
+         Soient c1(v), c2(v) les valeurs propres de courbure
+         Soient i = floor(c1(v) / MC), j = floor(c2(v) / MC)
+         Faire signature(i,j) += w(v)
+\end{verbatim}
 
+Au final, la signature obtenue est une courbe discrétisée à deux dimensions. Les maximas de cette coube correspondent aux couples de courbures que l'on retrouve le plus souvent sur le maillage.
+\\\\
+Ci-dessous, la signature pour un maillage en forme de tore.
+%si on veut faire une figure (ceci est un commentaire => retirer les % pour decommenter)
+\begin{figure}[tb]
+    \centering
+    \begin{tabular}{cc}
+      \includegraphics[width=3cm]{img/chair.png} &
+      \includegraphics[width=4cm]{img/chair_taubin.png} \\
+    \end{tabular}
+    \caption{\`A gauche maillage $chair.off$. \`A droite, sa signature.}
+\end{figure}
 
 \section{Comparer deux courbures}
 Les méthodes présentées nous fournissent un \textit{descripteur de courbure}, mais comment les comparer ? Notre difficulté majeure réside dans le choix de la distance à utiliser : si nos descripteurs sont remis à l'échelle en alignant les moyennes de chaque distribution, la simple distance euclidienne entre les deux vecteurs à comparer nous donne des résultats vraiment décevants. Par exemple, essayant de corréler \texttt{tanglecube.off} avec \texttt{tanglecube\_fin.off} (censés se ressembler très fortement) et \texttt{tanglecube.off} avec \texttt{skull.off} (n'ayant vraiment rien à voir), les deux distances n'ont qu'un rapport de 5 environ. Conceptuellement, deux pics ``éloignés'' dans la distribution sont aussi mal corrélés que deux pics ``proches''.
+\\\\
+Grâce à cet algorithme de Taubin, nous avons réduit un problème de comparaison de formes en $3d$ à un problème de matching d’images $2d$. Nous pourrions donc potentiellement appliquer les algorithmes classiques de comparaisons d’images (SIFT, etc.). Pour simplifier, nous avons choisi d’utiliser la distance euclidienne, mais après application d’un filtre gaussien pour éliminer les hautes fréquences et résoudre les problèmes de proximité.
+\\\\
+Pour tester nos différents algorithmes, considérons les maillages de la \textbf{figure~\ref{maillages}}.
+\begin{figure}
+\center
+\includegraphics[width=12cm]{img/tores.png}
+\caption{Maillage}
+\label{maillages}
+\end{figure}
+\newline
+Il s'agit d'un tore que l'on a petit-à-petit déformé. Le maillage déformée ressemble de moins en moins au premier, donc nous devons tester si la signature s'en éloigne de plus en plus.
+\\\\
+Avec le calcul de la courbure de Gauss, nous obtenons différentes signatures, représentées sur la \textbf{figure ~\ref{tore_gaussian}}.  \\
+
+\begin{figure}
+\clearpage
+\center
+\includegraphics[width=6cm]{img/tores_gaussian.png}
+\caption{Maillage}
+\label{tore_gaussian}
+\end{figure}
+
+En utilisant l'algorithme de Taubin, on obtient également un jeu de différentes signatures (\textbf{figure ~\ref{tore_taubin}}).
+
+\begin{figure}
+\center
+\includegraphics[width=12cm]{img/tores_taubin.png}
+\caption{Maillage}
+\label{tore_taubin}
+\end{figure}
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline torus2.off & 0.00117 \\ 
+\hline torus3.off & 0.00593 \\ 
+\hline torus4.off & 0.00897 \\ 
+\hline torus5.off & 0.01405 \\ 
+\hline chair.off & 0.040395 \\ 
+\hline skull.off & 0.02913 \\ 
+\hline 
+\end{tabular} \\
+\begin{small}
+\textit{Distance de divers objets vers torus.off}
+\end{small}
+\end{center}
 
 \section{Organisation du code}
 
@@ -95,6 +149,7 @@ Nous choisissons d'implémenter deux versions différentes de la courbure, nous 
 
 \section{Conclusion}
 
+Ce problème de matching de formes tridimensionnelles est actuellement l'objet de nombreuses recherches. La méthode implémentée ici, consistant à comparer deux signatures, permet de caractériser deux objets potentiellement proches, mais pas d'en assurer la ressemblance, car nous pourrions imaginer deux formes très différentes mais aux cartes de courbures similaires.
 
 \bibliographystyle{plain}
 \bibliography{exampleProject}
