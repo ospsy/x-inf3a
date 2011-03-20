@@ -187,8 +187,9 @@ public class Taubin extends CourbureEstimator {
 			for (int j=0 ; j<tailleSignature ; j++)
 			{
 				pts.push(new Point_3((double) (i-tailleSignature/2)/10, (double) (j-tailleSignature/2)/10, signature[i][j]*100)) ;
-				//col[k] = new Color((float) (signature[i][j]/maxSignature), 1.0f-(float) (signature[i][j]/maxSignature), 1.0f) ;
-				col[k] = new Color(0.0f, 1.0f, 1.0f) ;
+				float a = 0.8f;
+				col[col.length-k-1] = new Color(((float) (a*signature[i][j]/maxSignature))%1,a*( 1.0f-(float) (signature[i][j]/maxSignature))%1, 1.0f) ;
+				//col[k] = new Color(0.0f, 1.0f, 1.0f) ;
 				k++ ;
 			}
 		//pts.add(new Point_3(10,5,10)) ;
