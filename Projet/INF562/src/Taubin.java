@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -197,6 +199,23 @@ public class Taubin extends CourbureEstimator {
 		//pts.add(new Point_3(10,5,10)) ;
 
 		new MeshViewer(pts, col);
+	}
+	
+	void print(String fileName){
+		FileWriter fw;
+		try {
+			fw = new FileWriter(fileName);
+			for(int i=0;i<tailleSignature;i++){
+				for(int j=0;j<tailleSignature;j++){
+				fw.write(signature[i][j]+"\t");
+				}
+				fw.write("\n");
+			}
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
