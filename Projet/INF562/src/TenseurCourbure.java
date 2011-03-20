@@ -25,7 +25,14 @@ public class TenseurCourbure {
 		this.computeEigenvectors() ;
 		
 		// Valeurs propres (vérif)
-		EigenvalueDecomposition egc = new EigenvalueDecomposition(kappa) ;
+		/*double[][] array1 = {{0}, {-normal.get(2, 0)}, {normal.get(1, 0)}} ;
+		Matrix perpend1 = new Matrix (array1) ;
+		perpend1.times(1./(perpend1.norm2())) ;
+		double[][] array2 = {{-normal.get(1, 0)}, {normal.get(0, 0)}, {0}} ;
+		Matrix perpend2 = new Matrix (array2) ;
+		perpend2.times(1./(perpend2.norm2())) ;
+		System.out.println("Norme : " + kappa.times(perpend1).norm2() + ", " + kappa.times(perpend2).norm2()) ;*/
+		EigenvalueDecomposition egc = kappa.eig() ;
 		double[] d = egc.getRealEigenvalues() ;
 		System.out.println(d[0] + ", " + d[1] + ", " + d[2]) ;
 
