@@ -15,8 +15,8 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 	HashMap<Vertex<Point_3>, Double> courbureMap;
 	public double[] signature;
 	public double average;
-	static final int signatureSize=2048;
-	static final double signatureAverage=-0.4;
+	static final int signatureSize=128;
+	static final double signatureAverage=-0.2;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
@@ -31,11 +31,16 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			System.err.println("Pas le bon type");
 		double[] s=((GaussianCourbureEstimator)ce).signature;
 		double err=0;
-		for(int i=0;i<signatureSize;i++){
-			double tmp=signature[i]-s[i];
-			err+=tmp*tmp;
+		for(int i=2;i<signatureSize-2;i++){
+			double tmp=0;
+			double tmp2=0;
+			for(int j=-0;j<=0;j++){
+				tmp+=signature[i+j];
+				tmp2+=s[i+j];
+			}
+			err+=(tmp-tmp2)*(tmp-tmp2);
 		}
-		return err;
+		return Math.sqrt(err);
 	}
 	
 	public void computeSignature(){
