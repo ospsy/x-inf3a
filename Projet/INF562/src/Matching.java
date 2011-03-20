@@ -102,8 +102,8 @@ public class Matching {
 		//System.out.println("tanglecube - chair : " + estimator1.compareTo(estimator3));
 
 		estimator1.show();
-		//estimator2.show();
-		//estimator3.show();
+		estimator2.show();
+		estimator3.show();
 		
 		/*new MeshViewer(poly1) ;
 		new MeshViewer(poly2) ;

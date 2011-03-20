@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -44,7 +46,7 @@ public class Taubin extends CourbureEstimator {
 				distanceEuclidienne += diff*diff ;
 			}
 		
-		distanceEuclidienne = Math.sqrt(distanceEuclidienne) ;
+		//distanceEuclidienne = Math.sqrt(distanceEuclidienne) ;
 		
 		return distanceEuclidienne ;
 	}
