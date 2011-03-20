@@ -27,11 +27,23 @@ public class Taubin extends CourbureEstimator {
 		weightMap= new HashMap<Vertex<Point_3>, Double>();
 		signature = new double [tailleSignature][tailleSignature] ;
 	}
-
+	
 	@Override
 	public double compareTo(CourbureEstimator ce) {
-		// TODO Auto-generated method stub
-		return 0 ;
+		Taubin te = (Taubin) ce ;
+		
+		double distanceEuclidienne = 0 ;
+		
+		for (int i=0 ; i<tailleSignature ; i++)
+			for (int j=0 ; j<tailleSignature ; j++)
+			{
+				double diff = (te.signature[i][j] - signature[i][j]) ;
+				distanceEuclidienne += diff*diff ;
+			}
+		
+		distanceEuclidienne = Math.sqrt(distanceEuclidienne) ;
+		
+		return distanceEuclidienne ;
 	}
 
 	@Override
@@ -108,7 +120,8 @@ public class Taubin extends CourbureEstimator {
 			Matrix Tij = Matrix.identity(3, 3).minus(mNormal.times(mNormal.transpose())).times(mVij) ;
 			Tij = Tij.times(1./Tij.norm2()) ;
 			
-			Mvi = Mvi.plus(Tij.times(Tij.transpose())).times(wij*kij/w) ;
+			//Mvi.plusEquals(Tij.times(Tij.transpose())).times(wij*kij/w) ;
+			Mvi = Mvi.plus(Tij.times(Tij.transpose()).times(wij*kij/w)) ;
 			
 			i++ ;
 		}
@@ -156,7 +169,7 @@ public class Taubin extends CourbureEstimator {
 		for (int i=0 ; i<tailleSignature ; i++)
 			for (int j=0 ; j<tailleSignature ; j++)
 				{
-					signature[i][j] /= sommeSignatures ;
+					signature[i][j] = signature[i][j] / sommeSignatures ;
 					if (signature[i][j] > maxSignature) maxSignature = signature[i][j] ;
 				}
 		
@@ -174,7 +187,8 @@ public class Taubin extends CourbureEstimator {
 			for (int j=0 ; j<tailleSignature ; j++)
 			{
 				pts.push(new Point_3((double) (i-tailleSignature/2)/10, (double) (j-tailleSignature/2)/10, signature[i][j]*100)) ;
-				col[k] = new Color((float) (signature[i][j]/maxSignature), 1.0f-(float) (signature[i][j]/maxSignature), 1.0f) ;
+				//col[k] = new Color((float) (signature[i][j]/maxSignature), 1.0f-(float) (signature[i][j]/maxSignature), 1.0f) ;
+				col[k] = new Color(0.0f, 1.0f, 1.0f) ;
 				k++ ;
 			}
 		//pts.add(new Point_3(10,5,10)) ;
