@@ -41,11 +41,14 @@ public class Utils {
 			Vector_3 n = vecteurNormal (f) ;
 			normal = normal.sum(n) ;
 			
-			he = he.next.next.opposite ; // En supposant qu'il s'agit d'un triangle
+			he = he.getNext().getOpposite() ; // En supposant qu'il s'agit d'un triangle
 		}
 		
 		// On normalise le vecteur normal
+		//System.out.println("ESSAI : " + normal.crossProduct(v.getPoint().minus(new Point_3(0,0,0))).squaredLength().doubleValue()) ;
+		//normal = (Vector_3) v.getPoint().minus(new Point_3(0,0,0)) ;
 		normal = normal.divisionByScalar(Math.sqrt(normal.squaredLength().doubleValue())) ;
+		
 		return normal ;
 	}
 	
