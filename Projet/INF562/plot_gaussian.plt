@@ -1,5 +1,5 @@
 # Sortie
-set terminal png size 800,600
+set terminal png size 1024,1024
 set output 'gaussian.png'
  
 # Paramétrage
@@ -8,4 +8,4 @@ set isosamples 20
 set hidden3d
  
 # Dessin de la courbe
-plot 'g1.dat', 'g2.dat', 'g3.dat'
+plot 'torus.off.dat' with lines, 'torus2.off.dat' with lines, 'torus3.off.dat' with lines, 'torus4.off.dat' with lines, 'torus5.off.dat' with lines, 'chair.off.dat' with lines
