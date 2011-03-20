@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -16,7 +18,7 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 	public double[] signature;
 	public double average;
 	static final int signatureSize=128;
-	static final double signatureAverage=-0.2;
+	static final double signatureAverage=-0.5;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
@@ -31,14 +33,9 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			System.err.println("Pas le bon type");
 		double[] s=((GaussianCourbureEstimator)ce).signature;
 		double err=0;
-		for(int i=2;i<signatureSize-2;i++){
-			double tmp=0;
-			double tmp2=0;
-			for(int j=-0;j<=0;j++){
-				tmp+=signature[i+j];
-				tmp2+=s[i+j];
-			}
-			err+=(tmp-tmp2)*(tmp-tmp2);
+		for(int i=0;i<signatureSize;i++){
+			double tmp=signature[i]-s[i];
+			err+=(tmp)*(tmp);
 		}
 		return Math.sqrt(err);
 	}
@@ -103,6 +100,22 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			i++;
 		}
 		new MeshViewer(pts,col);
+	}
+	
+
+	
+	void print(String fileName){
+		FileWriter fw;
+		try {
+			fw = new FileWriter(fileName);
+			for(int i=0;i<signatureSize;i++){
+				fw.write(signature[i]+"\n");
+			}
+			fw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
