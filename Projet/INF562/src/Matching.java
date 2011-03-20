@@ -90,6 +90,7 @@ public class Matching {
 
 		estimator1.show();
 		estimator2.show();
+		estimator3.show();
 	}
 
 }
