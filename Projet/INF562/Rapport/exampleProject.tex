@@ -72,7 +72,7 @@ Quand à l'indépendance vis-à-vis de l'échelle, nous avons choisi d’effectu
 %$$
 \\\\
 Formellement, l’algorithme de construction de la signature est le suivant :
-\\\\
+
 \begin{verbatim}
 MC : moyenne des courbures
 Pour chaque vertex v
@@ -137,7 +137,7 @@ Pour effectuer une comparaison plus formelle, nous calculons la distance euclidi
 \end{small}
 \end{center}
 
-En utilisant l'algorithme de Taubin, on obtient également un jeu de différentes signatures (\textbf{figure~\ref{tore_taubin}}). On commence par un profil aux maximas très marqués, qui s'étale petit-à-petit. On remarque que le profil de départ a globalement une forme d'``eperon'' (deux en fait, à cause de la symétrie). Celà peut s'interpréter par la forme du tore : en chaque point, la courbure selon le cercle générateur est la même, ce qui explique la présence d'une valeur propre commune à chaque point.
+En utilisant l'algorithme de Taubin, on obtient également un jeu de différentes signatures (\textbf{figure~\ref{tore_taubin}}). On commence par un profil aux maximas très marqués, qui s'étale petit-à-petit. On remarque que le profil de départ a globalement une forme d'``éperon'' (deux en fait, à cause de la symétrie). Celà peut s'interpréter par la forme du tore : en chaque point, la courbure selon le cercle générateur est la même, ce qui explique la présence d'une valeur propre commune à chaque point.
 
 \begin{figure}
 \center
@@ -163,11 +163,11 @@ Nous sommes à nouveau en mesure de comparer les distances entre les courbes, ap
 \end{small}
 \end{center}
 
-Effectivement, la distance est plus grande si la forme du maillage est différente.
+Effectivement, la distance est plus grande si la forme du maillage est différente. On gagne un facteur $40$ environ en comparant avec \texttt{torus2.off} par rapport à \texttt{chair.off}.
 
 \section{Organisation du code}
 
-Nous choisissons d'implémenter deux versions différentes de la courbure, nous utilisons donc une classe abstraite \texttt{CourbureEstimator} qui comporte essentiellement une méthode \texttt{double compareTo(CourbureEstimator c)} renvoyant la distance entre les deux maillages, et une méthode \texttt{void computeSignature()} qui évalue la courbure suivant la méthode utilisée. Deux classes l'implémentent : \texttt{GaussianCourbureEstimator} pour la méthode de Gauss, et \texttt{Taubin} pour le tenseur de courbure. Le programme principal se situe dans la classe \texttt{Matching}
+Nous choisissons d'implémenter deux versions différentes de la courbure, nous utilisons donc une classe abstraite \texttt{CourbureEstimator} qui comporte essentiellement une méthode \texttt{double compareTo(CourbureEstimator c)} renvoyant la distance entre les deux maillages, et une méthode \texttt{void computeSignature()} qui évalue la courbure suivant la méthode utilisée. Deux classes l'implémentent : \texttt{GaussianCourbureEstimator} pour la méthode de Gauss, et \texttt{Taubin} pour le tenseur de courbure. Le programme principal se situe dans la classe \texttt{Matching}.
 
 \section{Conclusion}
 
