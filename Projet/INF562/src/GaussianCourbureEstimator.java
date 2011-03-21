@@ -19,8 +19,8 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 	public double[] signature;
 	public double average;
 	static final int signatureSize=128;
-	static final double signatureAverage=-0.5;
-	static int tailleGauss = 5 ;
+	static final double signatureAverage=0.5;
+	static int tailleGauss = 25 ;
 	
 	public GaussianCourbureEstimator(Polyhedron_3<Point_3> poly) {
 		this.poly=poly;
@@ -46,7 +46,7 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 		//moyenne et poids total
 		double total=0;
 		for (java.util.Map.Entry<Vertex<Point_3>, Double> e : weightMap.entrySet()) {
-			average+=e.getValue()*courbureMap.get(e.getKey());
+			average+=Math.abs(e.getValue()*courbureMap.get(e.getKey()));
 			total+=e.getValue();
 		}
 		average/=total;
@@ -55,12 +55,16 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			double indicef=(Math.atan(e.getValue()*signatureAverage/average)*signatureSize/Math.PI+signatureSize/2);
 			int indice=(int)indicef;
 			double weight=weightMap.get(e.getKey())/total;
+			if(indice==signatureSize-1)
+				signature[indice]+=(indicef-indice+1);
+			else{
 			signature[indice]+=(indicef-indice+1)*weight;
 			signature[indice+1]+=(indicef-indice)*weight;
+			}
 		}
 		// On applique un filtre de Gauss
 		double[] signatureBis = new double[signatureSize] ;
-		Matrix gauss = Masque.MasqueGauss(1.3, tailleGauss) ;
+		Matrix gauss = Masque.MasqueGauss(4, tailleGauss) ;
 		for (int i=tailleGauss/2 ; i<signatureSize-tailleGauss/2 ; i++){
 			signatureBis[i] = 0 ;
 			for (int k=0 ; k<tailleGauss ; k++)
@@ -85,6 +89,8 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 			Vector_3 v1 = (Vector_3) p2.minus(p1) ;
 			Vector_3 v2 = (Vector_3) p3.minus(p1) ;
 			totalSum+=Math.sqrt( v1.crossProduct(v2).squaredLength().doubleValue())/2;
+			v1=v1.divisionByScalar(Math.sqrt(v1.squaredLength().doubleValue()));
+			v2=v2.divisionByScalar(Math.sqrt(v2.squaredLength().doubleValue()));
 			totalAngle+=Math.acos(v1.innerProduct(v2).doubleValue());
 			
 
