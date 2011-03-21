@@ -15,7 +15,7 @@ public class Matching {
 
 	public static void main(String[] args) throws IOException {
 
-		test2();
+		test1();
 	}
 
 	public static void test1() {
@@ -26,7 +26,7 @@ public class Matching {
     	Polyhedron_3<Point_3> poly1=
     		load3D.createPolyhedron(mesh1.points,mesh1.faceDegrees,mesh1.faces,mesh1.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF1+" chargé!");
-		
+
 		String fichierOFF2="torus5.off";
 		MeshRepresentation mesh2 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF2);
@@ -35,12 +35,12 @@ public class Matching {
     		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF2+" chargé!");
 
-		String fichierOFF3="torus3.off";
+		String fichierOFF3="chair.off";
 		MeshRepresentation mesh3 = new MeshRepresentation();
-		mesh2.readOffFile(fichierOFF3);
+		mesh3.readOffFile(fichierOFF3);
 		LoadMesh<Point_3> load3D3=new LoadMesh<Point_3>();
     	Polyhedron_3<Point_3> poly3=
-    		load3D2.createPolyhedron(mesh2.points,mesh2.faceDegrees,mesh2.faces,mesh2.sizeHalfedges);
+    		load3D3.createPolyhedron(mesh3.points,mesh3.faceDegrees,mesh3.faces,mesh3.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF3+" chargé!");
 
 		//Calcul de la courbure
@@ -53,8 +53,8 @@ public class Matching {
 		GaussianCourbureEstimator estimator3 = new GaussianCourbureEstimator(poly3);
 		estimator3.computeCurvature();
 		estimator3.computeSignature();
-		System.out.println("tanglecube - tanglecube_fin : " + estimator1.compareTo(estimator2));
-		System.out.println("tanglecube - chair : " + estimator1.compareTo(estimator3));
+		System.out.println(fichierOFF1+" - "+fichierOFF2+" : " + estimator1.compareTo(estimator2));
+		System.out.println(fichierOFF1+" - "+fichierOFF3+" : "+ estimator1.compareTo(estimator3));
 
 		estimator1.show();
 		estimator2.show();
