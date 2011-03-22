@@ -17,7 +17,7 @@ void makeIntegralImage(const IplImage* in, IplImage* out);
 // Calcul de les derivees gaussiennes d'ordre 2
 void calculateGaussianDerivative(const IplImage* imageIntegrale, IplImage** out, int octave, int intervals);
 
-#define THRESOLD 1200
+#define THRESOLD 1500
 
 std::list<std::vector<int> > findExtrema(IplImage** data, int intervals);
 
