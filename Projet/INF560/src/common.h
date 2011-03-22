@@ -3,9 +3,9 @@
 
 #include <cv.h>
 
-void CUDAinit(uint width, uint height);
+void CUDAinit(uint width, uint height,uint intervals);
 
-void CUDAclose();
+void CUDAclose(uint intervals);
 
 int borderSize(int octave,int interval){
 	int power = 1 ;
