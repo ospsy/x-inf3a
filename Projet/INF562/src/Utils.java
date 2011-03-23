@@ -99,13 +99,37 @@ public class Utils {
 	public static double[] getRotation(TenseurCourbure k1, TenseurCourbure k2)
 	{
 		Matrix m = getTransformation(k1, k2) ;
+		System.out.println("iete") ;
+		//int signe = 1 ;
 		
-		double a = Math.atan(-m.get(0, 1)/m.get(0, 0)) ;
-		double b = Math.asin(m.get(2, 2)) ;
-		double c = Math.atan(-m.get(1, 2)/m.get(2, 2)) ;
+		double b = Math.atan2(m.get(0, 2), Math.sqrt(m.get(0,0)*m.get(0,0) + m.get(0,1)*m.get(0,1))) ;
+		double a = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;
+		double c = Math.atan2(-m.get(1,2)/Math.cos(b), m.get(2,2)/Math.cos(b)) ;
+		
+		if (getRotation(a,b,c).minus(m).norm2()>0.01)
+		{
+			b = Math.atan2(m.get(0, 2), -Math.sqrt(m.get(0,0)*m.get(0,0) + m.get(0,1)*m.get(0,1))) ;
+			a = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;
+			c = Math.atan2(-m.get(1,2)/Math.cos(b), m.get(2,2)/Math.cos(b)) ;
+		}
+		
+		System.out.println("FIST : " + getRotation(a,b,c).minus(m).norm2()) ;
+		
 		double[] array = {a,b,c} ;
 		
 		return array ;
+	}
+	
+	// Retourne une matrice de transformation ˆ partir de 3 angles
+	public static Matrix getRotation (double a, double b, double c)
+	{
+		double[][] arraya = {{1,0,0}, {0, Math.cos(a), -Math.sin(a)}, {0, Math.sin(a), Math.cos(a)}} ;
+		Matrix ra = new Matrix (arraya) ;
+		double[][] arrayb = {{Math.cos(b),0,Math.sin(b)}, {0,1,0}, {-Math.sin(b), 0, Math.cos(b)}} ;
+		Matrix rb = new Matrix (arrayb) ;
+		double[][] arrayc = {{Math.cos(c),-Math.sin(c),0}, {Math.sin(c),Math.cos(c),0}, {0,0,1}} ;
+		Matrix rc = new Matrix (arrayc) ;
+		return ra.times(rb).times(rc) ;
 	}
 	
 }
