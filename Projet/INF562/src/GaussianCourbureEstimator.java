@@ -3,7 +3,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Vector;
 
 import Jama.Matrix;
 import Jcg.geometry.Point_3;
@@ -12,6 +11,8 @@ import Jcg.polyhedron.Halfedge;
 import Jcg.polyhedron.Polyhedron_3;
 import Jcg.polyhedron.Vertex;
 import Jcg.viewer.MeshViewer;
+
+
 
 
 public class GaussianCourbureEstimator extends CourbureEstimator {
