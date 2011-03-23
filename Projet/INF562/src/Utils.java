@@ -100,9 +100,12 @@ public class Utils {
 	{
 		Matrix m = getTransformation(k1, k2) ;
 		
-		double b = Math.atan2(-m.get(3, 1), arg1)
+		double a = Math.atan(-m.get(0, 1)/m.get(0, 0)) ;
+		double b = Math.asin(m.get(2, 2)) ;
+		double c = Math.atan(-m.get(1, 2)/m.get(2, 2)) ;
+		double[] array = {a,b,c} ;
 		
-		return null ;
+		return array ;
 	}
 	
 }
