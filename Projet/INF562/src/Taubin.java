@@ -18,7 +18,7 @@ public class Taubin extends CourbureEstimator {
 	
 	// Variables
 	static final int tailleSignature = 64 ;
-	static final double moyenneCourbure = 1 ; // Coefficient dans le Arctan
+	static final double moyenneCourbure = 0.4 ; // Coefficient dans le Arctan
 	HashMap<Vertex<Point_3>, TenseurCourbure> courbureMap;
 	double[][] signature ;
 	static double maxSignature ;
@@ -46,7 +46,7 @@ public class Taubin extends CourbureEstimator {
 				distanceEuclidienne += diff*diff ;
 			}
 		
-		//distanceEuclidienne = Math.sqrt(distanceEuclidienne) ;
+		distanceEuclidienne = Math.sqrt(distanceEuclidienne) ;
 		
 		return distanceEuclidienne ;
 	}

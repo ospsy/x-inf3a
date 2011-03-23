@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.TransformGroup;
 
+import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.polyhedron.LoadMesh;
 import Jcg.polyhedron.MeshRepresentation;
@@ -13,9 +14,9 @@ import Jcg.viewer.MeshViewer;
 
 public class Matching {
 
-	public static void main(String[] args) throws IOException {
-
-		test1();
+	public static void main (String[] args) throws IOException {
+		
+		test2() ;
 	}
 
 	public static void test1() {
@@ -27,7 +28,7 @@ public class Matching {
     		load3D.createPolyhedron(mesh1.points,mesh1.faceDegrees,mesh1.faces,mesh1.sizeHalfedges);
 		System.out.println("Fichier "+fichierOFF1+" chargé!");
 
-		String fichierOFF2="torus5.off";
+		String fichierOFF2="chair.off";
 		MeshRepresentation mesh2 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF2);
 		LoadMesh<Point_3> load3D2=new LoadMesh<Point_3>();
@@ -74,7 +75,7 @@ public class Matching {
 				mesh1.faceDegrees, mesh1.faces, mesh1.sizeHalfedges);
 		System.out.println("Fichier " + fichierOFF1 + " chargé!");
 
-		String fichierOFF2 = "chair.off";
+		String fichierOFF2 = "torus2.off";
 		MeshRepresentation mesh2 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF2);
 		LoadMesh<Point_3> load3D2 = new LoadMesh<Point_3>();
@@ -105,17 +106,23 @@ public class Matching {
 		 System.out.println(fichierOFF1+" - "+fichierOFF3+" : " +
 		 estimator1.compareTo(estimator3));
 
-		estimator1.show();
+		/*estimator1.show();
 		estimator2.show();
-		estimator3.show();
-		estimator1.print(fichierOFF1+".tdat");
-		estimator2.print(fichierOFF2+".tdat");
-		estimator3.print(fichierOFF3+".tdat");
-
-		/*
-		 * new MeshViewer(poly1) ; new MeshViewer(poly2) ; new MeshViewer(poly3)
-		 * ;
-		 */
+		estimator3.show();*/
+		
+		/*new MeshViewer(poly1) ;
+		new MeshViewer(poly2) ;*/
+		//new MeshViewer(poly3) ;
+		 
+		TenseurCourbure k1 = estimator1.courbureMap.get(poly1.vertices.get(1)) ;
+		TenseurCourbure k2 = estimator1.courbureMap.get(poly2.vertices.get(1)) ;
+		Matrix m = Utils.getRotation(k1, k2) ;
+		Matrix c1 = m.times(k1.getEigenvector(1)) ;
+		Matrix c2 = m.times(k1.getEigenvector(2)) ;
+		c1 = c1.times(1/c1.norm2()) ;
+		c2 = c2.times(1/c2.norm2()) ;
+		double v1 = k2.kappa.times(c1).norm2() ;
+		double v2 = k2.kappa.times(c2).norm2() ;
 	}
 
 }

@@ -59,4 +59,36 @@ public class Utils {
 		
 		else return new Vector_3 (m.get(0,0), m.get(1,0), m.get(2,0)) ;
 	}
+	
+	// Recherche d'une rotation selon deux directions principales
+	public static Matrix getRotation(TenseurCourbure k1, TenseurCourbure k2)
+	{
+		Matrix base1 = new Matrix(3,3) ;
+		Matrix base2 = new Matrix(3,3) ;
+		
+		
+		if (k1.getEigenvalue(1)/k1.getEigenvalue(2) == k2.getEigenvalue(1)/k2.getEigenvalue(2))
+		{
+			base1.setMatrix(0, 2, 0, 0, k1.getEigenvector(0).times(1./k1.getEigenvector(0).norm2())) ;
+			base1.setMatrix(0, 2, 1, 1, k1.getEigenvector(1).times(1./k1.getEigenvector(1).norm2())) ;
+			base1.setMatrix(0, 2, 2, 2, k1.getEigenvector(2).times(1./k1.getEigenvector(2).norm2())) ;
+			
+			base1.setMatrix(0, 2, 0, 0, k2.getEigenvector(0).times(1./k2.getEigenvector(0).norm2())) ;
+			base1.setMatrix(0, 2, 1, 1, k2.getEigenvector(1).times(1./k2.getEigenvector(1).norm2())) ;
+			base1.setMatrix(0, 2, 2, 2, k2.getEigenvector(2).times(1./k2.getEigenvector(2).norm2())) ;
+		}
+		else if (k1.getEigenvalue(1)/k1.getEigenvalue(2) == k2.getEigenvalue(2)/k2.getEigenvalue(1))
+		{
+			base1.setMatrix(0, 2, 0, 0, k1.getEigenvector(0).times(1./k1.getEigenvector(0).norm2())) ;
+			base1.setMatrix(0, 2, 1, 1, k1.getEigenvector(1).times(1./k1.getEigenvector(1).norm2())) ;
+			base1.setMatrix(0, 2, 2, 2, k1.getEigenvector(2).times(1./k1.getEigenvector(2).norm2())) ;
+			
+			base1.setMatrix(0, 2, 0, 0, k2.getEigenvector(0).times(1./k2.getEigenvector(0).norm2())) ;
+			base1.setMatrix(0, 2, 1, 1, k2.getEigenvector(2).times(1./k2.getEigenvector(2).norm2())) ;
+			base1.setMatrix(0, 2, 2, 2, k2.getEigenvector(1).times(-1./k2.getEigenvector(1).norm2())) ;
+		}
+		
+		// Construction de la transformation k1 -> k2
+		return base2.transpose().times(base1) ;
+	}
 }
