@@ -67,34 +67,41 @@ public class Utils {
 		Matrix base2 = new Matrix(3,3) ;
 		
 		
-		if (k1.getEigenvalue(1)/k1.getEigenvalue(2) == k2.getEigenvalue(1)/k2.getEigenvalue(2))
+		if (true || k1.getEigenvalue(1)/k1.getEigenvalue(2) == k2.getEigenvalue(1)/k2.getEigenvalue(2))
 		{
 			base1.setMatrix(0, 2, 0, 0, k1.getEigenvector(0).times(1./k1.getEigenvector(0).norm2())) ;
 			base1.setMatrix(0, 2, 1, 1, k1.getEigenvector(1).times(1./k1.getEigenvector(1).norm2())) ;
 			base1.setMatrix(0, 2, 2, 2, k1.getEigenvector(2).times(1./k1.getEigenvector(2).norm2())) ;
 			
-			base1.setMatrix(0, 2, 0, 0, k2.getEigenvector(0).times(1./k2.getEigenvector(0).norm2())) ;
-			base1.setMatrix(0, 2, 1, 1, k2.getEigenvector(1).times(1./k2.getEigenvector(1).norm2())) ;
-			base1.setMatrix(0, 2, 2, 2, k2.getEigenvector(2).times(1./k2.getEigenvector(2).norm2())) ;
+			base2.setMatrix(0, 2, 0, 0, k2.getEigenvector(0).times(1./k2.getEigenvector(0).norm2())) ;
+			base2.setMatrix(0, 2, 1, 1, k2.getEigenvector(1).times(1./k2.getEigenvector(1).norm2())) ;
+			base2.setMatrix(0, 2, 2, 2, k2.getEigenvector(2).times(1./k2.getEigenvector(2).norm2())) ;
 		}
-		else if (k1.getEigenvalue(1)/k1.getEigenvalue(2) == k2.getEigenvalue(2)/k2.getEigenvalue(1))
+		else if (Math.abs(k1.getEigenvalue(1)/k1.getEigenvalue(2) - k2.getEigenvalue(2)/k2.getEigenvalue(1)) < 0.1)
 		{
 			base1.setMatrix(0, 2, 0, 0, k1.getEigenvector(0).times(1./k1.getEigenvector(0).norm2())) ;
 			base1.setMatrix(0, 2, 1, 1, k1.getEigenvector(1).times(1./k1.getEigenvector(1).norm2())) ;
 			base1.setMatrix(0, 2, 2, 2, k1.getEigenvector(2).times(1./k1.getEigenvector(2).norm2())) ;
 			
-			base1.setMatrix(0, 2, 0, 0, k2.getEigenvector(0).times(1./k2.getEigenvector(0).norm2())) ;
-			base1.setMatrix(0, 2, 1, 1, k2.getEigenvector(2).times(1./k2.getEigenvector(2).norm2())) ;
-			base1.setMatrix(0, 2, 2, 2, k2.getEigenvector(1).times(-1./k2.getEigenvector(1).norm2())) ;
+			base2.setMatrix(0, 2, 0, 0, k2.getEigenvector(0).times(1./k2.getEigenvector(0).norm2())) ;
+			base2.setMatrix(0, 2, 1, 1, k2.getEigenvector(2).times(1./k2.getEigenvector(2).norm2())) ;
+			base2.setMatrix(0, 2, 2, 2, k2.getEigenvector(1).times(-1./k2.getEigenvector(1).norm2())) ;
 		}
 		
 		// Construction de la transformation k1 -> k2
-		return base2.transpose().times(base1) ;
+		//Matrix m = base2.transpose().times(base1) ;
+		Matrix m = base2.times(base1.transpose()) ;
+		//System.out.println("NORME : " + m.times(m.transpose()).minus(Matrix.identity(3, 3)).norm2()) ;
+		return m ;
 	}
 
 	// Retourne les angles (0:x, 1:y, 2:z)
 	public static double[] getRotation(TenseurCourbure k1, TenseurCourbure k2)
 	{
+		Matrix m = getTransformation(k1, k2) ;
+		
+		double b = Math.atan2(-m.get(3, 1), arg1)
+		
 		return null ;
 	}
 	
