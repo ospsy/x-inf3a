@@ -1,3 +1,4 @@
+import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.polyhedron.Vertex;
 import Meanshift.MeanShiftClustering;
@@ -43,11 +44,21 @@ public class TransformEvaluator {
 	private void vote(Vertex<Point_3> u, Vertex<Point_3> v){
 		double[] trans = new double[3];
 		double[] rot= Utils.getRotation(a.courbureMap.get(u), b.courbureMap.get(v));
+		Matrix mrot = Utils.getTransformation(a.courbureMap.get(u), b.courbureMap.get(v));
+		
+		Vertex<Point_3> w = new Vertex<Point_3>();
+		Matrix ww = new Matrix(3, 1);
+		ww.set(0, 0, u.getPoint().x);
+		ww.set(1, 0, u.getPoint().y);
+		ww.set(2, 0, u.getPoint().z);
+		ww = mrot.times(ww);
+		w.setPoint(new Point_3(ww.get(0, 0),ww.get(1, 0),ww.get(2, 0)));
+		//la translation doit être calculée apres rotation seulement
 		
 		//le facteur *2 c'est pour avoir un résultat dans [-Pi,Pi] et donc être homogène avec les angles)
-		trans[0] = Math.atan(v.getPoint().x-u.getPoint().x)*2;
-		trans[1] = Math.atan(v.getPoint().y-u.getPoint().y)*2;
-		trans[2] = Math.atan(v.getPoint().z-u.getPoint().z)*2;
+		trans[0] = Math.atan(w.getPoint().x-u.getPoint().x)*2;
+		trans[1] = Math.atan(w.getPoint().y-u.getPoint().y)*2;
+		trans[2] = Math.atan(w.getPoint().z-u.getPoint().z)*2;
 		
 		double[] coords = new double[trans.length + rot.length];
 		System.arraycopy(trans, 0, coords, 0, trans.length);
