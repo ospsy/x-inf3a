@@ -114,15 +114,17 @@ public class Matching {
 		new MeshViewer(poly2) ;*/
 		//new MeshViewer(poly3) ;
 		 
-		TenseurCourbure k1 = estimator1.courbureMap.get(poly1.vertices.get(1)) ;
-		TenseurCourbure k2 = estimator1.courbureMap.get(poly2.vertices.get(1)) ;
-		Matrix m = Utils.getRotation(k1, k2) ;
+		TenseurCourbure k1 = estimator1.courbureMap.get(poly1.vertices.get((int) (poly1.vertices.size()*Math.random() ))) ;
+		TenseurCourbure k2 = estimator2.courbureMap.get(poly2.vertices.get((int) (poly2.vertices.size()*Math.random() ))) ;
+		Matrix m = Utils.getTransformation(k1, k2) ;
 		Matrix c1 = m.times(k1.getEigenvector(1)) ;
 		Matrix c2 = m.times(k1.getEigenvector(2)) ;
 		c1 = c1.times(1/c1.norm2()) ;
 		c2 = c2.times(1/c2.norm2()) ;
 		double v1 = k2.kappa.times(c1).norm2() ;
 		double v2 = k2.kappa.times(c2).norm2() ;
+		
+		System.out.println() ;
 	}
 
 }

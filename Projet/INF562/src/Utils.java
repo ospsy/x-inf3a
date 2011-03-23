@@ -61,7 +61,7 @@ public class Utils {
 	}
 	
 	// Recherche d'une rotation selon deux directions principales
-	public static Matrix getRotation(TenseurCourbure k1, TenseurCourbure k2)
+	public static Matrix getTransformation(TenseurCourbure k1, TenseurCourbure k2)
 	{
 		Matrix base1 = new Matrix(3,3) ;
 		Matrix base2 = new Matrix(3,3) ;
@@ -91,4 +91,11 @@ public class Utils {
 		// Construction de la transformation k1 -> k2
 		return base2.transpose().times(base1) ;
 	}
+
+	// Retourne les angles (0:x, 1:y, 2:z)
+	public static double[] getRotation(TenseurCourbure k1, TenseurCourbure k2)
+	{
+		return null ;
+	}
+	
 }
