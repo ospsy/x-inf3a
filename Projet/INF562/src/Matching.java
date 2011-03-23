@@ -116,7 +116,10 @@ public class Matching {
 		 
 		TenseurCourbure k1 = estimator1.courbureMap.get(poly1.vertices.get((int) (poly1.vertices.size()*Math.random() ))) ;
 		TenseurCourbure k2 = estimator2.courbureMap.get(poly2.vertices.get((int) (poly2.vertices.size()*Math.random() ))) ;
-		Matrix m = Utils.getTransformation(k1, k2) ;
+		
+		double[] angles = Utils.getRotation(k1, k2) ;
+		System.out.println(angles[0] + " - " + angles[1] + " - " + angles[2]) ;
+		/*Matrix m = Utils.getTransformation(k1, k2) ;
 		Matrix c1 = m.times(k1.getEigenvector(1)) ;
 		Matrix c2 = m.times(k1.getEigenvector(2)) ;
 		c1 = c1.times(1/c1.norm2()) ;
@@ -125,7 +128,7 @@ public class Matching {
 		double v2 = k2.kappa.times(c2).norm2() ;
 		
 		System.out.println(v1 + " " + v2) ;
-		System.out.println(k2.getEigenvalue(1) + " " + k2.getEigenvalue(2)) ;
+		System.out.println(k2.getEigenvalue(1) + " " + k2.getEigenvalue(2)) ;*/
 	}
 
 }
