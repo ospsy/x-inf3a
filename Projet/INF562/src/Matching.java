@@ -124,7 +124,8 @@ public class Matching {
 		double v1 = k2.kappa.times(c1).norm2() ;
 		double v2 = k2.kappa.times(c2).norm2() ;
 		
-		System.out.println() ;
+		System.out.println(v1 + " " + v2) ;
+		System.out.println(k2.getEigenvalue(1) + " " + k2.getEigenvalue(2)) ;
 	}
 
 }
