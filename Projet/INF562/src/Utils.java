@@ -103,17 +103,17 @@ public class Utils {
 		//int signe = 1 ;
 		
 		double b = Math.atan2(m.get(0, 2), Math.sqrt(m.get(0,0)*m.get(0,0) + m.get(0,1)*m.get(0,1))) ;
-		double a = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;
-		double c = Math.atan2(-m.get(1,2)/Math.cos(b), m.get(2,2)/Math.cos(b)) ;
+		double c = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;
+		double a = Math.atan2(-m.get(1,2)/Math.cos(b), m.get(2,2)/Math.cos(b)) ;
 		
 		if (getRotation(a,b,c).minus(m).norm2()>0.01)
 		{
 			b = Math.atan2(m.get(0, 2), -Math.sqrt(m.get(0,0)*m.get(0,0) + m.get(0,1)*m.get(0,1))) ;
-			a = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;
-			c = Math.atan2(-m.get(1,2)/Math.cos(b), m.get(2,2)/Math.cos(b)) ;
+			c = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;
+			a = Math.atan2(-m.get(1,2)/Math.cos(b), m.get(2,2)/Math.cos(b)) ;
 		}
 		
-		System.out.println("FIST : " + getRotation(a,b,c).minus(m).norm2()) ;
+		// System.out.println("Angles : " + getRotation(a,b,c).minus(m).norm2()) ;
 		
 		double[] array = {a,b,c} ;
 		
