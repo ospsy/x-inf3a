@@ -99,7 +99,6 @@ public class Utils {
 	public static double[] getRotation(TenseurCourbure k1, TenseurCourbure k2)
 	{
 		Matrix m = getTransformation(k1, k2) ;
-		System.out.println("iete") ;
 		//int signe = 1 ;
 		
 		double b = Math.atan2(m.get(0, 2), Math.sqrt(m.get(0,0)*m.get(0,0) + m.get(0,1)*m.get(0,1))) ;
@@ -120,7 +119,7 @@ public class Utils {
 		return array ;
 	}
 	
-	// Retourne une matrice de transformation ˆ partir de 3 angles
+	// Retourne une matrice de transformation ï¿½ partir de 3 angles
 	public static Matrix getRotation (double a, double b, double c)
 	{
 		double[][] arraya = {{1,0,0}, {0, Math.cos(a), -Math.sin(a)}, {0, Math.sin(a), Math.cos(a)}} ;

@@ -1,5 +1,6 @@
 package Meanshift;
 import java.util.Calendar;
+import java.util.LinkedList;
 
 /**
  * This class contains the main methods implementing the Mean-Shift clustering
@@ -153,13 +154,47 @@ public class MeanShiftClustering {
     		// merge the new clusters with existing ones
     		int mergedWith = mergeCluster (cluster, clusterCenters);
     		if (mergedWith < 0) { // the detected cluster is added to the list of clusters
+    			System.out.println(PointCloud.size(cluster));
     			clusterCenters[nbClusters++] = new Point_D (cluster.p); // the cluster center is on the top
     		}
     	}
     	return clusterCenters;
     }
 
-    
+    public Point_D[] detectClusters(LinkedList<Integer> degres) {
+    	// initialize data structure
+    	System.out.print ("Initializing data structure... ");
+    	
+    	int n = 0;
+    	for (PointCloud sn = seeds; sn != null; sn = sn.next, n++);
+    	
+    	Point_D[] clusterCenters = new Point_D [n];
+    	for (int i=0; i<n; i++)
+    		clusterCenters[i] = null;
+    	System.out.println ("done");
+    	
+    	int nbClusters = 0;
+    	int oldNbClusters = -1;
+    	
+    	// detect clusters iteratively
+    	for (PointCloud s = seeds; s != null; s = s.next) {
+    		if (s.p.cluster >= 0)  // point skipped because already clustered
+    			continue;
+    		
+    		if (oldNbClusters < nbClusters)
+    			System.out.println ("Detecting cluster " + nbClusters + "... ");
+    		oldNbClusters = nbClusters;
+    		PointCloud cluster = detectCluster (s.p, nbClusters);
+    		
+    		// merge the new clusters with existing ones
+    		int mergedWith = mergeCluster (cluster, clusterCenters);
+    		if (mergedWith < 0) { // the detected cluster is added to the list of clusters
+    			degres.addLast(PointCloud.size(cluster));
+    			clusterCenters[nbClusters++] = new Point_D (cluster.p); // the cluster center is on the top
+    		}
+    	}
+    	return clusterCenters;
+	}
     
 //-------------------------------    
 //------ Test (exercice 2)-------
@@ -216,7 +251,7 @@ public class MeanShiftClustering {
     	System.out.println("Number of clusters detected: "+nDetectedClusters);
     	
     	Draw.draw3D(N);
-    	msc.Rs.timePerformance();
+    	RangeSearch.timePerformance();
     }
     
     public static void testDetectCluster(PointCloud N, double bandwidth) {
@@ -239,8 +274,10 @@ public class MeanShiftClustering {
     	
     	Draw.draw3D(N);
     	//Draw.draw3D(cluster);
-    	msc.Rs.timePerformance();
+    	RangeSearch.timePerformance();
     }
+
+	
 
 }
 
