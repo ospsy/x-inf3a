@@ -103,6 +103,21 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 		courbureMap.put(v, 3*(2*Math.PI-totalAngle)/totalSum) ;
 	}
 	
+	@Override
+	protected void computeIntegralCurvature() {
+		HashMap<Vertex<Point_3>, Double> newCourbureMap = new HashMap<Vertex<Point_3>, Double>();
+		for(Vertex<Point_3> v : courbureMap.keySet()){
+			double courbure=0;
+			int n=0;
+			for (Vertex<Point_3> v2 : integralNeighbors(v)) {
+				n++;
+				courbure+=courbureMap.get(v2);
+			}
+			newCourbureMap.put(v, courbure);
+		}
+		courbureMap=newCourbureMap;
+	}
+	
 	void show(){
 		LinkedList<Point_3> pts = new LinkedList<Point_3>();
 		Color[] col = new Color[courbureMap.size()];
