@@ -13,7 +13,7 @@ import Jcg.polyhedron.Vertex;
 public abstract class CourbureEstimator {
 	protected Polyhedron_3<Point_3> poly;
 	protected HashMap<Vertex<Point_3>, Double> weightMap;
-	final protected double rayonIntegral = 0.2;
+	final protected double rayonIntegral = 0.25;
 	public static boolean courbure_integrale_mode;
 
 	public abstract double compareTo(CourbureEstimator ce);

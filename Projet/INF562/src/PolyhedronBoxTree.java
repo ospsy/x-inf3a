@@ -21,7 +21,7 @@ public class PolyhedronBoxTree {
 	double[][] boundingBox ;
 	int cutDim ;
 	double cutValue ;
-	Double distanceMin ; // Utile pour le calcul de distance ˆ un point : ˆ chaque instant, on sait qu'elle est < distanceMin
+	Double distanceMin ; // Utile pour le calcul de distance ï¿½ un point : ï¿½ chaque instant, on sait qu'elle est < distanceMin
 	
 	// Constructeurs
 	private PolyhedronBoxTree(Polyhedron_3<Point_3> poly, ArrayList<Face<Point_3>> faces, int cutDim)
@@ -30,15 +30,15 @@ public class PolyhedronBoxTree {
 		this.poly = poly ;
 		this.facets = faces ;
 		this.nFacets = faces.size() ;
-		boundingBox = new double[3][2] ; // coordonnŽe, puis min et max
+		boundingBox = new double[3][2] ; // coordonnï¿½e, puis min et max
 		//if (nFacets > 1) computeTree() ;
 	}
 	public PolyhedronBoxTree(Polyhedron_3<Point_3> poly)
 	{
 		distanceMin = new Double(1e15) ;
-		boundingBox = new double[3][2] ; // coordonnŽe, puis min et max
+		boundingBox = new double[3][2] ; // coordonnï¿½e, puis min et max
 		cutDim = 0 ;
-		poly = poly ;
+		this.poly = poly ;
 		facets = poly.facets ;
 		this.nFacets = facets.size() ;
 		computeBoundingBox() ;
@@ -102,12 +102,12 @@ public class PolyhedronBoxTree {
 		// Separation
 		ArrayList<Face<Point_3>> facesLeft = new ArrayList<Face<Point_3>>() ; 
 		ArrayList<Face<Point_3>> facesRight = new ArrayList<Face<Point_3>>() ; 
-		//double[][] boxLeft = new double[3][2] ; // 3 : coordonnŽes, 2 : min et max
+		//double[][] boxLeft = new double[3][2] ; // 3 : coordonnï¿½es, 2 : min et max
 		double limitLeft = -1e7 ;
 		double limitRight = 1e7 ;
-		//double[][] boxRight = new double[3][2] ; // 3 : coordonnŽes, 2 : min et max
+		//double[][] boxRight = new double[3][2] ; // 3 : coordonnï¿½es, 2 : min et max
 		it = facets.iterator() ;
-		boolean lastLeft = (Math.random() < 0.5) ; // Pour la rŽpartition des faces ˆ cheval
+		boolean lastLeft = (Math.random() < 0.5) ; // Pour la rï¿½partition des faces ï¿½ cheval
 		while (it.hasNext())
 		{
 			Face<Point_3> f = it.next() ;
@@ -115,7 +115,7 @@ public class PolyhedronBoxTree {
 			// Limite haute et basse de la face selon cutDim
 			double faceMin=1e7, faceMax=-1e7 ;
 			
-			// On regarde la position de la face (ˆ gauche, ˆ droite, ˆ cheval)
+			// On regarde la position de la face (ï¿½ gauche, ï¿½ droite, ï¿½ cheval)
 			Halfedge<Point_3> he = f.getEdge(), premier = he ;
 			do
 			{
@@ -128,7 +128,7 @@ public class PolyhedronBoxTree {
 			}
 			while (premier != he) ;
 			
-			// On ajoute ˆ l'arbre de gauche ou de droite (si ˆ cheval, une fois l'un une fois l'autre)
+			// On ajoute ï¿½ l'arbre de gauche ou de droite (si ï¿½ cheval, une fois l'un une fois l'autre)
 			if (gauche && (!droite || !lastLeft))
 			{
 				lastLeft = true ;
@@ -174,7 +174,7 @@ public class PolyhedronBoxTree {
 		}
 	}
 	
-	// Distance d'un point ˆ ce polyhedron (rŽcursif)
+	// Distance d'un point ï¿½ ce polyhedron (rï¿½cursif)
 	public double distance (Point_3 p)
 	{
 		// Cas terminal : zero ou une seule face
@@ -189,7 +189,7 @@ public class PolyhedronBoxTree {
 		}
 		//if (distanceMin == null) System.out.println("FAILLL") ;
 		distanceMin = Math.min(distanceMin, p.distanceFrom(facets.get(0).getEdge().getVertex().getPoint()).doubleValue()) ;
-		// A chaque instance, on sait que la distance ˆ poly est <=
+		// A chaque instance, on sait que la distance ï¿½ poly est <=
 		
 		// On regarde dans les sous-arbres
 		double distanceToLeft = Math.max(p.getCartesian(cutDim).doubleValue() - left.boundingBox[cutDim][1], 0) ;
