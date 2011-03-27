@@ -18,12 +18,13 @@ public class TransformEvaluator {
 	private RigidTransform[] globalTransform;
 	enum Mode {paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations,transformation_paire_unique_minimisant_la_distance_entre_les_maillages};
 	Mode mode = Mode.paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations;
+//	Mode mode = Mode.transformation_paire_unique_minimisant_la_distance_entre_les_maillages;
 	
 	public TransformEvaluator(Taubin a, Taubin b, double clustRad) {
 		this.a = a;
 		this.b = b;
 		clusteringRadius = clustRad;
-		nombre_de_points = (int)Math.sqrt(0.5*a.courbureMap.size()+0.5*b.courbureMap.size())*2;
+		nombre_de_points = (int)Math.sqrt(0.5*a.courbureMap.size()+0.5*b.courbureMap.size())*4;
 		System.out.println("--------------"+nombre_de_points*nombre_de_points+" votants------------");
 	}
 	

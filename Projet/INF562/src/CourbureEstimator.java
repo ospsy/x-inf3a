@@ -21,7 +21,7 @@ public abstract class CourbureEstimator {
 		for(Vertex<Point_3> v : poly.vertices){
 			computeCurvatureAtVertex(v);
 		}
-		computeIntegralCurvature();
+	//	computeIntegralCurvature();
 	}
 	
 	protected abstract void computeIntegralCurvature();
