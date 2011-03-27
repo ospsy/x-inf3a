@@ -22,7 +22,7 @@ public class TrouveMeilleureTransformation {
 	}
 
 	private static void test1() {
-		String fichierOFF1 = "torus4.off";
+		String fichierOFF1 = "torus.off";
 		MeshRepresentation mesh1 = new MeshRepresentation();
 		mesh1.readOffFile(fichierOFF1);
 		LoadMesh<Point_3> load3D = new LoadMesh<Point_3>();
@@ -30,7 +30,7 @@ public class TrouveMeilleureTransformation {
 				mesh1.faceDegrees, mesh1.faces, mesh1.sizeHalfedges);
 		System.out.println("Fichier " + fichierOFF1 + " chargé!");
 
-		String fichierOFF2 = "torus5.off";
+		String fichierOFF2 = "torus2.off";
 		MeshRepresentation mesh2 = new MeshRepresentation();
 		mesh2.readOffFile(fichierOFF2);
 		LoadMesh<Point_3> load3D2 = new LoadMesh<Point_3>();

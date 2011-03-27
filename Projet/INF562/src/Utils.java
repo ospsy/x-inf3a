@@ -3,6 +3,7 @@ import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
 import Jcg.polyhedron.Face;
 import Jcg.polyhedron.Halfedge;
+import Jcg.polyhedron.Polyhedron_3;
 import Jcg.polyhedron.Vertex;
 
 
@@ -67,7 +68,7 @@ public class Utils {
 		Matrix base2 = new Matrix(3,3) ;
 		
 		
-		if (true || k1.getEigenvalue(1)/k1.getEigenvalue(2) == k2.getEigenvalue(1)/k2.getEigenvalue(2))
+		if (!k1.revertVp(k2))//Math.abs(k1.getEigenvalue(1)/k1.getEigenvalue(2) - k2.getEigenvalue(1)/k2.getEigenvalue(2)) < Math.abs(k1.getEigenvalue(1)/k1.getEigenvalue(2) - k2.getEigenvalue(2)/k2.getEigenvalue(1)))
 		{
 			base1.setMatrix(0, 2, 0, 0, k1.getEigenvector(0).times(1./k1.getEigenvector(0).norm2())) ;
 			base1.setMatrix(0, 2, 1, 1, k1.getEigenvector(1).times(1./k1.getEigenvector(1).norm2())) ;
@@ -77,7 +78,7 @@ public class Utils {
 			base2.setMatrix(0, 2, 1, 1, k2.getEigenvector(1).times(1./k2.getEigenvector(1).norm2())) ;
 			base2.setMatrix(0, 2, 2, 2, k2.getEigenvector(2).times(1./k2.getEigenvector(2).norm2())) ;
 		}
-		else if (Math.abs(k1.getEigenvalue(1)/k1.getEigenvalue(2) - k2.getEigenvalue(2)/k2.getEigenvalue(1)) < 0.1)
+		else
 		{
 			base1.setMatrix(0, 2, 0, 0, k1.getEigenvector(0).times(1./k1.getEigenvector(0).norm2())) ;
 			base1.setMatrix(0, 2, 1, 1, k1.getEigenvector(1).times(1./k1.getEigenvector(1).norm2())) ;
@@ -130,5 +131,6 @@ public class Utils {
 		Matrix rc = new Matrix (arrayc) ;
 		return ra.times(rb).times(rc) ;
 	}
+	
 	
 }
