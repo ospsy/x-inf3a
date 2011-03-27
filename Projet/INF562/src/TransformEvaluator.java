@@ -16,9 +16,9 @@ public class TransformEvaluator {
 	private int nombre_de_points;
 	private PointCloud transformSpace;
 	private RigidTransform[] globalTransform;
-	enum Mode {paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations,transformation_paire_unique_minimisant_la_distance_entre_les_maillages};
-	Mode mode = Mode.paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations;
-//	Mode mode = Mode.transformation_paire_unique_minimisant_la_distance_entre_les_maillages;
+	enum ModeAlgo {paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations,transformation_paire_unique_minimisant_la_distance_entre_les_maillages};
+	public static ModeAlgo mode = ModeAlgo.paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations;
+//	public static ModeAlgo mode = ModeAlgo.transformation_paire_unique_minimisant_la_distance_entre_les_maillages;
 	
 	public TransformEvaluator(Taubin a, Taubin b, double clustRad) {
 		this.a = a;
