@@ -18,7 +18,7 @@ public class TrouveMeilleureTransformation {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		test1();
+		test2();
 	}
 
 	private static void test1() {
@@ -76,6 +76,28 @@ public class TrouveMeilleureTransformation {
 		
 	}
 	
+	private static void test2() {
+		String fichierOFF = "tanglecube_fin.off";
+		MeshRepresentation mesh1 = new MeshRepresentation();
+		mesh1.readOffFile(fichierOFF);
+		LoadMesh<Point_3> load3D = new LoadMesh<Point_3>();
+		Polyhedron_3<Point_3> poly = load3D.createPolyhedron(mesh1.points,
+				mesh1.faceDegrees, mesh1.faces, mesh1.sizeHalfedges);
+		System.out.println("Fichier " + fichierOFF + " charg√©!");
+
+		PolyhedronBoxTree pbt = new PolyhedronBoxTree(poly) ;
+		Point_3 p = new Point_3(0,0,0) ;
+		for (int i=0 ; i<1000 ; i++)
+		{
+			double d1 = pbt.distance(p) ;
+		}
+		System.out.println("Distance avec PolyhedronTreeBox : " + pbt.distance(p)) ;
+		for (int i=0 ; i<1000 ; i++)
+		{
+			double d2 = Utils.distance(p, poly) ;
+		}
+		System.out.println("Distance avec calcul linéaire : " + Utils.distance(p, poly)) ;
+	}
 	
 	static void show(RigidTransform best, Polyhedron_3<Point_3> poly1, Polyhedron_3<Point_3> poly2){
 		LinkedList<Point_3> pts = new LinkedList<Point_3>();
