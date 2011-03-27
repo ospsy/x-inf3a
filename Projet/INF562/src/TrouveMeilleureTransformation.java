@@ -18,7 +18,7 @@ public class TrouveMeilleureTransformation {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		test2();
+		test1();
 	}
 
 	private static void test1() {
@@ -47,7 +47,9 @@ public class TrouveMeilleureTransformation {
 		estimator2.computeSignature();
 
 		TransformEvaluator tE = new TransformEvaluator(estimator1, estimator2,80);
+		System.out.println("calcul des clusters");
 		tE.evaluate();
+		System.out.println("effectu√© : calcul des clusters");
 		RigidTransform[] candidats = tE.getGlobalTransform();
 		int maxinf = 0;
 		int max  = 0;
@@ -87,16 +89,13 @@ public class TrouveMeilleureTransformation {
 
 		PolyhedronBoxTree pbt = new PolyhedronBoxTree(poly) ;
 		Point_3 p = new Point_3(0,0,0) ;
-		for (int i=0 ; i<1000 ; i++)
-		{
-			double d1 = pbt.distance(p) ;
-		}
+	
+		double d1 = pbt.distance(p) ;
+		
 		System.out.println("Distance avec PolyhedronTreeBox : " + pbt.distance(p)) ;
-		for (int i=0 ; i<1000 ; i++)
-		{
-			double d2 = Utils.distance(p, poly) ;
-		}
-		System.out.println("Distance avec calcul linéaire : " + Utils.distance(p, poly)) ;
+		double d2 = Utils.distance(p, poly) ;
+		
+		System.out.println("Distance avec calcul linÔøΩaire : " + Utils.distance(p, poly)) ;
 	}
 	
 	static void show(RigidTransform best, Polyhedron_3<Point_3> poly1, Polyhedron_3<Point_3> poly2){

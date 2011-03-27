@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -137,8 +138,21 @@ public class Taubin extends CourbureEstimator {
 	
 	@Override
 	protected void computeIntegralCurvature() {
-		// TODO Auto-generated method stub
+		HashMap<Vertex<Point_3>, TenseurCourbure> newCourbureMap = new HashMap<Vertex<Point_3>, TenseurCourbure>();
+		HashMap<Vertex<Point_3>, Double> newWeightMap = new HashMap<Vertex<Point_3>, Double>();
+		for(Vertex<Point_3> v : courbureMap.keySet()){
+			TenseurCourbure courbure = new TenseurCourbure();
 		
+			Collection<Vertex<Point_3>> iN = integralNeighbors(v);
+			for (Vertex<Point_3> v2 : iN) {
+				courbure.add(courbureMap.get(v2),weightMap.get(v2));
+			}
+			courbure.normalize();
+			newCourbureMap.put(v, courbure);
+			newWeightMap.put(newCourbureMap.get(v).point, weightMap.get(v));
+		}
+		courbureMap=newCourbureMap;
+		weightMap = newWeightMap;
 	}
 	
 	public void computeSignature ()

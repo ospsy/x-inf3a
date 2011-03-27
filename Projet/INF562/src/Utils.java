@@ -112,8 +112,8 @@ public class Utils {
 		double b = Math.atan2(m.get(0, 2), Math.sqrt(m.get(0,0)*m.get(0,0) + m.get(0,1)*m.get(0,1))) ;
 		double c = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;
 		double a = Math.atan2(-m.get(1,2)/Math.cos(b), m.get(2,2)/Math.cos(b)) ;
-		
-		if (getRotation(a,b,c).minus(m).norm2()>0.01)
+		Matrix mat= getRotation(a,b,c);
+		if (mat.minus(m).norm2()>0.01)
 		{
 			b = Math.atan2(m.get(0, 2), -Math.sqrt(m.get(0,0)*m.get(0,0) + m.get(0,1)*m.get(0,1))) ;
 			c = Math.atan2(-m.get(0,1)/Math.cos(b), m.get(0,0)/Math.cos(b)) ;

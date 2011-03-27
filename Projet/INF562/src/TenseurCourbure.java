@@ -1,11 +1,12 @@
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 import Jcg.geometry.Point_3;
+import Jcg.geometry.Vector_3;
 import Jcg.polyhedron.Vertex;
 
 
 
-// Cette classe implémente le tenseur de courbure en un point
+// Cette classe implÔøΩmente le tenseur de courbure en un point
 public class TenseurCourbure {
 	
 	// Variables
@@ -13,6 +14,7 @@ public class TenseurCourbure {
 	Matrix kappa ;
 	Matrix[] eigenvector ;
 	double[] eigenvalue ; // Valeurs propres
+	double normalisation=0;
 	
 	// Constructeur
 	public TenseurCourbure (Vertex<Point_3> p, Matrix tenseur, Matrix normal)
@@ -26,7 +28,15 @@ public class TenseurCourbure {
 		
 	}
 	
-	// Méthodes d'accès
+	public TenseurCourbure() {
+		point = new Vertex<Point_3>(new Point_3(0,0,0)) ;
+		kappa = new Matrix(3, 3) ;
+		Matrix[] ev = {new Matrix(3,1), null, null} ;
+		eigenvector = ev ;
+		eigenvalue = new double[3] ;
+	}
+
+	// MÔøΩthodes d'accÔøΩs
 	public Matrix getTenseur() { return kappa ;}
 	public double getEigenvalue(int i) { return eigenvalue[i] ;}
 	public Matrix getEigenvector(int i) { return eigenvector[i] ;}
@@ -56,7 +66,7 @@ public class TenseurCourbure {
 		double delta = (a - c)*(a - c) + 4*b*b ;
 		double vp1 = (a + c + Math.sqrt(delta))/2 ;
 		double vp2 = (a + c - Math.sqrt(delta))/2 ;
-		double y1 = - (a - vp1)/b ; // le vecteur est (x,y) avec x = 1. Il reste à normaliser
+		double y1 = - (a - vp1)/b ; // le vecteur est (x,y) avec x = 1. Il reste ÔøΩ normaliser
 		double x1 = 1. / Math.sqrt(1 + y1*y1) ;
 		y1 = y1 / Math.sqrt(1 + y1*y1) ;
 		// L'autre vecteur est -y, x
@@ -97,8 +107,8 @@ public class TenseurCourbure {
 		eigenvalue = arrayVp ;
 	}
 	
-	// Distance à un tenseur de courbure (distance euclidienne via les vp, 
-	// a ceci près qu'on peut les inverser)
+	// Distance ÔøΩ un tenseur de courbure (distance euclidienne via les vp, 
+	// a ceci prÔøΩs qu'on peut les inverser)
 	public double distanceTo (TenseurCourbure k)
 	{
 		double d1 = (k.eigenvalue[1] - this.eigenvalue[1])*(k.eigenvalue[1] - this.eigenvalue[1]) + (k.eigenvalue[2] - this.eigenvalue[2])*(k.eigenvalue[2] - this.eigenvalue[2]) ;
@@ -112,6 +122,36 @@ public class TenseurCourbure {
 		double d1 = (k.eigenvalue[1] - this.eigenvalue[1])*(k.eigenvalue[1] - this.eigenvalue[1]) + (k.eigenvalue[2] - this.eigenvalue[2])*(k.eigenvalue[2] - this.eigenvalue[2]) ;
 		double d2 = (k.eigenvalue[1] - this.eigenvalue[2])*(k.eigenvalue[1] - this.eigenvalue[2]) + (k.eigenvalue[2] - this.eigenvalue[1])*(k.eigenvalue[2] - this.eigenvalue[2]) ;
 		return d2 < d1 ;
+	}
+
+
+	public void add(TenseurCourbure tenseur, double d) {
+		normalisation +=d;
+		this.point.getPoint().translateOf(new Vector_3(d*tenseur.point.getPoint().x,d*tenseur.point.getPoint().y,d*tenseur.point.getPoint().z)) ;
+		Matrix k = tenseur.getKappa();
+		this.kappa.plusEquals(k.times(d)) ;
+		eigenvector[0].plusEquals(tenseur.eigenvector[0].times(d)) ;		
+	}
+
+	public Matrix getKappa() {
+		
+		return kappa;
+	}
+
+	public void normalize() {
+		double d = normalisation;
+		normalisation = 0;
+		if(d == 0){
+			System.err.println("rien √† normaliser");
+			return ;
+		}
+		this.point.getPoint().x /= d;
+		this.point.getPoint().y /= d;
+		this.point.getPoint().z /= d;
+		this.kappa.times(1./d);
+		this.eigenvector[0].times(1./d);
+		this.computeEigenvectors();
+		
 	}
 	
 }

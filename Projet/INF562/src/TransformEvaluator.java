@@ -16,6 +16,8 @@ public class TransformEvaluator {
 	private int nombre_de_points;
 	private PointCloud transformSpace;
 	private RigidTransform[] globalTransform;
+	enum Mode {paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations,transformation_paire_unique_minimisant_la_distance_entre_les_maillages};
+	Mode mode = Mode.paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations;
 	
 	public TransformEvaluator(Taubin a, Taubin b, double clustRad) {
 		this.a = a;
@@ -26,8 +28,8 @@ public class TransformEvaluator {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
-	/*private void computeTransformMap(){
+
+	private void computeTransformMap(){
 		Object[] U =  a.courbureMap.keySet().toArray();
 		Object[] V =  b.courbureMap.keySet().toArray();
 		for (int i = 0; i < nombre_de_points; i++) {
@@ -35,14 +37,14 @@ public class TransformEvaluator {
 			for (int j = 0; j < nombre_de_points; j++) {
 				
 				Vertex<Point_3> v = (Vertex<Point_3>) V[(int) (Math.random()*V.length)];
-				vote(u,v);
+				vote(a.courbureMap.get(u),b.courbureMap.get(v));
 			}
 		}
-	}*/
+	}
 	
-	private void computeTransformMap(){
+	private void computeTransformMap2(){
 		
-		// Création des ensembles de points
+		// CrÔøΩation des ensembles de points
 		LinkedList<TenseurCourbure> pointsA = new LinkedList<TenseurCourbure>() ;
 		LinkedList<TenseurCourbure> pointsB = new LinkedList<TenseurCourbure>() ;
 		Object[] U = a.courbureMap.values().toArray() ;
@@ -62,7 +64,7 @@ public class TransformEvaluator {
 	
 	private void findBestTransform(LinkedList<TenseurCourbure> pointsA, LinkedList<TenseurCourbure> pointsB)
 	{
-		// On suppose la même échelle
+		// On suppose la mÔøΩme ÔøΩchelle
 		Iterator<TenseurCourbure> itA = pointsA.iterator() ;
 		while (itA.hasNext())
 		{
@@ -81,7 +83,7 @@ public class TransformEvaluator {
 					distanceMin = distance ;
 				}
 			}
-			// On a maintenant le point "qui convient le mieux" à k1
+			// On a maintenant le point "qui convient le mieux" ÔøΩ k1
 			if (k2.point == null) System.out.println("FIST FIST FIST FIST FIST FIST FIST FIST ") ;
 			vote(k1, k2) ;
 		}
@@ -122,6 +124,9 @@ public class TransformEvaluator {
 	
 	}
 	
+	
+	
+	
 	private void clusterDetection(){
 		double radius = Math.PI/180*clusteringRadius;
 		MeanShiftClustering msc = new MeanShiftClustering(transformSpace, radius);
@@ -146,7 +151,19 @@ public class TransformEvaluator {
 
 
 	public void evaluate(){
-		computeTransformMap();
+		switch (mode) {
+		case paires_de_points_aleatoires_et_clustering_sur_espace_des_transformations:
+			computeTransformMap();
+			break;
+			
+		case transformation_paire_unique_minimisant_la_distance_entre_les_maillages:
+			computeTransformMap2();
+			break;
+
+		default:
+			break;
+		}
+		
 		clusterDetection();
 	}
 	
