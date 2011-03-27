@@ -97,4 +97,21 @@ public class TenseurCourbure {
 		eigenvalue = arrayVp ;
 	}
 	
+	// Distance à un tenseur de courbure (distance euclidienne via les vp, 
+	// a ceci près qu'on peut les inverser)
+	public double distanceTo (TenseurCourbure k)
+	{
+		double d1 = (k.eigenvalue[1] - this.eigenvalue[1])*(k.eigenvalue[1] - this.eigenvalue[1]) + (k.eigenvalue[2] - this.eigenvalue[2])*(k.eigenvalue[2] - this.eigenvalue[2]) ;
+		double d2 = (k.eigenvalue[1] - this.eigenvalue[2])*(k.eigenvalue[1] - this.eigenvalue[2]) + (k.eigenvalue[2] - this.eigenvalue[1])*(k.eigenvalue[2] - this.eigenvalue[2]) ;
+		return Math.min(Math.sqrt(d1), Math.sqrt(d2)) ;
+	}
+	
+	// Verifie s'il faut inverser les correspondances des VP quand on calcule une transformation entre deux TenseurCourbure
+	public boolean revertVp (TenseurCourbure k)
+	{
+		double d1 = (k.eigenvalue[1] - this.eigenvalue[1])*(k.eigenvalue[1] - this.eigenvalue[1]) + (k.eigenvalue[2] - this.eigenvalue[2])*(k.eigenvalue[2] - this.eigenvalue[2]) ;
+		double d2 = (k.eigenvalue[1] - this.eigenvalue[2])*(k.eigenvalue[1] - this.eigenvalue[2]) + (k.eigenvalue[2] - this.eigenvalue[1])*(k.eigenvalue[2] - this.eigenvalue[2]) ;
+		return d2 < d1 ;
+	}
+	
 }

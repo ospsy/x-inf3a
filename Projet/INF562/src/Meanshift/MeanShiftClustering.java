@@ -182,15 +182,15 @@ public class MeanShiftClustering {
     			continue;
     		
     		if (oldNbClusters < nbClusters)
-    			System.out.println ("Detecting cluster " + nbClusters + "... ");
-    		oldNbClusters = nbClusters;
-    		PointCloud cluster = detectCluster (s.p, nbClusters);
+    			System.out.println ("Detecting cluster " + nbClusters + "... ") ;
+    		oldNbClusters = nbClusters ;
+    		PointCloud cluster = detectCluster (s.p, nbClusters) ;
     		
     		// merge the new clusters with existing ones
-    		int mergedWith = mergeCluster (cluster, clusterCenters);
+    		int mergedWith = mergeCluster (cluster, clusterCenters) ;
     		if (mergedWith < 0) { // the detected cluster is added to the list of clusters
-    			degres.addLast(PointCloud.size(cluster));
-    			clusterCenters[nbClusters++] = new Point_D (cluster.p); // the cluster center is on the top
+    			degres.addLast(PointCloud.size(cluster)) ;
+    			clusterCenters[nbClusters++] = new Point_D (cluster.p) ; // the cluster center is on the top
     		}
     	}
     	return clusterCenters;
