@@ -1,8 +1,6 @@
 import java.awt.Color;
 import java.util.LinkedList;
 
-import javax.vecmath.Matrix3f;
-
 import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.polyhedron.LoadMesh;
@@ -75,7 +73,7 @@ public class TrouveMeilleureTransformation {
 		
 		
 
-		show(candidats[indice2], poly1,poly2);
+	//	show(candidats[indice2], poly1,poly2);
 		
 		show(candidats[indice], poly1,poly2);
 		
