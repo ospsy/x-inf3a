@@ -1,3 +1,8 @@
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+
 import java.util.Iterator;
 
 import Jama.Matrix;
@@ -133,7 +138,20 @@ public class Utils {
 		Matrix rc = new Matrix (arrayc) ;
 		return ra.times(rb).times(rc) ;
 	}
-	
+
+	public static Collection<Vertex<Point_3>> getNeighbors(Vertex<Point_3> v){
+		Halfedge<Point_3> first = v.getHalfedge();
+		LinkedList<Vertex<Point_3>> result = new LinkedList<Vertex<Point_3>>();
+		Halfedge<Point_3> e = v.getHalfedge();
+		while(true){
+			result.add(e.next.vertex);
+			e=e.next.opposite;
+			if(e==first)
+				break;
+		}
+		return result;
+	}
+
 	public static double distance(Point_3 p, Face<Point_3> f)
 	{
 		double current = 1e17 ;
@@ -147,7 +165,7 @@ public class Utils {
 		}
 		while (he != premier) ;
 		
-		// Calcul de la distance ˆ la face
+		// Calcul de la distance ï¿½ la face
 		Point_3 p1 = he.getVertex().getPoint() ;
 		Point_3 p2 = he.getNext().getVertex().getPoint() ;
 		Point_3 p3 = he.getNext().getNext().getVertex().getPoint() ;
@@ -171,5 +189,5 @@ public class Utils {
 		}
 		return current ;
 	}
-	
+
 }

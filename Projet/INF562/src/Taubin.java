@@ -135,6 +135,12 @@ public class Taubin extends CourbureEstimator {
 		courbureMap.put(v, new TenseurCourbure(v, Mvi, mNormal)) ;
 	}
 	
+	@Override
+	protected void computeIntegralCurvature() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	public void computeSignature ()
 	{
 		
