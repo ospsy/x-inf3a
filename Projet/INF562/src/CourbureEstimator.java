@@ -14,6 +14,7 @@ public abstract class CourbureEstimator {
 	protected Polyhedron_3<Point_3> poly;
 	protected HashMap<Vertex<Point_3>, Double> weightMap;
 	final protected double rayonIntegral = 0.2;
+	public static boolean courbure_integrale_mode;
 
 	public abstract double compareTo(CourbureEstimator ce);
 
@@ -21,7 +22,8 @@ public abstract class CourbureEstimator {
 		for(Vertex<Point_3> v : poly.vertices){
 			computeCurvatureAtVertex(v);
 		}
-	//	computeIntegralCurvature();
+	if(courbure_integrale_mode==true)
+		computeIntegralCurvature();
 	}
 	
 	protected abstract void computeIntegralCurvature();
