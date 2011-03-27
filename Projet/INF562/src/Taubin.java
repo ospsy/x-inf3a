@@ -141,7 +141,7 @@ public class Taubin extends CourbureEstimator {
 		HashMap<Vertex<Point_3>, TenseurCourbure> newCourbureMap = new HashMap<Vertex<Point_3>, TenseurCourbure>();
 		HashMap<Vertex<Point_3>, Double> newWeightMap = new HashMap<Vertex<Point_3>, Double>();
 		for(Vertex<Point_3> v : courbureMap.keySet()){
-			TenseurCourbure courbure = new TenseurCourbure();
+			TenseurCourbure courbure = new TenseurCourbure(v);
 		
 			Collection<Vertex<Point_3>> iN = integralNeighbors(v);
 			for (Vertex<Point_3> v2 : iN) {

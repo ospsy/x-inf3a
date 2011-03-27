@@ -24,7 +24,7 @@ public class TransformEvaluator {
 		this.a = a;
 		this.b = b;
 		clusteringRadius = clustRad;
-		nombre_de_points = (int)Math.sqrt(0.5*a.courbureMap.size()+0.5*b.courbureMap.size())*4;
+		nombre_de_points = (int)Math.sqrt(0.5*a.courbureMap.size()+0.5*b.courbureMap.size())*2;
 		System.out.println("--------------"+nombre_de_points*nombre_de_points+" votants------------");
 	}
 	
