@@ -1,3 +1,5 @@
+import java.util.Iterator;
+
 import Jama.Matrix;
 import Jcg.geometry.Point_3;
 import Jcg.geometry.Vector_3;
@@ -132,5 +134,42 @@ public class Utils {
 		return ra.times(rb).times(rc) ;
 	}
 	
+	public static double distance(Point_3 p, Face<Point_3> f)
+	{
+		double current = 1e17 ;
+		// Calcul de la distance aux points de la face
+		Halfedge<Point_3> he = f.getEdge(), premier = he ;
+		do
+		{
+			double d = he.getVertex().getPoint().distanceFrom(p).doubleValue() ;
+			if (d < current) current = d ;
+			he = he.getNext() ;
+		}
+		while (he != premier) ;
+		
+		// Calcul de la distance ˆ la face
+		Point_3 p1 = he.getVertex().getPoint() ;
+		Point_3 p2 = he.getNext().getVertex().getPoint() ;
+		Point_3 p3 = he.getNext().getNext().getVertex().getPoint() ;
+		Vector_3 v1 = (Vector_3) p2.minus(p1) ;
+		Vector_3 v2 = (Vector_3) p3.minus(p1) ;
+		Vector_3 normal = v1.crossProduct(v2) ;
+		normal.divisionByScalar(Math.sqrt(normal.squaredLength().doubleValue())) ;
+		double d = Math.abs(normal.innerProduct(p.minus(p1)).doubleValue()) ;
+		if (d<current) current = d ;
+		return current ;
+	}
+	
+	public static double distance(Point_3 p, Polyhedron_3<Point_3> poly)
+	{
+		double current = 1e15 ;
+		Iterator<Face<Point_3>> it = poly.facets.iterator() ;
+		while (it.hasNext())
+		{
+			Face<Point_3> f = it.next() ;
+			current = Math.min (current, distance(p,f)) ;
+		}
+		return current ;
+	}
 	
 }
