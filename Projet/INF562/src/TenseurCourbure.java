@@ -36,6 +36,14 @@ public class TenseurCourbure {
 		eigenvalue = new double[3] ;
 	}
 
+	public TenseurCourbure(Vertex<Point_3> point) {
+		this.point = point ;
+		kappa = new Matrix(3, 3) ;
+		Matrix[] ev = {new Matrix(3,1), null, null} ;
+		eigenvector = ev ;
+		eigenvalue = new double[3] ;
+	}
+
 	// M�thodes d'acc�s
 	public Matrix getTenseur() { return kappa ;}
 	public double getEigenvalue(int i) { return eigenvalue[i] ;}
@@ -127,7 +135,7 @@ public class TenseurCourbure {
 
 	public void add(TenseurCourbure tenseur, double d) {
 		normalisation +=d;
-		this.point.getPoint().translateOf(new Vector_3(d*tenseur.point.getPoint().x,d*tenseur.point.getPoint().y,d*tenseur.point.getPoint().z)) ;
+	//	this.point.getPoint().translateOf(new Vector_3(d*tenseur.point.getPoint().x,d*tenseur.point.getPoint().y,d*tenseur.point.getPoint().z)) ;
 		Matrix k = tenseur.getKappa();
 		this.kappa.plusEquals(k.times(d)) ;
 		eigenvector[0].plusEquals(tenseur.eigenvector[0].times(d)) ;		
@@ -145,9 +153,9 @@ public class TenseurCourbure {
 			System.err.println("rien à normaliser");
 			return ;
 		}
-		this.point.getPoint().x /= d;
-		this.point.getPoint().y /= d;
-		this.point.getPoint().z /= d;
+	//	this.point.getPoint().x /= d;
+	//	this.point.getPoint().y /= d;
+	//	this.point.getPoint().z /= d;
 		this.kappa.times(1./d);
 		this.eigenvector[0].times(1./d);
 		this.computeEigenvectors();
