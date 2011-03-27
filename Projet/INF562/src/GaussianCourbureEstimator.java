@@ -108,12 +108,12 @@ public class GaussianCourbureEstimator extends CourbureEstimator {
 		HashMap<Vertex<Point_3>, Double> newCourbureMap = new HashMap<Vertex<Point_3>, Double>();
 		for(Vertex<Point_3> v : courbureMap.keySet()){
 			double courbure=0;
-			int n=0;
+			double totalWeight=0;
 			for (Vertex<Point_3> v2 : integralNeighbors(v)) {
-				n++;
+				totalWeight+=weightMap.get(v2);
 				courbure+=courbureMap.get(v2);
 			}
-			newCourbureMap.put(v, courbure);
+			newCourbureMap.put(v, courbure/totalWeight);
 		}
 		courbureMap=newCourbureMap;
 	}
