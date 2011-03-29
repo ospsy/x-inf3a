@@ -16,7 +16,7 @@ public class TrouveMeilleureTransformation {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		test1("torus","torus5");
+		test1("torus5_2.off","torus5.off");
 	}
 
 	static void test1(String fichier1,String fichier2) {
@@ -65,23 +65,25 @@ public class TrouveMeilleureTransformation {
 				indice2 = i;
 			}
 		}
-		
-		System.out.println("max :"+max);
-		System.out.println("maxinf :"+maxinf);
-		System.out.println("max/maxinf :"+max*1./maxinf);
-		System.out.println("indice : "+indice);
-		
-		
 
-	//	show(candidats[indice2], poly1,poly2);
-		
-		show(candidats[indice], poly1,poly2);
-		
+		System.out.println("meilleur cluster :"+max+" points");
+		System.out.println("deuxième meilleur :"+maxinf+" points");
+		System.out.println("rapport de discrimination (premier/second) :"+max*1./maxinf);
+//		System.out.println("indice : "+indice);
 
-		
-		
-	}
+
+		show(candidats[indice], poly1,poly2);//le meilleur
+		show(candidats[indice2], poly1,poly2);//le second
 	
+
+//		for (int i = 0; i < candidats.length; i++) {
+//			if(candidats[i].getDegres()>5)
+//				show(candidats[i], poly1,poly2);
+//		}
+
+
+	}
+
 	private static void test2() {
 		String fichierOFF = "tanglecube_fin.off";
 		MeshRepresentation mesh1 = new MeshRepresentation();
@@ -93,15 +95,15 @@ public class TrouveMeilleureTransformation {
 
 		PolyhedronBoxTree pbt = new PolyhedronBoxTree(poly) ;
 		Point_3 p = new Point_3(0,0,0) ;
-	
+
 		double d1 = pbt.distance(p) ;
-		
+
 		System.out.println("Distance avec PolyhedronTreeBox : " + pbt.distance(p)) ;
 		double d2 = Utils.distance(p, poly) ;
-		
+
 		System.out.println("Distance avec calcul lin�aire : " + Utils.distance(p, poly)) ;
 	}
-	
+
 	static void show(RigidTransform best, Polyhedron_3<Point_3> poly1, Polyhedron_3<Point_3> poly2){
 		LinkedList<Point_3> pts = new LinkedList<Point_3>();
 		Color[] col = new Color[poly1.vertices.size()+poly2.vertices.size()];
@@ -111,22 +113,22 @@ public class TrouveMeilleureTransformation {
 			col[i]=new Color(1, 1, 0.5f);
 			i++;
 		}
-		
-		
-		
+
+
+
 		for (Vertex<Point_3> e : poly2.vertices) {
 			Matrix m = new Matrix(3, 1);
 			m.set(0, 0, e.getPoint().x);
 			m.set(1, 0, e.getPoint().y);
 			m.set(2, 0, e.getPoint().z);
-			
+
 			Matrix res = best.getRot().times(m);
-	
-		
+
+
 			Number x = new Double(res.get(0, 0)+best.getTranslation().x) ;
 			Number y = new Double(res.get(1, 0)+best.getTranslation().y) ;
 			Number z = new Double(res.get(2, 0)+best.getTranslation().z) ;
-			
+
 			pts.add(new Point_3(x, y, z));
 			col[i]=new Color(1, 0.5f,1 );
 			i++;
