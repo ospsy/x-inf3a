@@ -17,8 +17,8 @@ public class A_UTILISER {
 	
 	
 	public static void main(String[] args) {
-	//	matching();
-		evaluerSignature();
+		matching();
+	//	evaluerSignature();
 
 	}
 

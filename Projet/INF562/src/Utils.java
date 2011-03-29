@@ -96,7 +96,15 @@ public class Utils {
 		
 		// Construction de la transformation k1 -> k2
 		//Matrix m = base2.transpose().times(base1) ;
-		Matrix m = base2.times(base1.transpose()) ;
+		
+		Matrix rotn =new Matrix(3,3);
+		rotn.set(0, 0, 1);
+		rotn.set(1, 1, 0);
+		rotn.set(2, 2, 0);
+		rotn.set(2, 1, -1);
+		rotn.set(1, 2, 1);
+	//	Matrix m = base2.times(base1.transpose()) ;
+		Matrix m = rotn.times(base2.times(base1.transpose())) ;
 		//System.out.println("NORME : " + m.times(m.transpose()).minus(Matrix.identity(3, 3)).norm2()) ;
 		return m ;
 	}
