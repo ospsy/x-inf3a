@@ -24,7 +24,7 @@ if ~exist(output_dir, 'dir')
 end
 
 filenames=dir([input_dir, '/*.ppm']);
-if(length(filenames)==0))
+if(length(filenames)==0)
     filenames=dir([input_dir, '/*.jpg']);
 end
 
