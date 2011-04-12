@@ -44,7 +44,7 @@ for k=2:length(filenames)
 	    %v2=zeros(h,w);
 	    %u2(h/10+1:h*9/10,w/10+1:9*w/10)=u;
 	    %v2(h/10+1:h*9/10,w/10+1:9*w/10)=v;
-	    write_flow(u,v, output_name))
+	    write_flow(u,v, output_name)
 	    img2=imcrop(img2,[h/10+1 w/10+1 8*w/10-1 8*h/10-1]);
 	    imwrite(img2,fullfile(output_dir, filenames(k).name));
     end
