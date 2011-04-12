@@ -34,7 +34,7 @@ for k=2:length(filenames)
     fprintf('Processing %s and %s\n',filenames(k-1).name,filenames(k).name);
     fname=[input_dir, '/', filenames(k).name];
     [pathstr, name, ext] = fileparts(fname);
-    output_name=fullfile(output_dir, [name '.flo'];
+    output_name=fullfile(output_dir, [name '.flo']);
     if ~exist(output_name,'file')
 	    img1=imread([input_dir, '/', filenames(k-1).name]);    
 	    img2=imread(fname);
