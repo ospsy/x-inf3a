@@ -32,19 +32,22 @@ img2=imread([input_dir, '/', filenames(1).name]);
 
 for k=2:length(filenames)
     fprintf('Processing %s and %s\n',filenames(k-1).name,filenames(k).name);
-    img1=img2;
     fname=[input_dir, '/', filenames(k).name];
-    img2=imread(fname);
     [pathstr, name, ext] = fileparts(fname);
-    [u, v] = optic_flow_brox(img1, img2, 10, 100, 3, 0.8,false);
-    [h,w,c]=size(img1);
-    %u2=zeros(h,w);
-    %v2=zeros(h,w);
-    %u2(h/10+1:h*9/10,w/10+1:9*w/10)=u;
-    %v2(h/10+1:h*9/10,w/10+1:9*w/10)=v;
-    write_flow(u,v, fullfile(output_dir, [name '.flo']))
-    img2=imcrop(img2,[h/10+1 w/10+1 8*w/10-1 8*h/10-1]);
-    imwrite(img2,fullfile(output_dir, filenames(k).name));
+    output_name=fullfile(output_dir, [name '.flo'];
+    if ~exist(output_name,'file')
+	    img1=imread([input_dir, '/', filenames(k-1).name]);    
+	    img2=imread(fname);
+	    [u, v] = optic_flow_brox(img1, img2, 10, 100, 3, 0.8,false);
+	    [h,w,c]=size(img1);
+	    %u2=zeros(h,w);
+	    %v2=zeros(h,w);
+	    %u2(h/10+1:h*9/10,w/10+1:9*w/10)=u;
+	    %v2(h/10+1:h*9/10,w/10+1:9*w/10)=v;
+	    write_flow(u,v, output_name))
+	    img2=imcrop(img2,[h/10+1 w/10+1 8*w/10-1 8*h/10-1]);
+	    imwrite(img2,fullfile(output_dir, filenames(k).name));
+    end
 end
 
 path(p)
