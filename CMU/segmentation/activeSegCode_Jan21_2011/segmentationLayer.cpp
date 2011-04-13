@@ -5,6 +5,9 @@
 //-------------------------------------------------
 #include "segmentationLayer.h"
 
+#include <iostream>
+#include <fstream>
+
 //--------------------------**
 //Constructor
 segLayer::segLayer(){
@@ -534,7 +537,22 @@ int segLayer::selectFixPt_interactive(){
 
 //3)
 int segLayer::readFixPts(char *fixTxtFile){
-  return 0;
+	std::ifstream file(fixTxtFile, std::ios::in);
+ 
+        if(file) 
+        {       
+		char l[60];
+		while(file.getline(l,60)){
+			float x=0,y=0;
+			sscanf(l,"%f %f",x,y);
+			assignFixPt((int)x,(int)y);
+		}
+                file.close();
+        }
+        else
+                std::cerr << "Unable to open file : " << fixTxtFile << std::endl;
+ 
+        return 0;
 }
 
 //4)
