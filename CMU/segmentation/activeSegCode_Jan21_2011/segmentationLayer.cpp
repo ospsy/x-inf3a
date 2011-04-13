@@ -537,21 +537,20 @@ int segLayer::selectFixPt_interactive(){
 
 //3)
 int segLayer::readFixPts(char *fixTxtFile){
-	std::ifstream file(fixTxtFile, std::ios::in);
- 
+	std::cout << fixTxtFile;
+	std::ifstream file(fixTxtFile, std::ifstream::in);
         if(file) 
-        {       
+        {
 		char l[60];
 		while(file.getline(l,60)){
 			float x=0,y=0;
-			sscanf(l,"%f %f",x,y);
+			sscanf(l,"%f %f",&x,&y);
 			assignFixPt((int)x,(int)y);
 		}
                 file.close();
         }
         else
-                std::cerr << "Unable to open file : " << fixTxtFile << std::endl;
- 
+                std::cout << "Unable to open file : " << fixTxtFile << std::endl;
         return 0;
 }
 
