@@ -85,11 +85,12 @@ while ~created
     end
 end
 
+
 for i=starti:endi,
     imgFileName=fullfile(input_dir, filenames(i).name);    
     disp(imgFileName);
     
-    [pathstr, name, ext, versn] = fileparts(imgFileName);
+    [pathstr, name, ext] = fileparts(imgFileName);
 
     if 0
         figure(100); 
@@ -103,9 +104,9 @@ for i=starti:endi,
         imshow(img); axis image;
         title(' Original image');
     end
-    segment_bin='!segment'; %../src/segmentation/activeSeg_64bit_opencv_1_0_multi
+    segment_bin='./segmentTest'; %../src/segmentation/activeSeg_64bit_opencv_1_0_multi
     fix_txt=fullfile(fix_dir, [name, '_fix.txt']);    
-
+    
     if 1
         if ~exist(tmp_dir, 'dir')
             mkdir(tmp_dir);
@@ -114,9 +115,9 @@ for i=starti:endi,
             delete([tmp_dir, '/*.*']);
         end 
 
-        cmd=[segment_bin, ' ', imgFileName, ' -f ', fix_txt, ' -prefix ', tmp_dir];
-
-        eval(cmd);
+        cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' ', imgFileName, ' ', tmp_dir, ' ',fix_txt];
+        disp(cmd);
+        unix(cmd);
     end
     
     fixs=load(fix_txt);
@@ -125,11 +126,7 @@ for i=starti:endi,
     cnt = 0;
     
     for j=1:size(fixs,1)
-        if color
-            segfile=fullfile(tmp_dir, sprintf('_segWithColor_fixNo%d%s', j,ext));
-        else
-            segfile=fullfile(tmp_dir, sprintf('_segWithoutColor_fixNo%d%s', j,ext));
-        end
+        segfile=fullfile(tmp_dir, sprintf('_region_%d.png', j));
         if exist(segfile, 'file')
             fgMapWtColor=imread(segfile);
             fgMapWtColor=preprocessRegion(fgMapWtColor>250);
