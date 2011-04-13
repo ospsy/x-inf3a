@@ -116,7 +116,6 @@ for i=starti:endi,
         end 
 
         cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' ', imgFileName, ' ', tmp_dir, ' ',fix_txt];
-        disp(cmd);
         unix(cmd);
     end
     

@@ -10,13 +10,10 @@ int main(int argc, char* argv[]){
 		fprintf(stderr, "usage: %s <image> <output-prefix> [ <x> <y> | <fixation-points-file> ]\n",argv[0]);
 		exit(1);
 	}
-
 	class segLayer frame1;
 	char imageName[30];
-
 	//sprintf(imageName,"%s%08d.ppm",argv[1],1);
   	frame1.readImage(argv[1]);
-
 
 	// Edge detection!
   	frame1.edgeSobel();
@@ -24,7 +21,6 @@ int main(int argc, char* argv[]){
 	frame1.generatePbBoundary();
 
 	frame1.allocateMemForContours();// Don't forget to allocate memory to store the region contours.
-
 	//select fixation point!
 	if(argc == 5){
 		float x,y;
