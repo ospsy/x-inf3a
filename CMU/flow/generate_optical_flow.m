@@ -31,19 +31,21 @@ if(length(filenames)==0)
     filenames=dir([input_dir, '/*.png']);
 end
 
-N=length(filenames)
+N=length(filenames);
 
 if ~exist('starti', 'var')
     starti = 2;    
 elseif ischar(starti)
-    starti = max([str2num(starti) 2]);
+    starti = str2num(starti);
 end
+starti=max([starti 2]);
 
 if ~exist('endi', 'var')
     endi = N;   
 elseif ischar(endi)
-    endi = min([ str2num(endi) N ]);    
+    endi = str2num(endi);    
 end
+endi=min([endi N]);
 
 for k=starti:endi
     fprintf('Processing %s and %s\n',filenames(k-1).name,filenames(k).name);
@@ -51,7 +53,7 @@ for k=starti:endi
     [pathstr, name, ext] = fileparts(fname);
     output_name=fullfile(output_dir, [name '.flo']);
     if ~exist(output_name,'file')
-	    img1=imread(fullfile(input_dcdir, filenames(k-1).name));    
+	    img1=imread(fullfile(input_dir, filenames(k-1).name));    
 	    img2=imread(fname);
 	    [u, v] = optic_flow_brox(img1, img2, 10, 100, 3, 0.8,false);
 	    [h,w,c]=size(img1);
