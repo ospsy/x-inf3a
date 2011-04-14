@@ -69,7 +69,7 @@ if (starti==2)
     [h,w,c]=size(img1);
     eye_pos=load(fullfile(input_dir,'eye_positions.txt'));
     fid = fopen(fullfile(output_dir,'eye_positions.txt'),'w');
-    fprintf(fid,'%f %f\n',(ones(size(eye_pos,1),1)*[w/10,h/10] + eye_pos(2:size(eye_pos,1),:))');
+    fprintf(fid,'%f %f\n',(ones(size(eye_pos,1)-1,1)*[w/10,h/10] + eye_pos(2:size(eye_pos,1),:))');
     fclose(fid);
 end
 
