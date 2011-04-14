@@ -25,8 +25,10 @@ int main(int argc, char* argv[]){
 	else
 		frame1.edgeCGTG();
 
-	strcpy (tmp, cmdLine.GetArgument("-flow", 0).c_str());
-	frame1.readFlow_flo(tmp);	
+	if (cmdLine.HasSwitch("-flow")){
+		strcpy (tmp, cmdLine.GetArgument("-flow", 0).c_str());
+		frame1.readFlow_flo(tmp);	
+	}
 
 	frame1.generatePbBoundary();
 
