@@ -21,9 +21,9 @@ LIB    = -L$(SD) -Bstatic -l$(SEG_LIB) -Bdynamic `pkg-config --libs opencv` -L/u
 OBJS_single  = $(pbD)/pbBoundary.o $(ED)/pbCGTG.o $(ED)/sobel.o $(ED)/pbBG.o $(ED)/savgol.o $(ED)/textureGradient.o $(MD)/misc.o segmentationLayer.o example1.o
 OBJS_moving  = $(pbD)/pbBoundary.o $(ED)/pbCGTG.o $(ED)/sobel.o $(ED)/pbBG.o $(ED)/savgol.o $(ED)/textureGradient.o $(MD)/misc.o segmentationLayer.o example2.o
 OBJS_static  = $(pbD)/pbBoundary.o $(ED)/pbCGTG.o $(ED)/sobel.o $(ED)/pbBG.o $(ED)/savgol.o $(ED)/textureGradient.o $(MD)/misc.o segmentationLayer.o example3.o
-OBJS_test  = $(pbD)/pbBoundary.o $(ED)/pbCGTG.o $(ED)/sobel.o $(ED)/pbBG.o $(ED)/savgol.o $(ED)/textureGradient.o $(MD)/misc.o segmentationLayer.o test.o
+OBJS_segment  = $(pbD)/pbBoundary.o $(ED)/pbCGTG.o $(ED)/sobel.o $(ED)/pbBG.o $(ED)/savgol.o $(ED)/textureGradient.o $(MD)/misc.o segmentationLayer.o CmdLine.o segment.o
 
-all: segmentSingleImg segmentMovingObj segmentStaticObj test
+all: segment
 
 segmentSingleImg:$(OBJS_single)
 	$(CC) $(OBJS_single) $(CFLAGS) $(LIB)  -o segmentSingleImg 
@@ -34,8 +34,8 @@ segmentMovingObj:$(OBJS_moving)
 segmentStaticObj:$(OBJS_static)
 	$(CC) $(OBJS_static) $(CFLAGS) $(LIB)  -o segmentStaticObj 
 
-test:$(OBJS_test)
-	$(CC) $(OBJS_test) $(CFLAGS) $(LIB)  -o segmentTest
+segment:$(OBJS_segment)
+	$(CC) $(OBJS_segment) $(CFLAGS) $(LIB)  -o segment
 
 calcOpticalFlow:opticalFlow.o
 	$(CC) opticalFlow.o $(CFLAGS) $(LIB)  -o calcOpticalFlow
@@ -49,8 +49,11 @@ example2.o : example2.cpp
 example3.o : example3.cpp 
 	$(CC) $(CFLAGS) $(INC) -c example3.cpp -o example3.o
 
-test.o : test.cpp 
-	$(CC) $(CFLAGS) $(INC) -c test.cpp -o test.o
+segment.o : segment.cpp 
+	$(CC) $(CFLAGS) $(INC) -c segment.cpp -o segment.o
+
+CmdLine.o : CmdLine.cpp 
+	$(CC) $(CFLAGS) $(INC) -c CmdLine.cpp -o CmdLine.o
 
 opticalFlow.o : opticalFlow.cpp
 	$(CC) $(CFLAGS) $(INC) -c opticalFlow.cpp -o opticalFlow.o
