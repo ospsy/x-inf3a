@@ -27,6 +27,9 @@ filenames=dir([input_dir, '/*.ppm']);
 if(length(filenames)==0)
     filenames=dir([input_dir, '/*.jpg']);
 end
+if(length(filenames)==0)
+    filenames=dir([input_dir, '/*.png']);
+end
 
 img2=imread([input_dir, '/', filenames(1).name]);
 
@@ -36,7 +39,7 @@ for k=2:length(filenames)
     [pathstr, name, ext] = fileparts(fname);
     output_name=fullfile(output_dir, [name '.flo']);
     if ~exist(output_name,'file')
-	    img1=imread([input_dir, '/', filenames(k-1).name]);    
+	    img1=imread(fullfile(input_dir, filenames(k-1).name));    
 	    img2=imread(fname);
 	    [u, v] = optic_flow_brox(img1, img2, 10, 100, 3, 0.8,false);
 	    [h,w,c]=size(img1);
@@ -49,6 +52,12 @@ for k=2:length(filenames)
 	    imwrite(img2,fullfile(output_dir, filenames(k).name));
     end
 end
+
+%correction of the eye_positions file!
+eye_pos=load(fullfile(input_dir,'eye_positions.txt'));
+fid = fopen(fullfile(output_dir,'eye_positions.txt'),'w');
+fprintf(fid,'%f %f\n',(ones(size(eye_pos,1),1)*[w/10 h/10]+eye_pos(2:,:))');
+fclose(fid);
 
 path(p)
 

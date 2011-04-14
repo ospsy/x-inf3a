@@ -50,7 +50,7 @@ for i=starti:endi,
     
     fix_txt = [name, '_fix.txt'];
     fid = fopen(fullfile(fix_dir,fix_txt),'w');
-    fprintf(fid,'%f %f\n',ones(size(grid,1),1)*eye_pos(i,:));
+    fprintf(fid,'%f %f\n',(ones(size(grid,1),1)*eye_pos(i,:)+grid)');
     fclose(fid);
 end
 end
