@@ -48,6 +48,9 @@ filenames=dir([input_dir, '/*.jpg']);
 if(length(filenames)==0)
     filenames=dir([input_dir, '/*.png']);
 end
+if(length(filenames)==0)
+    filenames=dir([input_dir, '/*.ppm']);
+end
 
 N=length(filenames);
 
