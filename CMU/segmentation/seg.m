@@ -117,6 +117,7 @@ for i=starti:endi,
 
         cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' ', imgFileName, ' ', tmp_dir, ' ',fix_txt];
         unix(cmd);
+        disp(cmd);
     end
     
     fixs=load(fix_txt);
@@ -138,7 +139,7 @@ for i=starti:endi,
                     for bdi=1:length(bd)
                         img_fg = imposelabel(img_fg, bd{bdi});
                     end
-                    img_fg = imposelabel(img_fg, fixs(j,:), 11, [255, 0, 0]);
+                    %img_fg = imposelabel(img_fg, fixs(j,:), 11, [255, 0, 0]);
                 end
                 if dis
                     imshow(img_fg); hold on;

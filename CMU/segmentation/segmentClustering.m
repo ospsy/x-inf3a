@@ -60,13 +60,16 @@ if length(segs)<2
 else
     segs_cluster = cluster_segs(segs, overlap_threshold);
 end
-imgFileName = sprintf([img_dir,'/%s.png'], name);
+imgFileName = sprintf([img_dir,'/%s.ppm'], name);
 if~exist(imgFileName, 'file')
     imgFileName = sprintf([img_dir, '/%s.jpg'], name);
     if~exist(imgFileName, 'file')
-        return;
+        imgFileName = sprintf([img_dir, '/%s.png'], name);
+        if~exist(imgFileName, 'file')
+            return;
+        end
     end
-end      
+end    
 img = imread(imgFileName);
 for j=1:length(segs_cluster)
     res_mat = fullfile(output_dir, sprintf('%s_%03d_res.mat', name, j));
