@@ -104,7 +104,7 @@ for i=starti:endi,
         imshow(img); axis image;
         title(' Original image');
     end
-    segment_bin='./segmentTest'; %../src/segmentation/activeSeg_64bit_opencv_1_0_multi
+    segment_bin='./segment'; %../src/segmentation/activeSeg_64bit_opencv_1_0_multi
     fix_txt=fullfile(fix_dir, [name, '_fix.txt']);    
     
     if 1
@@ -115,9 +115,13 @@ for i=starti:endi,
             delete([tmp_dir, '/*.*']);
         end 
 
-        cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' ', imgFileName, ' ', tmp_dir, ' ',fix_txt];
+        cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' -sobel -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        if exist(fullfile(input_dir,[name '.flo']),'file')
+            cmd=[cmd ' -flow ' fullfile(input_dir,[name '.flo']) ]
+        else
+            disp('No optical flow file...')
+        end 
         unix(cmd);
-        disp(cmd);
     end
     
     fixs=load(fix_txt);
