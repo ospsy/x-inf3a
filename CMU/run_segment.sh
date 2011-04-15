@@ -21,11 +21,11 @@ echo "$nb_threads instances"
 tmp=`ls ${input_dir}/*.ppm | wc -l`
 if [ $tmp -eq 0 ]
 then
-	tmp=`ls ${input_dir}/*.ppm | wc -l`
+	tmp=`ls ${input_dir}/*.png | wc -l`
 fi
 if [ $tmp -eq 0 ]
 then
-	tmp=`ls ${input_dir}/*.ppm | wc -l`
+	tmp=`ls ${input_dir}/*.jpg | wc -l`
 fi
 if [ $tmp -eq 0 ]
 then
