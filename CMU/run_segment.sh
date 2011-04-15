@@ -43,6 +43,6 @@ do
 	last=`echo "scale=0; (${i}*${tmp})/1" | bc`
 	cmd="matlab -nojvm -r addpath('segmentation');run_segment('$input_dir',$first,$last);exit;"
 	echo $cmd
-	$cmd &
+	$cmd & > /dev/null
 done
 	
