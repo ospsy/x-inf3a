@@ -41,7 +41,7 @@ for i in `seq 1 ${nb_threads} `
 do
 	first=`echo "scale=0; ((${i}-1)*${tmp}+1)/1" | bc`
 	last=`echo "scale=0; (${i}*${tmp})/1" | bc`
-	cmd="matlab -nojvm -r addpath('segmentation');run_segment('$input_dir',$first,$last);exit; &"
+	cmd="matlab -nojvm -r addpath('segmentation');run_segment('$input_dir',$first,$last);exit;"
 	echo $cmd
 	$cmd
 done
