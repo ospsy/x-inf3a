@@ -1,4 +1,4 @@
-function seg(input_dir, color, starti, endi)
+function seg(input_dir, sobel, starti, endi)
 % Demo for single image only
     % add paths
 % addpath(genpath('../../../shared'));
@@ -26,8 +26,8 @@ if ~exist('randomly', 'var')
     randomly = 1;    
 end
 
-if ~exist('color', 'var')
-    color = 1;    
+if ~exist('sobel', 'var')
+    sobel = 1;    
 end
 
 output_dir=[input_dir, '/output'];
@@ -115,7 +115,10 @@ for i=starti:endi,
             delete([tmp_dir, '/*.*']);
         end 
 
-        cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' -sobel -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        if sobel
+             cmd=[cmd ' -sobel ']
+        end
         if exist(fullfile(input_dir,[name '.flo']),'file')
             cmd=[cmd ' -flow ' fullfile(input_dir,[name '.flo']) ]
         else
