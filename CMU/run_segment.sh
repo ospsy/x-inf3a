@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 2 ]
 then
-	echo "Usage : <input_dir> <number_of_threads>"
+	echo "Usage : <input_dir> <number_of_threads> [--no-sobel]"
 	exit 0
 fi
 
@@ -17,6 +17,15 @@ fi
 
 nb_threads=$2
 echo "$nb_threads instances"
+
+if [ -z $3 ]
+then
+	sobel=1
+	echo "Using sobel algorithm"
+else
+	sobel=0
+	echo "Using PB algorithm"
+fi
 
 tmp=`ls ${input_dir}/*.ppm | wc -l`
 if [ $tmp -eq 0 ]
@@ -41,7 +50,7 @@ for i in `seq 1 ${nb_threads} `
 do
 	first=`echo "scale=0; ((${i}-1)*${tmp}+1)/1" | bc`
 	last=`echo "scale=0; (${i}*${tmp})/1" | bc`
-	cmd="matlab -nojvm -r addpath('segmentation');run_segment('$input_dir',$first,$last);exit;"
+	cmd="matlab -nojvm -r addpath('segmentation');seg('$input_dir',$sobel,$first,$last);exit;"
 	echo $cmd
 	$cmd & > /dev/null
 done
