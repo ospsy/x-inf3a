@@ -18,6 +18,7 @@ int main(int argc, char* argv[]){
 
 	//Biasing with optic flow!
 	frame1.readFlow_flo(argv[2]);
+	frame1.displayFlowMag(-1);
 	frame1.generatePbBoundary();
 	frame1.displayPbBoundary(-1);
 
