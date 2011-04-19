@@ -1,4 +1,4 @@
-cd function generate_optical_flow(input_dir,output_dir,starti,endi)
+function generate_optical_flow(input_dir,output_dir,starti,endi)
 
 p=path;
 path(p,'./brox')
