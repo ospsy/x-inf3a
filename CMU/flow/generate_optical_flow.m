@@ -1,4 +1,4 @@
-function generate_optical_flow(input_dir,output_dir,starti,endi)
+cd function generate_optical_flow(input_dir,output_dir,starti,endi)
 
 p=path;
 path(p,'./brox')
@@ -55,7 +55,7 @@ for k=starti:endi
     if ~exist(output_name,'file')
 	    img1=imread(fullfile(input_dir, filenames(k-1).name));    
 	    img2=imread(fname);
-	    [u, v] = optic_flow_brox(img1, img2, 10, 100, 3, 0.8,false);
+	    [u, v] = optic_flow_brox(img1, img2, 80, 5, 3, 0.9,false);
 	    [h,w,c]=size(img1);
 	    write_flow(u,v, output_name)
 	    img2=imcrop(img2,[h/10+1 w/10+1 8*w/10-1 8*h/10-1]);
