@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
   	frame1.readImage(argv[1]);
 
 	// Edge detection!
-  	frame1.edgeCGTG();
+  	frame1.edgeSobel();
 
 	//Biasing with optic flow!
 	frame1.readFlow_flo(argv[2]);
