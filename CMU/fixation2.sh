@@ -17,5 +17,5 @@ fi
 
 cmd="matlab -nojvm -r addpath('segmentation');fixation2('$input_dir');exit;"
 echo $cmd
-$cmd
+$cmd &
 	

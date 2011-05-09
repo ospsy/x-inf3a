@@ -1,4 +1,6 @@
-function fixation2(input_dir, starti, endi)
+% Generate the fixations files for the images in input_dir based on the
+% eye_positions.txt file
+function fixation2(input_dir,grid, starti, endi)
 
 if ~exist('input_dir', 'var')
     disp('No input_dir...')
@@ -13,6 +15,10 @@ end
 fix_dir=[output_dir, '/fix'];
 if(~exist(fix_dir, 'dir'))
     mkdir(fix_dir);
+end
+
+if ~exist('grid','var')
+    grid=[-20,0 ; 0,-20 ; 0,0 ; 0,20 ; 20,0];
 end
 
 filenames=dir([input_dir, '/*.ppm']);
@@ -38,7 +44,6 @@ elseif ischar(endi)
 end
 
 eye_pos_txt=fullfile(input_dir, 'eye_positions.txt');
-grid=[-50,0 ; 0,-50 ; 0,0 ; 0,50 ; 50,0];
 eye_pos=load(eye_pos_txt);
 
 for i=starti:endi,    
