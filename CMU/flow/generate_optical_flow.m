@@ -20,7 +20,6 @@ end
 
 if ~exist(output_dir, 'dir')
     mkdir(output_dir);
-    return
 end
 
 filenames=dir([input_dir, '/*.ppm']);

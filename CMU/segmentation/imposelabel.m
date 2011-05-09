@@ -8,17 +8,17 @@ if ~exist('color', 'var') || isempty(color)
     color = [0, 255, 0];
 end
 
-img_tmp=img;
+n=size(label,1);
+tmp=ones(n,1);
+label=round(min(tmp*[size(img,1) size(img,2)],max(tmp*[1 1],label)));
+
 idx=sub2ind([size(img, 1), size(img, 2)], label(:,1), label(:,2));
 
 bi=zeros(size(img, 1), size(img, 2));
 bi(idx)=255;
 se = strel('ball',si,si);
 bi = imdilate(bi,se);
-
 idx = find(bi>128);
-bi=zeros(size(img, 1), size(img, 2));
-bi(idx)=255;
 
 if size(img, 3)==1
     newimg(:,:,1)=img;
