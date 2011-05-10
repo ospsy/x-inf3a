@@ -38,8 +38,8 @@ end
 
 N=length(filenames);
 
-log=read_log_file(fullfile(input_dir,'Log_data.txt'));
-fixations=HMMExtraction(min(log.Data(:,8:9),-200));
+logs=read_log_file(fullfile(input_dir,'Log_data.txt'));
+fixations=HMMExtraction(min(logs.Data(:,8:9),-200));
 disp(fixations);
 
 unix(['rm ' output_dir '/*']);
