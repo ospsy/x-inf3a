@@ -28,6 +28,9 @@ end
 if(length(filenames)==0)
     filenames=dir([input_dir, '/*.png']);
 end
+if(length(filenames)==0)
+    filenames=dir([input_dir, '/*.bmp']);
+end
 
 N=length(filenames);
 
