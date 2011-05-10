@@ -143,9 +143,9 @@ velocities=fixs(2:N,:)-fixs(1:N-1,:);
 velocities=sum(velocities.^2,2).^0.5; % norm-2 of the velocities
 velocities=velocities';
 
-m=[0 200];
+m=[50 300];
 m=reshape(m, [1 2 1]);
-sigma=[50;50];
+sigma=[50;5000];
 sigma=reshape(sigma, [1 1 2 1]);
 transmat=[0.95 0.05 ; 0.05 0.95];
 prior=[0.5 ; 0.5];
