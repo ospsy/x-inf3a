@@ -151,13 +151,13 @@ transmat=[0.95 0.05 ; 0.05 0.95];
 prior=[0.5 ; 0.5];
 
 [LL, prior, transmat, m, sigma, ] = mhmm_em(velocities, prior, transmat, m, sigma, [] , 'max_iter', 5);
-sigma
-m
-transmat
 
 B= mixgauss_prob(velocities,m,sigma);
 path=viterbi_path(prior, transmat, B);
 disp(path');
+sigma
+m
+transmat
 i=1;
 numberFixations=0;
 while i<=size(path,2)
