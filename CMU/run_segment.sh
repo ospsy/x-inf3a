@@ -38,6 +38,10 @@ then
 fi
 if [ $tmp -eq 0 ]
 then
+	tmp=`ls ${input_dir}/*.bmp | wc -l`
+fi
+if [ $tmp -eq 0 ]
+then
 	echo "No images in that directory"
 	exit 0
 fi
