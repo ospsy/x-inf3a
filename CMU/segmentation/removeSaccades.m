@@ -79,7 +79,7 @@ function result = isVerticalSync(img)
 tmp=im2double(rgb2gray(img));
 tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:);
 tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:); % second degree derivative
-result = max(sum(tmp,2)/size(tmp,2)) < 0.1; 
+result = max(sum(tmp,2)/size(tmp,2)) < 0.08; 
 end
 
 % Keep relevant fixation points from raw data
