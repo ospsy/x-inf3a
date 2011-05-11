@@ -11,7 +11,7 @@ if ~exist('output_dir', 'var')
 end
 
 if ~exist('type', 'var')
-    type=0;
+    type=1;
 end
 
 if ~exist(input_dir, 'dir')
@@ -44,9 +44,9 @@ N=length(filenames);
 
 logs=read_log_file(fullfile(input_dir,'Log_data.txt'));
 if type==1
-    fixations=HMMExtraction(max(logs.Data(:,8:9),-200));
-else
     fixations=dispersionExtraction(max(logs.Data(:,8:9),-200));
+else
+    fixations=HMMExtraction(max(logs.Data(:,8:9),-200));
 end;
 disp(fixations);
 
