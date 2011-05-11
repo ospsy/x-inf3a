@@ -1,4 +1,4 @@
-function removeSaccades(input_dir, output_dir)
+function removeSaccades(input_dir, output_dir, type)
 
 if ~exist('input_dir', 'var')
     fprintf('Need an input_dir\n');
@@ -8,6 +8,10 @@ end
 if ~exist('output_dir', 'var')
     fprintf('Need an output_dir\n');
     return
+end
+
+if ~exist('type', 'var')
+    type=0;
 end
 
 if ~exist(input_dir, 'dir')
@@ -39,7 +43,11 @@ end
 N=length(filenames);
 
 logs=read_log_file(fullfile(input_dir,'Log_data.txt'));
-fixations=HMMExtraction(max(logs.Data(:,8:9),-200));
+if type==1
+    fixations=HMMExtraction(max(logs.Data(:,8:9),-200));
+else
+    fixations=dispersionExtraction(max(logs.Data(:,8:9),-200));
+end;
 disp(fixations);
 
 unix(['rm ' output_dir '/*']);
@@ -47,10 +55,17 @@ unix(['rm ' imgFixs_dir '/*']);
 
 for i=1:size(fixations,1)
     k=fixations(i,1);
-    input_name=fullfile(input_dir,filenames(k).name);
-    output_name=fullfile(output_dir, filenames(k).name);
+    while 1
+        input_name=fullfile(input_dir,filenames(k).name);
+        output_name=fullfile(output_dir, filenames(k).name);
+        img=imread(input_name);
+        if isVerticalSync(img) || k==1
+            break;
+        else
+            k=k-1;
+        end;
+    end;
     copyfile(input_name,output_name);
-    img=imread(input_name);
     img=imposelabel(img,round([fixations(i,3) fixations(i,2)]));
     imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
 end
@@ -60,7 +75,12 @@ fclose(fid);
 
 end
 
-
+function result = isVerticalSync(img)
+tmp=im2double(rgb2gray(img));
+tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:);
+tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:); % second degree derivative
+result = max(sum(tmp,2)/size(tmp,2)) < 0.1; 
+end
 
 % Keep relevant fixation points from raw data
 % fixs : array of [x y] for each image
