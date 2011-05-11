@@ -63,7 +63,7 @@ for i=1:size(fixations,1)
             break;
         else
             k=k-1;
-            disp('Dropping out-of-VSync frame');
+            fprintf('Dropping out-of-VSync frame : %i',k);
         end;
     end;
     copyfile(input_name,output_name);
