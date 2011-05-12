@@ -133,7 +133,7 @@ while i<=N
    if d<=durationThreshold % whitout it the last image would always be considered as a fixation point
        break
    end
-   if sum(maxPt-minPt)<=dispersionThreshold && j-i>=3 %this is a fixation point
+   if sum(maxPt-minPt)<=dispersionThreshold && j-i>=2 %this is a fixation point
        while j<=N && sum(max(maxPt,fixs(j,:))-min(minPt,fixs(j,:)))<=dispersionThreshold %add point while the dispersion is not too big
            d=timestamps(j)-timestamps(i);
            n=n+1;
@@ -190,7 +190,7 @@ while i<=size(path,2)
 			j=j+1;
         end
         d=timestamps(j-1)-timestamps(i);
-        if d>=0.15 && j-i>=3
+        if d>=0.1 && j-i>=2
             numberFixations=numberFixations+1;
             result(numberFixations,:)=[round((i+j-1)/2) sum(fixs(i:j-1,:),1)/(j-i) d];
         end
