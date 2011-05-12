@@ -43,10 +43,11 @@ end
 N=length(filenames);
 
 logs=read_log_file(fullfile(input_dir,'Log_data.txt'));
+timestamps=logs.Data(:,14);
 if type==1
-    fixations=dispersionExtraction(max(logs.Data(:,8:9),-200));
+    fixations=dispersionExtraction(max(logs.Data(:,8:9),-200),timestamps);
 else
-    fixations=HMMExtraction(max(logs.Data(:,8:9),-200));
+    fixations=HMMExtraction(max(logs.Data(:,8:9),-200),timestamps);
 end;
 disp(fixations);
 
@@ -89,12 +90,12 @@ end
 
 % Keep relevant fixation points from raw data
 % fixs : array of [x y] for each image
-% durations : vector of images durations
+% timestamps : vector of images' timestamps
 % result : matrix of found fixation points
 %       first column -> index of image
 %       second/third column -> x/y
 %       fourth column -> duration of fixation
-function result = dispersionExtraction(fixs,durations,durationThreshold,dispersionThreshold)
+function result = dispersionExtraction(fixs,timestamps,durationThreshold,dispersionThreshold)
 
 if ~exist('durationThreshold', 'var') || isempty(durationThreshold)
     durationThreshold=0.2;
@@ -106,8 +107,8 @@ end
 
 N=size(fixs,1);
 
-if ~exist('durations', 'var') || isempty(durations)
-    durations = 1/25*ones(N,1);
+if ~exist('timestamps', 'var') || isempty(timestamps)
+    timestamps = 1/15*(1:N)';
 end
 
 i=1;%origin of considered window
@@ -122,7 +123,7 @@ while i<=N
    maxPt=[0 0];
    j=i;
    while j<=N && d<=durationThreshold %initialisation on a minimal duration window
-       d=d+durations(j);
+       d=timestamps(j)-timestamps(i);
        n=n+1;
        sumPt=sumPt+fixs(j,:);
        minPt=min(minPt,fixs(j,:));
@@ -132,9 +133,9 @@ while i<=N
    if d<=durationThreshold % whitout it the last image would always be considered as a fixation point
        break
    end
-   if sum(maxPt-minPt)<=dispersionThreshold %this is a fixation point
+   if sum(maxPt-minPt)<=dispersionThreshold && j-i>=3 %this is a fixation point
        while j<=N && sum(max(maxPt,fixs(j,:))-min(minPt,fixs(j,:)))<=dispersionThreshold %add point while the dispersion is not too big
-           d=d+durations(j);
+           d=timestamps(j)-timestamps(i);
            n=n+1;
            sumPt=sumPt+fixs(j,:);
            minPt=min(minPt,fixs(j,:));
@@ -153,15 +154,12 @@ fprintf('%i fixations points found \n',numberFixations);
 end
 
 % Extraction based on Viterbi algorithm on Hidden Markov Models
-% 	A : transition's probabilities matrix
-%	m : Gaussian means vector
-%	sigma : Gaussian variances vector
-function result = HMMExtraction(fixs,durations)
+function result = HMMExtraction(fixs,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(fixs,1);
 
-if ~exist('durations', 'var') || isempty(durations)
-    durations = 1/15*ones(N,1);
+if ~exist('timestamps', 'var') || isempty(timestamps)
+    timestamps = 1/15*(1:N)';
 end
 
 velocities=fixs(2:N,:)-fixs(1:N-1,:);
@@ -191,8 +189,8 @@ while i<=size(path,2)
         while j<=size(path,2) && path(j)==1
 			j=j+1;
         end
-        d=sum(durations(i:j-1,:));
-        if d>=0.15
+        d=timestamps(j-1)-timestamps(i);
+        if d>=0.15 && j-i>=3
             numberFixations=numberFixations+1;
             result(numberFixations,:)=[round((i+j-1)/2) sum(fixs(i:j-1,:),1)/(j-i) d];
         end
