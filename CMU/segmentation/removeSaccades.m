@@ -161,7 +161,7 @@ addpath(genpath('../HMMall/'));
 N=size(fixs,1);
 
 if ~exist('durations', 'var') || isempty(durations)
-    durations = 1/25*ones(N,1);
+    durations = 1/15*ones(N,1);
 end
 
 velocities=fixs(2:N,:)-fixs(1:N-1,:);
