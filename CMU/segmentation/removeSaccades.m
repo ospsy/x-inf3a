@@ -55,6 +55,10 @@ unix(['rm ' imgFixs_dir '/*']);
 
 for i=1:size(fixations,1)
     k=fixations(i,1);
+    if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,2)>logs.siz_Outimg(2) || fixations(i,2)>logs.siz_Outimg(1)
+        fprintf('Dropping out-of-range fixation points...\n');
+        continue
+    end;
     while 1
         input_name=fullfile(input_dir,filenames(k).name);
         output_name=fullfile(output_dir, filenames(k).name);
@@ -63,7 +67,7 @@ for i=1:size(fixations,1)
             break;
         else
             k=k-1;
-            fprintf('Dropping out-of-VSync frame : %i',k);
+            fprintf('Dropping out-of-VSync frame : %i\n',k);
         end;
     end;
     copyfile(input_name,output_name);
