@@ -55,7 +55,7 @@ unix(['rm ' imgFixs_dir '/*']);
 
 for i=1:size(fixations,1)
     k=fixations(i,1);
-    if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,2)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
+    if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
         fprintf('Dropping out-of-range fixation points...\n');
         continue
     end;
