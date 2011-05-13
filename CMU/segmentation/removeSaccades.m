@@ -29,15 +29,15 @@ if ~exist(imgFixs_dir, 'dir')
 end
 
 
-filenames=dir([input_dir, '/*.ppm']);
+filenames=dir([input_dir, '/capture_img_out_*.ppm']);
 if(length(filenames)==0)
-    filenames=dir([input_dir, '/*.jpg']);
+    filenames=dir([input_dir, '/capture_img_out_*.jpg']);
 end
 if(length(filenames)==0)
-    filenames=dir([input_dir, '/*.png']);
+    filenames=dir([input_dir, '/capture_img_out_*.png']);
 end
 if(length(filenames)==0)
-    filenames=dir([input_dir, '/*.bmp']);
+    filenames=dir([input_dir, '/capture_img_out_*.bmp']);
 end
 
 N=length(filenames);
