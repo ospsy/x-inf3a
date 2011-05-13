@@ -44,7 +44,7 @@ N=length(filenames);
 
 logs=read_log_file(fullfile(input_dir,'Log_data.txt'));
 timestamps=logs.Data(:,14);
-fixs=logs.Data(:,8:9)+logs.Offset_xy*ones(size(logs.Data,1),1);
+fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
 if type==1
     fixations=dispersionExtraction(max(fixs,-200),timestamps);
 else
