@@ -9,11 +9,11 @@ INC    = `pkg-config --cflags opencv` -I. -I$(MD) -I$(SD) -I$(ED) -I$(pbD)
 
 #DETECTS kernel type (32 or 64 bit)!
 KERNAL_NAME = $(shell uname -m)
-ifeq (X86_64,$(KERNAL_NAME))
+#ifeq (X86_64,$(KERNAL_NAME))
 	SEG_LIB = segCore_64
-else
-	SEG_LIB = segCore_32
-endif
+#else
+#	SEG_LIB = segCore_32
+#endif
 
 LIB    = -L$(SD) -Bstatic -l$(SEG_LIB) -Bdynamic `pkg-config --libs opencv` -L/usr/lib -lpthread -lm 
 
