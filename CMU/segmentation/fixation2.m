@@ -18,7 +18,7 @@ if(~exist(fix_dir, 'dir'))
 end
 
 if ~exist('grid','var')
-    grid=[-20,0 ; 0,-20 ; 0,0 ; 0,20 ; 20,0];
+    grid=[0,0 ; [40*cos(pi/4:pi/4:2*pi) ; 40*sin(pi/4:pi/4:2*pi)]' ; [80*cos(pi/4:pi/4:2*pi) ; 80*sin(pi/4:pi/4:2*pi)]' ];
 end
 
 filenames=dir([input_dir, '/*.ppm']);

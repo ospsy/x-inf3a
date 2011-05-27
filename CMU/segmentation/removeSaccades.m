@@ -42,13 +42,13 @@ end
 
 N=length(filenames);
 
-logs=read_log_file(fullfile(input_dir,'Log_data.txt'));
+logs=read_log_file([input_dir '/image_save/Log_data.txt']);
 timestamps=logs.Data(:,14);
 fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
 if type==1
-    fixations=dispersionExtraction(max(fixs,-200),timestamps);
+    fixations=dispersionExtraction(max(fixs,-200));
 else
-    fixations=HMMExtraction(max(fixs,-200),timestamps);
+    fixations=HMMExtraction(max(fixs,-200));
 end;
 disp(fixations);
 
@@ -59,19 +59,39 @@ for i=1:size(fixations,1)
     k=fixations(i,1);
     if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
         fprintf('Dropping out-of-range fixation points...\n');
+        if fixations(i,3)<=0
+            fprintf('\thigh\n');
+        end
+        if fixations(i,2)<=0
+            fprintf('\tleft\n');
+        end
+        if fixations(i,3)>logs.siz_Outimg(1)
+            fprintf('\tbottom\n');
+        end
+        if fixations(i,2)>logs.siz_Outimg(2)
+            fprintf('\tright\n');
+        end
         continue
     end;
-    while 1
+    bestScore=0;
+    argMax=-1;
+    for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
         input_name=fullfile(input_dir,filenames(k).name);
-        output_name=fullfile(output_dir, filenames(k).name);
         img=imread(input_name);
-        if isVerticalSync(img) || k==1
-            break;
-        else
-            k=k-1;
-            fprintf('Dropping out-of-VSync frame : %i\n',k);
-        end;
+        tmp=sharpnessScore(img);
+        if tmp>bestScore
+            argMax=k;
+            bestScore=tmp;
+        end
+%         if isVerticalSync(img) || k==1
+%             break;
+%         else
+%             k=k-1;
+%             fprintf('Dropping out-of-VSync frame : %i\n',k);
+%         end;
     end;
+    input_name=fullfile(input_dir,filenames(argMax).name);
+    output_name=fullfile(output_dir, filenames(argMax).name);
     copyfile(input_name,output_name);
     img=imposelabel(img,round([fixations(i,3) fixations(i,2)]));
     imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
@@ -80,6 +100,14 @@ fid = fopen(fullfile(output_dir,'eye_positions.txt'),'w');
 fprintf(fid,'%f %f\n',( fixations(:,2:3) )');
 fclose(fid);
 
+end
+
+function result = sharpnessScore(img)
+    tmp=im2double(rgb2gray(img));
+    Gx=imfilter(imfilter(tmp,[-1 0 1]),[1;2;1]);
+    Gy=imfilter(imfilter(tmp,[1 2 1]),[1;0;-1]);
+    gradient=sqrt(Gx.^2+Gy.^2);
+    result=norm([mean(gradient(:)) std(gradient(:))]); 
 end
 
 function result = isVerticalSync(img)
@@ -109,7 +137,7 @@ end
 N=size(fixs,1);
 
 if ~exist('timestamps', 'var') || isempty(timestamps)
-    timestamps = 1/15*(1:N)';
+    timestamps = 1/30*(1:N)';
 end
 
 i=1;%origin of considered window
@@ -160,7 +188,7 @@ addpath(genpath('../HMMall/'));
 N=size(fixs,1);
 
 if ~exist('timestamps', 'var') || isempty(timestamps)
-    timestamps = 1/15*(1:N)';
+    timestamps = 1/30*(1:N)';
 end
 
 velocities=fixs(2:N,:)-fixs(1:N-1,:);
