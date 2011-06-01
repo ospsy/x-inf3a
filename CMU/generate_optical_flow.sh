@@ -20,14 +20,14 @@ output_dir=$2
 nb_threads=$3
 echo "$nb_threads instances"
 
-tmp=`ls ${input_dir}/*.ppm | wc -l`
+tmp=`ls ${input_dir}/capture_img_out_*.ppm | wc -l`
 if [ $tmp -eq 0 ]
 then
-	tmp=`ls ${input_dir}/*.png | wc -l`
+	tmp=`ls ${input_dir}/capture_img_out_*.png | wc -l`
 fi
 if [ $tmp -eq 0 ]
 then
-	tmp=`ls ${input_dir}/*.jpg | wc -l`
+	tmp=`ls ${input_dir}/capture_img_out_*.jpg | wc -l`
 fi
 if [ $tmp -eq 0 ]
 then
