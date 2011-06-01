@@ -52,7 +52,7 @@ else
 end;
 disp(fixations);
 
-unix(['rm ' output_dir '/*']);
+unix(['rm ' output_dir '/*.jpg']);
 unix(['rm ' imgFixs_dir '/*']);
 
 names=zeros(1,size(filenames(1).name,2));
