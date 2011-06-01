@@ -27,18 +27,18 @@ else
 	echo "Using PB algorithm"
 fi
 
-tmp=`ls ${input_dir}/*.ppm | wc -l`
+tmp=`ls ${input_dir}/capture_img_out_*.ppm | wc -l`
 if [ $tmp -eq 0 ]
 then
-	tmp=`ls ${input_dir}/*.png | wc -l`
+	tmp=`ls ${input_dir}/capture_img_out_*.png | wc -l`
 fi
 if [ $tmp -eq 0 ]
 then
-	tmp=`ls ${input_dir}/*.jpg | wc -l`
+	tmp=`ls ${input_dir}/capture_img_out_*.jpg | wc -l`
 fi
 if [ $tmp -eq 0 ]
 then
-	tmp=`ls ${input_dir}/*.bmp | wc -l`
+	tmp=`ls ${input_dir}/capture_img_out_*.bmp | wc -l`
 fi
 if [ $tmp -eq 0 ]
 then
