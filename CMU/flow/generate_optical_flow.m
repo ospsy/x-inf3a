@@ -49,8 +49,8 @@ for k=starti:endi
     [pathstr, name, ext] = fileparts(fname);
     output_name=fullfile(output_dir, [name '.flo']);
     if ~exist(output_name,'file')
-	    img1=imread(fname);
-	    img2=imread(fullfile(input_dir, filenames(k+1).name));
+	    img1=double(imread(fname));
+	    img2=double(imread(fullfile(input_dir, filenames(k+1).name)));
 	    flow = mex_OF(img1, img2);
 	    write_flow(flow(:,:,1),flow(:,:,2), output_name);
         tmp=0.1*sqrt(flow(:,:,1).^2+flow(:,:,1).^2);
