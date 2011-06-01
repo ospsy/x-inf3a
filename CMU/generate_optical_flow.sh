@@ -39,7 +39,6 @@ nb_images=$tmp
 echo "$nb_images images to process"
 tmp=`echo "scale=2; ${nb_images}/${nb_threads}" | bc`
 echo $tmp
-cd flow
 for i in `seq 1 ${nb_threads} `
 do
 	first=`echo "scale=0; ((${i}-1)*${tmp}+1)/1" | bc`
@@ -48,5 +47,4 @@ do
 	echo $cmd
 	$cmd & > /dev/null
 done
-cd ..
 	
