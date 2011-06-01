@@ -44,7 +44,7 @@ end
 endi=min([endi N-1]);
 
 for k=starti:endi
-    fprintf('Processing %s and %s\n',filenames(k-1).name,filenames(k).name);
+    fprintf('Processing %s and %s\n',filenames(k).name,filenames(k+1).name);
     fname=[input_dir, '/', filenames(k).name];
     [pathstr, name, ext] = fileparts(fname);
     output_name=fullfile(output_dir, [name '.flo']);
@@ -54,7 +54,7 @@ for k=starti:endi
 	    flow = mex_OF(img1, img2);
 	    write_flow(flow(:,:,1),flow(:,:,2), output_name);
         tmp=0.1*sqrt(flow(:,:,1).^2+flow(:,:,1).^2);
-        imwrite(tmp,[output_name '/.png']);
+        imwrite(tmp,[output_name '.png']);
     end
 end
 
