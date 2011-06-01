@@ -353,6 +353,20 @@ void calcPbBoundaryWtFlow(	IplImage* edgeMap,
 						int numOri)
 {  
 	//Initialize the parameters of the logistic function!
+	IplImage* flowU_tmp = cvCloneImage(flow_u);
+	IplImage* flowV_tmp = cvCloneImage(flow_u);
+	IplImage* flowMag   = cvCloneImage(flow_u); 
+	cvSetZero(flowMag);
+	cvPow(flowU_tmp, flowU_tmp, 2);
+	cvPow(flowV_tmp, flowV_tmp, 2);
+	cvAdd(flowU_tmp, flowV_tmp, flowMag);
+	cvPow(flowMag,flowMag, 0.5);
+
+	double minVal, maxVal;
+	cvMinMaxLoc(flowMag, &minVal, &maxVal);
+
+	cvReleaseImage(&flowU_tmp);
+	cvReleaseImage(&flowV_tmp);
 	double beta1 = 10;   
 	double beta2 = 0.6;
 	//Create half-disc filters!!
@@ -393,9 +407,10 @@ void calcPbBoundaryWtFlow(	IplImage* edgeMap,
 				double vecDiff = 	(leftSum_u.val[0]-rightSum_u.val[0])*(leftSum_u.val[0]-rightSum_u.val[0]) + \
 	  							(leftSum_v.val[0]-rightSum_v.val[0])*(leftSum_v.val[0]-rightSum_v.val[0]) ;
 				vecDiff        = sqrt(vecDiff);	
-				float prob = sigmoid(vecDiff, beta1, beta2);
-				CV_IMAGE_ELEM(edgeMap,float,y,x) = (prob > 50.0/255)? prob: 50.0/255;
-
+				float prob = sigmoid(2*vecDiff/maxVal, beta1, beta2);
+				CV_IMAGE_ELEM(edgeMap,float,y,x) *=(1+3*prob)/4.0;
+				//if (prob>0.5)
+				//	printf("%f\n",vecDiff);
 				//decides border ownership!
 				double leftMag          = sqrt(leftSum_u.val[0]* leftSum_u.val[0] + leftSum_v.val[0]* leftSum_v.val[0]); 	
 				double rightMag         = sqrt(rightSum_u.val[0]* rightSum_u.val[0] + rightSum_v.val[0]* rightSum_v.val[0]);
