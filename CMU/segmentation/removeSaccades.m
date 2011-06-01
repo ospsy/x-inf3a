@@ -55,6 +55,10 @@ disp(fixations);
 unix(['rm ' output_dir '/*']);
 unix(['rm ' imgFixs_dir '/*']);
 
+names=zeros(1,size(filenames(1).name,2));
+names2=zeros(1,size(filenames(1).name,2));
+eye_pos=zeros(1,2);
+n=0;
 for i=1:size(fixations,1)
     k=fixations(i,1);
     if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
@@ -73,6 +77,7 @@ for i=1:size(fixations,1)
         end
         continue
     end;
+    n=n+1;
     bestScore=0;
     argMax=-1;
     for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
@@ -92,14 +97,19 @@ for i=1:size(fixations,1)
     end;
     input_name=fullfile(input_dir,filenames(argMax).name);
     output_name=fullfile(output_dir, filenames(argMax).name);
+    names(n,:)=filenames(argMax).name;
+    names(n,:)=filenames(argMax+1).name;
+    eye_pos(n,:)=round([fixations(i,3) fixations(i,2)]);
     copyfile(input_name,output_name);
-    img=imposelabel(img,round([fixations(i,3) fixations(i,2)]));
+    img=imread(input_name);
+    img=imposelabel(img,eye_pos(n,:));
     imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
 end
-fid = fopen(fullfile(output_dir,'eye_positions.txt'),'w');
-fprintf(fid,'%f %f\n',( fixations(:,2:3) )');
-fclose(fid);
-
+% fid = fopen(fullfile(output_dir,'eye_positions.txt'),'w');
+% fprintf(fid,'%f %f\n',( fixations(:,2:3) )');
+% fclose(fid);
+names=char(names);
+save([output_dir '/save.mat'],'eye_pos','names','names2');
 end
 
 function result = sharpnessScore(img)

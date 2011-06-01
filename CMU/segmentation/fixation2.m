@@ -46,11 +46,11 @@ elseif ischar(endi)
     endi = str2num(endi);    
 end
 
-eye_pos_txt=fullfile(input_dir, 'eye_positions.txt');
-eye_pos=load(eye_pos_txt);
+filename=fullfile(input_dir, 'save.mat');
+load(filename);
 
 for i=starti:endi,    
-    imgFileName=fullfile(input_dir, filenames(i).name);
+    imgFileName=fullfile(input_dir, names(i,:));
     
     disp(imgFileName);
 
