@@ -1,8 +1,8 @@
 #! /bin/bash 
 
-if [ "$#" -lt 3 ]
+if [ "$#" -lt 2 ]
 then
-	echo "Usage : <input_dir> <output_dir> <number_of_threads>"
+	echo "Usage : <input_dir> <number_of_threads>"
 	exit 0
 fi
 
@@ -15,9 +15,8 @@ else
 	exit 0
 fi
 
-output_dir=$2
 
-nb_threads=$3
+nb_threads=$2
 echo "$nb_threads instances"
 
 tmp=`ls ${input_dir}/capture_img_out_*.ppm | wc -l`
@@ -43,7 +42,7 @@ for i in `seq 1 ${nb_threads} `
 do
 	first=`echo "scale=0; ((${i}-1)*${tmp}+1)/1" | bc`
 	last=`echo "scale=0; (${i}*${tmp})/1" | bc`
-	cmd="nice -10 matlab -nojvm -r addpath('flow');generate_optical_flow('$input_dir','$output_dir',$first,$last);exit;"
+	cmd="nice -10 matlab -nojvm -r addpath('flow');generate_optical_flow('$input_dir',$first,$last);exit;"
 	echo $cmd
 	$cmd & > /dev/null
 done
