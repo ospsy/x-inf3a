@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 2 ]
 then
-	echo "Usage : <input_dir> <number_of_threads> [--sobel]"
+	echo "Usage : <input_dir> <number_of_threads> [--flow] [--sobel]"
 	exit 0
 fi
 
@@ -20,11 +20,19 @@ echo "$nb_threads instances"
 
 if [ -z $3 ]
 then
-	sobel=1
-	echo "Using sobel algorithm"
+	flow=0
 else
+	flow=1
+	echo "Using optical flow"
+fi
+
+if [ -z $4 ]
+then
 	sobel=0
 	echo "Using CGTG algorithm"
+else
+	sobel=1
+	echo "Using Sobel algorithm"
 fi
 
 tmp=`ls ${input_dir}/capture_img_out_*.ppm | wc -l`
@@ -54,7 +62,7 @@ for i in `seq 1 ${nb_threads} `
 do
 	first=`echo "scale=0; ((${i}-1)*${tmp}+1)/1" | bc`
 	last=`echo "scale=0; (${i}*${tmp})/1" | bc`
-	cmd="nice -10 matlab -nojvm -r addpath('segmentation');seg('$input_dir',$sobel,$first,$last);exit;"
+	cmd="nice -10 matlab -nojvm -r addpath('segmentation');seg('$input_dir',$flow,$sobel,$first,$last);exit;"
 	echo $cmd
 	$cmd & > /dev/null
 done

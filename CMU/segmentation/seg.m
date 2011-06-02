@@ -45,7 +45,11 @@ if(~exist(fix_dir, 'dir'))
     mkdir(fix_dir);
 end
 
-cluster_dir=[output_dir, '/segs/'];
+if flow 
+    cluster_dir=[output_dir, '/segs_OF/'];
+else 
+    cluster_dir=[output_dir, '/segs/'];
+end
 if(~exist(cluster_dir, 'dir'))
     mkdir(cluster_dir);
 end
