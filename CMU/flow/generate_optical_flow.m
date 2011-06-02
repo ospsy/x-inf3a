@@ -1,14 +1,13 @@
-function generate_optical_flow(input_dir,output_dir,starti,endi)
+function generate_optical_flow(input_dir,starti,endi)
 
 if ~exist('input_dir', 'var')
     fprintf('Need an input_dir\n');
     return
 end
 
-if ~exist('output_dir', 'var')
-    fprintf('Need an output_dir\n');
-    return
-end
+
+input_dir=fullfile(input_dir,'data');
+output_dir=fullfile(input_dir,'flow');
 
 if ~exist(input_dir, 'dir')
     fprintf('intput_dir does''nt exist\n');

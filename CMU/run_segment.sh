@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 2 ]
 then
-	echo "Usage : <input_dir> <number_of_threads> [--no-sobel]"
+	echo "Usage : <input_dir> <number_of_threads> [--sobel]"
 	exit 0
 fi
 
@@ -24,7 +24,7 @@ then
 	echo "Using sobel algorithm"
 else
 	sobel=0
-	echo "Using PB algorithm"
+	echo "Using CGTG algorithm"
 fi
 
 tmp=`ls ${input_dir}/capture_img_out_*.ppm | wc -l`

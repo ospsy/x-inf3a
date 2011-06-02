@@ -1,4 +1,4 @@
-function seg(input_dir, sobel, starti, endi)
+function seg(input_dir, flow,sobel, starti, endi)
 % Demo for single image only
     % add paths
 % addpath(genpath('../../../shared'));
@@ -27,8 +27,13 @@ if ~exist('randomly', 'var')
 end
 
 if ~exist('sobel', 'var')
-    sobel = 1;    
+    sobel = 0;    
 end
+
+if ~exist('flow', 'var')
+    flow = 1;    
+end
+
 
 output_dir=[input_dir, '/output'];
 if(~exist(output_dir, 'dir'))
@@ -66,7 +71,7 @@ if ~exist('starti', 'var')
 elseif ischar(starti)
     starti = str2num(starti);
 end
-
+/home/vasc
 if ~exist('endi', 'var')
     endi = N;    
 elseif ischar(endi)
@@ -108,7 +113,7 @@ for i=starti:endi,
         imshow(img); axis image;
         title(' Original image');
     end
-    segment_bin='./segment'; %../src/segmentation/activeSeg_64bit_opencv_1_0_multi
+    segment_bin='./segment'; 
     fix_txt=fullfile(fix_dir, [name, '_fix.txt']);    
     
     if 1
@@ -123,11 +128,13 @@ for i=starti:endi,
         if sobel
              cmd=[cmd ' -sobel ']
         end
-        if exist(fullfile(input_dir,[name '.flo']),'file')
-            cmd=[cmd ' -flow ' fullfile(input_dir,[name '.flo']) ]
-        else
-            disp('No optical flow file...')
-        end 
+        if flow
+            if exist(fullfile(input_dir,fullfile(flow,[name '.flo'])),'file')
+                cmd=[cmd ' -flow ' fullfile(input_dir,[name '.flo']) ]
+            else
+                disp('No optical flow file...')
+            end 
+        end
         unix(cmd);
     end
     
