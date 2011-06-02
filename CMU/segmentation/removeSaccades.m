@@ -102,7 +102,7 @@ for i=1:size(fixations,1)
     input_name=fullfile(input_dir,filenames(argMax).name);
     output_name=fullfile(output_dir, filenames(argMax).name);
     names(n,:)=filenames(argMax).name;
-    names(n,:)=filenames(argMax+1).name;
+    names2(n,:)=filenames(argMax+1).name;
     eye_pos(n,:)=round([fixations(i,3) fixations(i,2)]);
     copyfile(input_name,output_name);
     img=imread(input_name);
