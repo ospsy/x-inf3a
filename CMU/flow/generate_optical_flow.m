@@ -5,9 +5,8 @@ if ~exist('input_dir', 'var')
     return
 end
 
-
+output_dir=fullfile(input_dir);
 input_dir=fullfile(input_dir,'data');
-output_dir=fullfile(input_dir,'flow');
 
 if ~exist(input_dir, 'dir')
     fprintf('intput_dir does''nt exist\n');

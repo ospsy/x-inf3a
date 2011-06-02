@@ -1,17 +1,21 @@
-function removeSaccades(input_dir, output_dir, type)
+function removeSaccades(input_dir, type)
 
 if ~exist('input_dir', 'var')
     fprintf('Need an input_dir\n');
     return
 end
 
-if ~exist('output_dir', 'var')
-    fprintf('Need an output_dir\n');
+output_dir=fullfile(input_dir);
+input_dir=fullfile(input_dir,'data');
+
+if ~exist(input_dir, 'dir')
+    fprintf('intput_dir does''nt exist\n');
     return
 end
 
+
 if ~exist('type', 'var')
-    type=1;
+    type=0;
 end
 
 if ~exist(input_dir, 'dir')
