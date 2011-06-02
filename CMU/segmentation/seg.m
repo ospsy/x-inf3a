@@ -75,7 +75,6 @@ if ~exist('starti', 'var')
 elseif ischar(starti)
     starti = str2num(starti);
 end
-/home/vasc
 if ~exist('endi', 'var')
     endi = N;    
 elseif ischar(endi)
