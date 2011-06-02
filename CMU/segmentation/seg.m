@@ -132,8 +132,9 @@ for i=starti:endi,
              cmd=[cmd ' -sobel ']
         end
         if flow
-            if exist(fullfile(input_dir,fullfile('flow',[name '.flo'])),'file')
-                cmd=[cmd ' -flow ' fullfile(input_dir,[name '.flo']) ]
+            floname=fullfile(input_dir,fullfile('flow',[name '.flo']));
+            if exist(floname,'file')
+                cmd=[cmd ' -flow ' floname ]
             else
                 disp('No optical flow file...')
             end 
