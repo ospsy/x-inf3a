@@ -364,9 +364,10 @@ void calcPbBoundaryWtFlow(	IplImage* edgeMap,
 
 	double minVal, maxVal;
 	cvMinMaxLoc(flowMag, &minVal, &maxVal);
-
+	if(maxVal<10) maxVal=10;
 	cvReleaseImage(&flowU_tmp);
 	cvReleaseImage(&flowV_tmp);
+	cvReleaseImage(&flowMag);
 	double beta1 = 10;   
 	double beta2 = 0.6;
 	//Create half-disc filters!!
@@ -407,7 +408,7 @@ void calcPbBoundaryWtFlow(	IplImage* edgeMap,
 				double vecDiff = 	(leftSum_u.val[0]-rightSum_u.val[0])*(leftSum_u.val[0]-rightSum_u.val[0]) + \
 	  							(leftSum_v.val[0]-rightSum_v.val[0])*(leftSum_v.val[0]-rightSum_v.val[0]) ;
 				vecDiff        = sqrt(vecDiff);	
-				float prob = sigmoid(2*vecDiff/maxVal, beta1, beta2);
+				float prob = sigmoid(6*vecDiff/maxVal, beta1, beta2);
 				CV_IMAGE_ELEM(edgeMap,float,y,x) *=(1+3*prob)/4.0;
 				//if (prob>0.5)
 				//	printf("%f\n",vecDiff);
