@@ -57,7 +57,7 @@ fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
 if type==1
     fixations=dispersionExtraction(max(fixs,-200));
 elseif type ==2
-    fixations=HMMWithFlowExtraction(max(fixs,-200));
+    fixations=HMMWithFlowExtraction(max(fixs,-200),flow_dir);
 else
     fixations=HMMSimpleExtraction(max(fixs,-200));
 end;
@@ -249,12 +249,12 @@ velocities=velocities';
 result= HMMExtraction(velocities,timestamps);
 end
 
-function result = HMMWithFlowExtraction(fixs,timestamps)
+function result = HMMWithFlowExtraction(fixs,flow_dir,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(fixs,1);
 
 velocities=fixs(2:N,:)-fixs(1:N-1,:);
-filenames=dir([input_dir, '/capture_img_out_*.png']);
+filenames=dir([flow_dir, '/capture_img_out_*.png']);
 if length(filenames)~=N-1
     disp('All the flow calculation hasn''t been done...');
 end;
