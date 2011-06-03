@@ -48,6 +48,7 @@ end
 
 filename=fullfile(input_dir, 'save.mat');
 load(filename);
+eye_pos=[eye_pos(:,2),eye_pos(:,1)];
 
 for i=starti:endi,    
     imgFileName=fullfile(input_dir, names(i,:));
