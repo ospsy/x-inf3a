@@ -120,16 +120,16 @@ else
         for k=fixations(i,5):fixations(i,6)
             if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
                 fprintf('Dropping out-of-range fixation points...\n');
-                if fixations(i,3)<=0
+                if fixs(k,2)<=0
                     fprintf('\thigh\n');
                 end
-                if fixations(i,2)<=0
+                if fixs(k,1)<=0
                     fprintf('\tleft\n');
                 end
-                if fixations(i,3)>logs.siz_Outimg(1)
+                if fixs(k,2)>logs.siz_Outimg(1)
                     fprintf('\tbottom\n');
                 end
-                if fixations(i,2)>logs.siz_Outimg(2)
+                if fixs(k,1)>logs.siz_Outimg(2)
                     fprintf('\tright\n');
                 end
                 continue

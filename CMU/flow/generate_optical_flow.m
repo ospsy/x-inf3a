@@ -45,14 +45,16 @@ for k=starti:endi
     fprintf('Processing %s and %s\n',filenames(k).name,filenames(k+1).name);
     fname=[input_dir, '/', filenames(k).name];
     [pathstr, name, ext] = fileparts(fname);
-    output_name=fullfile(output_dir, [name '.flo']);
+    output_name=fullfile(output_dir, [name '.png'] );
     if ~exist(output_name,'file')
 	    img1=double(imread(fname));
 	    img2=double(imread(fullfile(input_dir, filenames(k+1).name)));
 	    flow = mex_OF(img1, img2);
-	    write_flow(flow(:,:,1),flow(:,:,2), output_name);
-        tmp=0.1*sqrt(flow(:,:,1).^2+flow(:,:,1).^2);
-        imwrite(tmp,[output_name '.png']);
+        flow=flow./40+0.5;
+        flow(:,:,3)=zeros(size(flow,1),size(flow,2));
+        imwrite(flow,output_name);
+%         tmp=0.05*sqrt(flow(:,:,1).^2+flow(:,:,1).^2);
+%         imwrite(tmp,[output_name '.png']);
     end
 end
 
