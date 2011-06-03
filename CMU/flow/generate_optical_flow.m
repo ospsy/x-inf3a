@@ -5,7 +5,7 @@ if ~exist('input_dir', 'var')
     return
 end
 
-output_dir=fullfile(input_dir);
+output_dir=fullfile(input_dir,'flow');
 input_dir=fullfile(input_dir,'data');
 
 if ~exist(input_dir, 'dir')
