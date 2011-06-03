@@ -259,7 +259,7 @@ if length(filenames)~=N-1
     disp('All the flow calculation hasn''t been done...');
 end;
 for i=1:N-1
-    flow=double(imread(filenames(i).name));
+    flow=double(imread(fullfile(flow_dir,filenames(i).name)));
     f=(flow(fixs(i,1),fixs(i,2),1:2)-0.5)*40;
     disp(velocities(i,:));
     disp(f);
