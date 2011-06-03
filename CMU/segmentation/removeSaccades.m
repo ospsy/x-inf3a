@@ -246,6 +246,11 @@ N=size(fixs,1);
 velocities=fixs(2:N,:)-fixs(1:N-1,:);
 velocities=sum(velocities.^2,2).^0.5; % norm-2 of the velocities
 velocities=velocities';
+
+if ~exist('timestamps', 'var') || isempty(timestamps)
+    timestamps = 1/30*(1:N)';
+end
+
 result= HMMExtraction(velocities,timestamps);
 end
 
@@ -264,14 +269,18 @@ for i=1:N-1
        continue 
     end
     f=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
-    disp(velocities(i,:));
-    disp(f);
-    disp('_______________');
+%     disp(velocities(i,:));
+%     disp(f);
+%     disp('_______________');
     velocities(i,:)=velocities(i,:)+f;
 end
 
 velocities=sum(velocities.^2,2).^0.5; % norm-2 of the velocities
 velocities=velocities';
+
+if ~exist('timestamps', 'var') || isempty(timestamps)
+    timestamps = 1/30*(1:N)';
+end
 
 result= HMMExtraction(velocities,timestamps);
 end
