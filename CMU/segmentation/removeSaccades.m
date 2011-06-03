@@ -6,6 +6,7 @@ if ~exist('input_dir', 'var')
 end
 
 output_dir=fullfile(input_dir);
+flow_dir=fullfile(input_dir,'flow');
 input_dir=fullfile(input_dir,'data');
 
 if ~exist(input_dir, 'dir')
@@ -55,8 +56,10 @@ timestamps=logs.Data(:,14);
 fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
 if type==1
     fixations=dispersionExtraction(max(fixs,-200));
+elseif type ==2
+    fixations=HMMWithFlowExtraction(max(fixs,-200));
 else
-    fixations=HMMExtraction(max(fixs,-200));
+    fixations=HMMSimpleExtraction(max(fixs,-200));
 end;
 disp(fixations);
 
@@ -235,18 +238,48 @@ end
 fprintf('%i fixations points found \n',numberFixations);
 end
 
-% Extraction based on Viterbi algorithm on Hidden Markov Models
-function result = HMMExtraction(fixs,timestamps)
+
+function result = HMMSimpleExtraction(fixs,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(fixs,1);
-
-if ~exist('timestamps', 'var') || isempty(timestamps)
-    timestamps = 1/30*(1:N)';
-end
 
 velocities=fixs(2:N,:)-fixs(1:N-1,:);
 velocities=sum(velocities.^2,2).^0.5; % norm-2 of the velocities
 velocities=velocities';
+result= HMMExtraction(velocities,timestamps);
+end
+
+function result = HMMWithFlowExtraction(fixs,timestamps)
+addpath(genpath('../HMMall/'));
+N=size(fixs,1);
+
+velocities=fixs(2:N,:)-fixs(1:N-1,:);
+filenames=dir([input_dir, '/capture_img_out_*.png']);
+if length(filenames)~=N-1
+    disp('All the flow calculation hasn''t been done...');
+end;
+for i=1:N-1
+    flow=double(imread(filenames(i).name));
+    f=(flow(fixs(i,1),fixs(i,2),1:2)-0.5)*40;
+    disp(velocities(i,:));
+    disp(f);
+    velocities(i,:)=velocities(i,:)+f;
+end
+
+velocities=sum(velocities.^2,2).^0.5; % norm-2 of the velocities
+velocities=velocities';
+
+result= HMMExtraction(velocities,timestamps);
+end
+
+% Extraction based on Viterbi algorithm on Hidden Markov Models
+function result = HMMExtraction(velocities,timestamps)
+addpath(genpath('../HMMall/'));
+N=size(velocities,1);
+
+if ~exist('timestamps', 'var') || isempty(timestamps)
+    timestamps = 1/30*(1:N)';
+end
 
 m=[50 300];
 m=reshape(m, [1 2 1]);
