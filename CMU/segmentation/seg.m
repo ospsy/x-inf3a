@@ -132,7 +132,7 @@ for i=starti:endi,
              cmd=[cmd ' -sobel ']
         end
         if flow
-            floname=fullfile(input_dir,fullfile('flow',[name '.flo']));
+            floname=fullfile(input_dir,fullfile('flow',[name '.png']));
             if exist(floname,'file')
                 cmd=[cmd ' -flow ' floname ]
             else

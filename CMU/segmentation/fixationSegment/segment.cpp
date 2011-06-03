@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
 	cmdLine.SplitLine(argc, argv);
 
 	if ( !(cmdLine.HasSwitch("-i") && cmdLine.HasSwitch("-o") && (cmdLine.HasSwitch("-pos") || cmdLine.HasSwitch("-f"))) ){
-		fprintf(stderr, "usage: %s -i <image> -o <output-prefix> < -pos <x> <y> | -f <fixation-points-file> > [ -flow <optical-flow-file> ] [-sobel]\n",argv[0]);
+		fprintf(stderr, "usage: %s -i <image> -o <output-directory> < -pos <x> <y> | -f <fixation-points-file> > [ -flow <optical-flow-file> ] [-sobel]\n",argv[0]);
 		exit(1);
 	}
 	class segLayer frame1;
@@ -27,7 +27,17 @@ int main(int argc, char* argv[]){
 
 	if (cmdLine.HasSwitch("-flow")){
 		strcpy (tmp, cmdLine.GetArgument("-flow", 0).c_str());
-		frame1.readFlow_flo(tmp);	
+		IplImage *flow=cvLoadImage(tmp);
+		IplImage *flow32 = cvCreateImage(cvGetSize(flow), IPL_DEPTH_32F,3);
+		IplImage *flowU = cvCreateImage(cvGetSize(flow), IPL_DEPTH_32F,1);
+  		IplImage *flowV = cvCreateImage(cvGetSize(flow), IPL_DEPTH_32F,1);
+		cvConvertScale(flow, flow32, 40/255.,-20);
+		cvSplit(flow32,flowU,NULL,NULL,NULL);
+		cvSplit(flow32,NULL,flowV,NULL,NULL);
+		frame1.setU(flowU);
+		frame1.setV(flowV);
+		cvReleaseImage(&flow);
+		cvReleaseImage(&flow32);
 	}
 
 	frame1.generatePbBoundary();

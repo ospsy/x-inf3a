@@ -22,7 +22,7 @@ disp(name);
 
 overlap_threshold = 0.9;
 minimum_segsize = 1600;
-onboarder_threshold=0.1;
+onboarder_threshold=0.5;
 resfiles=dir(sprintf('%s/%s_*_res.mat', input_dir, name));
 
 disp(length(resfiles));
