@@ -263,6 +263,7 @@ for i=1:N-1
     f=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
     disp(velocities(i,:));
     disp(f);
+    disp('_______________');
     velocities(i,:)=velocities(i,:)+f;
 end
 
