@@ -251,7 +251,7 @@ if ~exist('timestamps', 'var') || isempty(timestamps)
     timestamps = 1/30*(1:N)';
 end
 
-result= HMMExtraction(velocities,timestamps);
+result= HMMExtraction(fixs,velocities,timestamps);
 end
 
 function result = HMMWithFlowExtraction(fixs,flow_dir,timestamps)
@@ -282,11 +282,11 @@ if ~exist('timestamps', 'var') || isempty(timestamps)
     timestamps = 1/30*(1:N)';
 end
 
-result= HMMExtraction(velocities,timestamps);
+result= HMMExtraction(fixs,velocities,timestamps);
 end
 
 % Extraction based on Viterbi algorithm on Hidden Markov Models
-function result = HMMExtraction(velocities,timestamps)
+function result = HMMExtraction(fixs,velocities,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(velocities,1);
 
