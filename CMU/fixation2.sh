@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 1 ]
 then
-	echo "Usage : <input_dir>"
+	echo "Usage : <input_dir> [0|1]"
 	exit 0
 fi
 
@@ -15,7 +15,13 @@ else
 	exit 0
 fi
 
-cmd="matlab -nojvm -r addpath('segmentation');fixation2('$input_dir');exit;"
+if [ -z $2 ]
+then
+	cmd="matlab -nojvm -r addpath('segmentation');fixation2('$input_dir');exit;"
+else
+	cmd="matlab -nojvm -r addpath('segmentation');fixation2('$input_dir',$2);exit;"
+fi
+
 echo $cmd
 $cmd &
 	

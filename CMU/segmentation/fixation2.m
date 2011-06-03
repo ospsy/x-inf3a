@@ -19,6 +19,10 @@ end
 
 if ~exist('grid','var')
     grid=[0,0 ; [40*cos(pi/4:pi/4:2*pi) ; 40*sin(pi/4:pi/4:2*pi)]' ; [80*cos(pi/4:pi/4:2*pi) ; 80*sin(pi/4:pi/4:2*pi)]' ];
+elseif grid==0
+    grid=[0,0];
+elseif grid==1
+    grid=[0,0 ; [20*cos(pi/2:pi/2:2*pi) ; 20*sin(pi/2:pi/2:2*pi)]'];
 end
 
 filenames=dir([input_dir, '/*.ppm']);

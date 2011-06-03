@@ -1,4 +1,4 @@
-function removeSaccades(input_dir, type)
+function removeSaccades(input_dir, type, type2)
 
 if ~exist('input_dir', 'var')
     fprintf('Need an input_dir\n');
@@ -16,6 +16,10 @@ end
 
 if ~exist('type', 'var')
     type=0;
+end
+
+if ~exist('type2', 'var')
+    type2=0;
 end
 
 if ~exist(input_dir, 'dir')
@@ -62,57 +66,92 @@ unix(['rm ' imgFixs_dir '/*']);
 names=zeros(1,size(filenames(1).name,2));
 names2=zeros(1,size(filenames(1).name,2));
 eye_pos=zeros(1,2);
-n=0;
-for i=1:size(fixations,1)
-    k=fixations(i,1);
-    if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
-        fprintf('Dropping out-of-range fixation points...\n');
-        if fixations(i,3)<=0
-            fprintf('\thigh\n');
-        end
-        if fixations(i,2)<=0
-            fprintf('\tleft\n');
-        end
-        if fixations(i,3)>logs.siz_Outimg(1)
-            fprintf('\tbottom\n');
-        end
-        if fixations(i,2)>logs.siz_Outimg(2)
-            fprintf('\tright\n');
-        end
-        continue
-    end;
-    n=n+1;
-    bestScore=0;
-    argMax=-1;
-    for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
-        input_name=fullfile(input_dir,filenames(k).name);
+if type2==0
+    n=0;
+    for i=1:size(fixations,1)
+        k=fixations(i,1);
+        if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
+            fprintf('Dropping out-of-range fixation points...\n');
+            if fixations(i,3)<=0
+                fprintf('\thigh\n');
+            end
+            if fixations(i,2)<=0
+                fprintf('\tleft\n');
+            end
+            if fixations(i,3)>logs.siz_Outimg(1)
+                fprintf('\tbottom\n');
+            end
+            if fixations(i,2)>logs.siz_Outimg(2)
+                fprintf('\tright\n');
+            end
+            continue
+        end;
+        n=n+1;
+        bestScore=0;
+        argMax=-1;
+        for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
+            input_name=fullfile(input_dir,filenames(k).name);
+            img=imread(input_name);
+            tmp=sharpnessScore(img);
+            if tmp>bestScore
+                argMax=k;
+                bestScore=tmp;
+            end
+    %         if isVerticalSync(img) || k==1
+    %             break;
+    %         else
+    %             k=k-1;
+    %             fprintf('Dropping out-of-VSync frame : %i\n',k);
+    %         end;
+        end;
+        input_name=fullfile(input_dir,filenames(argMax).name);
+        output_name=fullfile(output_dir, filenames(argMax).name);
+        names(n,:)=filenames(argMax).name;
+        names2(n,:)=filenames(argMax+1).name;
+        eye_pos(n,:)=round([fixations(i,3) fixations(i,2)]);
+        copyfile(input_name,output_name);
         img=imread(input_name);
-        tmp=sharpnessScore(img);
-        if tmp>bestScore
-            argMax=k;
-            bestScore=tmp;
+        img=imposelabel(img,eye_pos(n,:));
+        imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
+    end
+else
+    n=0;
+    for i=1:size(fixations,1)
+        for k=fixations(i,5):fixations(i,6)
+            if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
+                fprintf('Dropping out-of-range fixation points...\n');
+                if fixations(i,3)<=0
+                    fprintf('\thigh\n');
+                end
+                if fixations(i,2)<=0
+                    fprintf('\tleft\n');
+                end
+                if fixations(i,3)>logs.siz_Outimg(1)
+                    fprintf('\tbottom\n');
+                end
+                if fixations(i,2)>logs.siz_Outimg(2)
+                    fprintf('\tright\n');
+                end
+                continue
+            end;
+            n=n+1;
+            input_name=fullfile(input_dir,filenames(k).name);
+            output_name=fullfile(output_dir, filenames(k).name);
+            names(n,:)=filenames(k).name;
+            names2(n,:)=filenames(k+1).name;
+            eye_pos(n,:)=round([fixs(i,2) fixs(i,1)]);
+            copyfile(input_name,output_name);
+            %img=imread(input_name);
+            %img=imposelabel(img,eye_pos(n,:));
+            %imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
         end
-%         if isVerticalSync(img) || k==1
-%             break;
-%         else
-%             k=k-1;
-%             fprintf('Dropping out-of-VSync frame : %i\n',k);
-%         end;
-    end;
-    input_name=fullfile(input_dir,filenames(argMax).name);
-    output_name=fullfile(output_dir, filenames(argMax).name);
-    names(n,:)=filenames(argMax).name;
-    names2(n,:)=filenames(argMax+1).name;
-    eye_pos(n,:)=round([fixations(i,3) fixations(i,2)]);
-    copyfile(input_name,output_name);
-    img=imread(input_name);
-    img=imposelabel(img,eye_pos(n,:));
-    imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
+    end
 end
 % fid = fopen(fullfile(output_dir,'eye_positions.txt'),'w');
 % fprintf(fid,'%f %f\n',( fixations(:,2:3) )');
 % fclose(fid);
 names=char(names);
+names2=char(names2);
 save([output_dir '/save.mat'],'eye_pos','names','names2');
 end
 
@@ -186,7 +225,7 @@ while i<=N
            j=j+1;
        end
        numberFixations=numberFixations+1;
-       result(numberFixations,:)=[round(i+n/2) sumPt/n d];
+       result(numberFixations,:)=[round(i+n/2) sumPt/n d i j-1];
        i=j;
    else
        i=i+1;
@@ -235,7 +274,7 @@ while i<=size(path,2)
         d=timestamps(j-1)-timestamps(i);
         if d>=0.1 && j-i>=2
             numberFixations=numberFixations+1;
-            result(numberFixations,:)=[round((i+j-1)/2) sum(fixs(i:j-1,:),1)/(j-i) d];
+            result(numberFixations,:)=[round((i+j-1)/2) sum(fixs(i:j-1,:),1)/(j-i) d i j-1];
         end
         i=j;
 	else
