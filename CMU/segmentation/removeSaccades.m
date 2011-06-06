@@ -23,11 +23,6 @@ if ~exist('type2', 'var')
     type2=0;
 end
 
-if ~exist(input_dir, 'dir')
-    fprintf('intput_dir does''nt exist\n');
-    return
-end
-
 if ~exist(output_dir, 'dir')
     mkdir(output_dir);
 end
@@ -142,7 +137,7 @@ else
             output_name=fullfile(output_dir, filenames(k).name);
             names(n,:)=filenames(k).name;
             names2(n,:)=filenames(k+1).name;
-            eye_pos(n,:)=round([fixs(i,2) fixs(i,1)]);
+            eye_pos(n,:)=round([fixs(k,2) fixs(k,1)]);
             copyfile(input_name,output_name);
             %img=imread(input_name);
             %img=imposelabel(img,eye_pos(n,:));
