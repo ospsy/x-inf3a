@@ -106,10 +106,11 @@ if type2==0
         output_name=fullfile(output_dir, filenames(argMax).name);
         names(n,:)=filenames(argMax).name;
         names2(n,:)=filenames(argMax+1).name;
-        eye_pos(n,:)=round([fixations(i,3) fixations(i,2)]);
+        %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
+        eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
         copyfile(input_name,output_name);
         img=imread(input_name);
-        img=imposelabel(img,eye_pos(n,:));
+        img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
         imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
     end
 else
@@ -137,7 +138,7 @@ else
             output_name=fullfile(output_dir, filenames(k).name);
             names(n,:)=filenames(k).name;
             names2(n,:)=filenames(k+1).name;
-            eye_pos(n,:)=round([fixs(k,2) fixs(k,1)]);
+            eye_pos(n,:)=round([fixs(k,1) fixs(k,2)]);
             copyfile(input_name,output_name);
             %img=imread(input_name);
             %img=imposelabel(img,eye_pos(n,:));
@@ -289,7 +290,7 @@ if ~exist('timestamps', 'var') || isempty(timestamps)
     timestamps = 1/30*(1:N)';
 end
 
-m=[50 300];
+m=[20 100];
 m=reshape(m, [1 2 1]);
 sigma=[50;5000];
 sigma=reshape(sigma, [1 1 2 1]);
