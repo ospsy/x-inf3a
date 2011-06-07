@@ -409,7 +409,8 @@ void calcPbBoundaryWtFlow(	IplImage* edgeMap,
 	  							(leftSum_v.val[0]-rightSum_v.val[0])*(leftSum_v.val[0]-rightSum_v.val[0]) ;
 				vecDiff        = sqrt(vecDiff);	
 				float prob = sigmoid(6*vecDiff/maxVal, beta1, beta2);
-				CV_IMAGE_ELEM(edgeMap,float,y,x) *=(1+3*prob)/4.0;
+				CV_IMAGE_ELEM(edgeMap,float,y,x) /=2;
+				CV_IMAGE_ELEM(edgeMap,float,y,x) +=prob/2;
 				//if (prob>0.5)
 				//	printf("%f\n",vecDiff);
 				//decides border ownership!

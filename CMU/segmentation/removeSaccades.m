@@ -111,6 +111,55 @@ if type2==0
         copyfile(input_name,output_name);
         img=imread(input_name);
         img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
+        imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
+    end
+elseif type2==1
+    n=0;
+    for i=1:size(fixations,1)
+        k=fixations(i,1);
+        if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
+            fprintf('Dropping out-of-range fixation points...\n');
+            if fixations(i,3)<=0
+                fprintf('\thigh\n');
+            end
+            if fixations(i,2)<=0
+                fprintf('\tleft\n');
+            end
+            if fixations(i,3)>logs.siz_Outimg(1)
+                fprintf('\tbottom\n');
+            end
+            if fixations(i,2)>logs.siz_Outimg(2)
+                fprintf('\tright\n');
+            end
+            continue
+        end;
+        n=n+1;
+        bestScore=0;
+        argMax=-1;
+        for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
+            input_name=fullfile(input_dir,filenames(k).name);
+            img=imread(input_name);
+            tmp=sharpnessScore(img);
+            if tmp>bestScore
+                argMax=k;
+                bestScore=tmp;
+            end
+    %         if isVerticalSync(img) || k==1
+    %             break;
+    %         else
+    %             k=k-1;
+    %             fprintf('Dropping out-of-VSync frame : %i\n',k);
+    %         end;
+        end;
+        input_name=fullfile(input_dir,filenames(argMax).name);
+        output_name=fullfile(output_dir, filenames(argMax).name);
+        names(n,:)=filenames(argMax).name;
+        names2(n,:)=filenames(argMax+1).name;
+        %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
+        eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
+        copyfile(input_name,output_name);
+        img=imread(input_name);
+        img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
         imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
     end
 else
