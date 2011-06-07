@@ -41,7 +41,8 @@ fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
 n=1;
 for i=1:N
     if strcmp(names(n,:),filenames(i).name)
-        target=[segs_dir '/' names(n,:)];
+        t=filepartsLast(names(n,:));
+        target=[segs_dir '/' t '_001_fg2.jpg'];
         color=[0 255 0];
         if ~exist(target,'file')
             target=[input_dir '/' filenames(i).name];
