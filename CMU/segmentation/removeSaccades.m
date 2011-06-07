@@ -218,7 +218,7 @@ tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:); % second degree derivative
 result = max(sum(tmp,2)/size(tmp,2)) < 0.07; 
 end
 
-function result = dispersionExtraction(fixs,timestamps,durationThreshold,dispersionThreshold)
+function result = dispersionExtractionWithFlow(fixs,flow_dir,timestamps,durationThreshold,dispersionThreshold)
 
 if ~exist('durationThreshold', 'var') || isempty(durationThreshold)
     durationThreshold=0.2;
