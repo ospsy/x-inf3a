@@ -114,53 +114,53 @@ if type2==0
         imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
     end
 elseif type2==1
+    green=[0 255 0];
+    blue=[0 0 255];
+    windowSize=20;
+    color=blue;
     n=0;
     for i=1:size(fixations,1)
-        k=fixations(i,1);
-        if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
-            fprintf('Dropping out-of-range fixation points...\n');
-            if fixations(i,3)<=0
-                fprintf('\thigh\n');
+        gotOne=false;
+        d=fixations(i,6)+1-fixations(i,5);
+        begin=fixations(i,5)+round(d/6);
+        ending=fixations(i,5)+round(5*d/6);
+        nbSteps=round((ending+1-begin)/windowSize)+1;
+        stepSize=round((ending+1-begin)/nbSteps);
+        for l=0:nbSteps-1
+            bestScore=0;
+            argMax=-1;
+            for k=(begin+l*stepSize):min(ending,begin+(l+1)*stepSize)
+                input_name=fullfile(input_dir,filenames(k).name);
+                img=imread(input_name);
+                tmp=sharpnessScore(img);
+                if tmp>bestScore
+                    argMax=k;
+                    bestScore=tmp;
+                end
             end
-            if fixations(i,2)<=0
-                fprintf('\tleft\n');
+            if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
+                continue
             end
-            if fixations(i,3)>logs.siz_Outimg(1)
-                fprintf('\tbottom\n');
-            end
-            if fixations(i,2)>logs.siz_Outimg(2)
-                fprintf('\tright\n');
-            end
-            continue
-        end;
-        n=n+1;
-        bestScore=0;
-        argMax=-1;
-        for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
-            input_name=fullfile(input_dir,filenames(k).name);
+            gotOne=true;
+            n=n+1;
+            input_name=fullfile(input_dir,filenames(argMax).name);
+            output_name=fullfile(output_dir, filenames(argMax).name);
+            names(n,:)=filenames(argMax).name;
+            names2(n,:)=filenames(argMax+1).name;
+            %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
+            eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
+            copyfile(input_name,output_name);
             img=imread(input_name);
-            tmp=sharpnessScore(img);
-            if tmp>bestScore
-                argMax=k;
-                bestScore=tmp;
+            img=drawCross(img,eye_pos(n,1),eye_pos(n,2),color);
+            imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
+        end
+        if gotOne
+            if isequal(color,green)
+                color=blue;
+            else
+                color=green;
             end
-    %         if isVerticalSync(img) || k==1
-    %             break;
-    %         else
-    %             k=k-1;
-    %             fprintf('Dropping out-of-VSync frame : %i\n',k);
-    %         end;
-        end;
-        input_name=fullfile(input_dir,filenames(argMax).name);
-        output_name=fullfile(output_dir, filenames(argMax).name);
-        names(n,:)=filenames(argMax).name;
-        names2(n,:)=filenames(argMax+1).name;
-        %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
-        eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
-        copyfile(input_name,output_name);
-        img=imread(input_name);
-        img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
-        imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
+        end
     end
 else
     n=0;
@@ -216,6 +216,64 @@ tmp=im2double(img);
 tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:);
 tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:); % second degree derivative
 result = max(sum(tmp,2)/size(tmp,2)) < 0.07; 
+end
+
+function result = dispersionExtraction(fixs,timestamps,durationThreshold,dispersionThreshold)
+
+if ~exist('durationThreshold', 'var') || isempty(durationThreshold)
+    durationThreshold=0.2;
+end
+
+if ~exist('dispersionThreshold', 'var') || isempty(dispersionThreshold)
+    dispersionThreshold=150;
+end
+
+N=size(fixs,1);
+
+if ~exist('timestamps', 'var') || isempty(timestamps)
+    timestamps = 1/30*(1:N)';
+end
+
+i=1;%origin of considered window
+numberFixations=0;
+result=[ ];
+
+while i<=N
+   d=0;%duration of window
+   n=0;%# of points in window
+   sumPt=[0 0];
+   minPt=[1000000 1000000];
+   maxPt=[0 0];
+   j=i;
+   while j<=N && d<=durationThreshold %initialisation on a minimal duration window
+       d=timestamps(j)-timestamps(i);
+       n=n+1;
+       sumPt=sumPt+fixs(j,:);
+       minPt=min(minPt,fixs(j,:));
+       maxPt=max(maxPt,fixs(j,:));
+       j=j+1;
+   end
+   if d<=durationThreshold % whitout it the last image would always be considered as a fixation point
+       break
+   end
+   if sum(maxPt-minPt)<=dispersionThreshold && j-i>=2 %this is a fixation point
+       while j<=N && sum(max(maxPt,fixs(j,:))-min(minPt,fixs(j,:)))<=dispersionThreshold %add point while the dispersion is not too big
+           d=timestamps(j)-timestamps(i);
+           n=n+1;
+           sumPt=sumPt+fixs(j,:);
+           minPt=min(minPt,fixs(j,:));
+           maxPt=max(maxPt,fixs(j,:));
+           j=j+1;
+       end
+       numberFixations=numberFixations+1;
+       result(numberFixations,:)=[round(i+n/2) sumPt/n d i j-1];
+       i=j;
+   else
+       i=i+1;
+   end
+end
+
+fprintf('%i fixations points found \n',numberFixations);
 end
 
 % Keep relevant fixation points from raw data
