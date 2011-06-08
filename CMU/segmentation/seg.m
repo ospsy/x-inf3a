@@ -177,7 +177,10 @@ for i=starti:endi,
                     hold off;
                     title('Enclosing contour (Without Color)');
                 end
-
+                img_fg=drawCross(img_fg,fixs(1,2),fixs(1,1),[0 255 0]);
+                for l=2:size(fixs,1)
+                    img_fg=drawCross(img_fg,fixs(l,2),fixs(l,1),[0 0 255]);
+                end
                 fg_name=[name, sprintf('_%03d_fg2.jpg', cnt)];
                 imwrite(img_fg, fullfile(tmp_dir, fg_name));
 
