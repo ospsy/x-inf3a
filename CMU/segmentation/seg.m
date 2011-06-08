@@ -46,9 +46,17 @@ if(~exist(fix_dir, 'dir'))
 end
 
 if flow 
-    cluster_dir=[output_dir, '/segs_OF/'];
+    if sobel
+        cluster_dir=[output_dir, '/segs_sobel_OF/'];
+    else
+        cluster_dir=[output_dir, '/segs_OF/'];
+    end
 else 
-    cluster_dir=[output_dir, '/segs/'];
+    if sobel
+        cluster_dir=[output_dir, '/segs_sobel/'];
+    else
+        cluster_dir=[output_dir, '/segs/'];
+    end
 end
 if(~exist(cluster_dir, 'dir'))
     mkdir(cluster_dir);

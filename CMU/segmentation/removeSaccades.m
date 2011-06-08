@@ -53,6 +53,8 @@ if type==1
     fixations=dispersionExtraction(max(fixs,-200));
 elseif type ==2
     fixations=HMMWithFlowExtraction(max(fixs,-200),flow_dir);
+elseif type ==3
+    fixations=dispersionWithFlowExtraction(max(fixs,-200),flow_dir);
 else
     fixations=HMMSimpleExtraction(max(fixs,-200));
 end;
@@ -218,7 +220,7 @@ tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:); % second degree derivative
 result = max(sum(tmp,2)/size(tmp,2)) < 0.07; 
 end
 
-function result = dispersionExtractionWithFlow(fixs,flow_dir,timestamps,durationThreshold,dispersionThreshold)
+function result = dispersionWithFlowExtraction(fixs,flow_dir,timestamps,durationThreshold,dispersionThreshold)
 
 if ~exist('durationThreshold', 'var') || isempty(durationThreshold)
     durationThreshold=0.2;
@@ -229,51 +231,25 @@ if ~exist('dispersionThreshold', 'var') || isempty(dispersionThreshold)
 end
 
 N=size(fixs,1);
+filenames=dir([flow_dir, '/capture_img_out_*.png']);
+if length(filenames)~=N-1
+    disp('All the flow calculation hasn''t been done...');
+end;
 
 if ~exist('timestamps', 'var') || isempty(timestamps)
     timestamps = 1/30*(1:N)';
 end
 
-i=1;%origin of considered window
-numberFixations=0;
-result=[ ];
+for i=1:N-1
+    flow=getFlow(fullfile(flow_dir,filenames(i).name));
+    if fixs(i,1)<1 || fixs(i,2)<1 || fixs(i,2)>size(flow,1) || fixs(i,1)>size(flow,2)
+       continue 
+    end
+    f=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
+    fixs(i+1,:)=fixs(i+1,:)-f;
+end;
 
-while i<=N
-   d=0;%duration of window
-   n=0;%# of points in window
-   sumPt=[0 0];
-   minPt=[1000000 1000000];
-   maxPt=[0 0];
-   j=i;
-   while j<=N && d<=durationThreshold %initialisation on a minimal duration window
-       d=timestamps(j)-timestamps(i);
-       n=n+1;
-       sumPt=sumPt+fixs(j,:);
-       minPt=min(minPt,fixs(j,:));
-       maxPt=max(maxPt,fixs(j,:));
-       j=j+1;
-   end
-   if d<=durationThreshold % whitout it the last image would always be considered as a fixation point
-       break
-   end
-   if sum(maxPt-minPt)<=dispersionThreshold && j-i>=2 %this is a fixation point
-       while j<=N && sum(max(maxPt,fixs(j,:))-min(minPt,fixs(j,:)))<=dispersionThreshold %add point while the dispersion is not too big
-           d=timestamps(j)-timestamps(i);
-           n=n+1;
-           sumPt=sumPt+fixs(j,:);
-           minPt=min(minPt,fixs(j,:));
-           maxPt=max(maxPt,fixs(j,:));
-           j=j+1;
-       end
-       numberFixations=numberFixations+1;
-       result(numberFixations,:)=[round(i+n/2) sumPt/n d i j-1];
-       i=j;
-   else
-       i=i+1;
-   end
-end
-
-fprintf('%i fixations points found \n',numberFixations);
+result = dispersionExtraction(fixs,timestamps,durationThreshold,dispersionThreshold);
 end
 
 % Keep relevant fixation points from raw data
@@ -367,7 +343,7 @@ if length(filenames)~=N-1
     disp('All the flow calculation hasn''t been done...');
 end;
 for i=1:N-1
-    flow=(double(imread(fullfile(flow_dir,filenames(i).name)))/255-0.5)*40;
+    flow=getFlow(fullfile(flow_dir,filenames(i).name));
     if fixs(i,1)<1 || fixs(i,2)<1 || fixs(i,2)>size(flow,1) || fixs(i,1)>size(flow,2)
        continue 
     end
@@ -386,6 +362,10 @@ if ~exist('timestamps', 'var') || isempty(timestamps)
 end
 
 result= HMMExtraction(fixs,velocities,timestamps);
+end
+
+function flow = getFlow(filename)
+    flow=(double(imread(filename))/255-0.5)*40;
 end
 
 % Extraction based on Viterbi algorithm on Hidden Markov Models
