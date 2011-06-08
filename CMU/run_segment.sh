@@ -22,8 +22,13 @@ if [ -z $3 ]
 then
 	flow=0
 else
-	flow=1
-	echo "Using optical flow"
+	if [ $3 -eq 0 ]
+	then
+		flow=0
+	else 
+		flow=1
+		echo "Using optical flow"
+	fi
 fi
 
 if [ -z $4 ]
@@ -62,7 +67,7 @@ for i in `seq 1 ${nb_threads} `
 do
 	first=`echo "scale=0; ((${i}-1)*${tmp}+1)/1" | bc`
 	last=`echo "scale=0; (${i}*${tmp})/1" | bc`
-	cmd="nice -10 matlab -nojvm -r addpath('segmentation');seg('$input_dir',$flow,$sobel,$first,$last);exit;"
+	cmd="nice -18 matlab -nojvm -r addpath('segmentation');seg('$input_dir',$flow,$sobel,$first,$last);exit;"
 	echo $cmd
 	$cmd & > /dev/null
 done
