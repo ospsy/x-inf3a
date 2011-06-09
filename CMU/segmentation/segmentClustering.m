@@ -1,5 +1,5 @@
 
-function segmentClustering(name, input_dir, output_dir, img_dir)
+function segmentClustering(name, input_dir, output_dir, img_dir,fixs)
 
 % addpath('../../shared');
 
@@ -94,6 +94,10 @@ for j=1:length(segs_cluster)
 %             img_fg2 = imposelabel(img_fg2, fixPt, 11, [255, 0, 0]);
         fg2_name=[sprintf('%s_%03d_fg2.jpg', name,j)];
         disp(fg2_name);
+        img_fg2=drawCross(img_fg2,fixs(1,2),fixs(1,1),[0 255 0]);
+        for l=2:size(fixs,1)
+            img_fg2=drawCross(img_fg2,fixs(l,2),fixs(l,1),[0 0 255]);
+        end
         imwrite(img_fg2, fullfile(output_dir, fg2_name));
     end
 end
