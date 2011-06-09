@@ -65,6 +65,12 @@ unix(['rm ' imgFixs_dir '/*']);
 
 names=zeros(1,size(filenames(1).name,2));
 names2=zeros(1,size(filenames(1).name,2));
+flowFilenames=dir([flow_dir, '/capture_img_out_*.png']);
+using_flow=true;
+if length(flowFilenames)~=N-1
+    disp('All the flow calculation hasn''t been done...');
+    using_flow=false;
+end;
 eye_pos=zeros(1,2);
 if type2==0
     n=0;
@@ -93,6 +99,11 @@ if type2==0
             input_name=fullfile(input_dir,filenames(k).name);
             img=imread(input_name);
             tmp=sharpnessScore(img);
+            if using_flow
+                flow_name=fullfile(flow_dir,flowFilenames(k).name);
+                flow_img=imread(flow_name);
+                tmp=sharpnessScore(img)+sum(std(std(double(flow_img),0,1),0,2));
+            end
             if tmp>bestScore
                 argMax=k;
                 bestScore=tmp;

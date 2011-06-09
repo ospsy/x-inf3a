@@ -197,6 +197,14 @@ int segLayer::edgeSobel(){
   IplImage* imgGray = cvCreateImage(cvSize(width, height), IPL_DEPTH_8U, 1);
   cvCvtColor(img, imgGray, CV_BGR2GRAY);
   calcSobelEdge(imgGray, edgeGrad, edgeOri);
+  /*for(int y = 0; y < edgeGrad->height; y++){
+    for( int x = 0; x < edgeGrad->width; x++){
+    	if( CV_IMAGE_ELEM(edgeGrad,float,y,x)<0.2 )
+		CV_IMAGE_ELEM(edgeGrad,float,y,x)=0;
+	else
+		CV_IMAGE_ELEM(edgeGrad,float,y,x)=1;
+    }
+  }*/
   return 0;
 }
 
