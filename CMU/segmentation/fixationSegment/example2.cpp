@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
   	frame1.readImage(argv[1]);
 
 	// Edge detection!
-  	frame1.edgeCGTG();
+  	frame1.edgeSobel();
 	/*frame1.saveEdgeMap(NULL);
 	return 0;*/
 
@@ -32,7 +32,7 @@ int main(int argc, char* argv[]){
 	cvReleaseImage(&flow);
 	cvReleaseImage(&flow32);
 
-	frame1.displayFlowMag(-1);
+	//frame1.displayFlowMag(-1);
 	frame1.generatePbBoundary();
 	frame1.displayPbBoundary(-1);
 

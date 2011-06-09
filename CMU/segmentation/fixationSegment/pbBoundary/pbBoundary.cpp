@@ -371,7 +371,7 @@ void calcPbBoundaryWtFlow(	IplImage* edgeMap,
 	double beta1 = 10;   
 	double beta2 = 0.6;
 	//Create half-disc filters!!
-	int w = 0.020*sqrt(edgeMap->width*edgeMap->width + edgeMap->height*edgeMap->height);    	
+	int w = 0.040*sqrt(edgeMap->width*edgeMap->width + edgeMap->height*edgeMap->height);    	
   	IplImage** leftDisc;
   	IplImage** rightDisc;
   	leftDisc	= new IplImage*[numOri];
