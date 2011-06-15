@@ -112,6 +112,7 @@ int main(void)
         const char *winOut="Camera_out";
 	const char *winOpt="Camera_opt";
 
+	const char *ParamFileName="param_cap_mem.txt";
 	char Path_name[256];
 	char Img_name[256];
 	char Ext_name[10];
@@ -126,7 +127,7 @@ int main(void)
 	setfile setfile;
 	string  str1,str2,str3;
 
-	if ( setfile.open("param_cap_mem.txt") == 0 ){
+	if ( setfile.open(ParamFileName) == 0 ){
 		fprintf(stderr,"Error.\n");
 		exit(1);
 	}
@@ -386,6 +387,14 @@ int main(void)
 		}
 		return 1;
 	}
+	{
+		char tmp[256];
+		sprintf(tmp,"%s/%s",Path_name,ParamFileName);
+		ifstream f1(ParamFileName, fstream::binary);
+		ofstream f2(tmp, fstream::trunc|fstream::binary);
+		f2 << f1.rdbuf();
+	}
+
 
 	printf(" *** Preparation Time *** \n");
 	printf(" Press ESC to save mode  \n\n");
@@ -617,13 +626,10 @@ int main(void)
 		cout << "Name of folder?"<<endl;
 		cin >> input;
 		if(strcmp(input,"")){
-			cout << "Renaming data folder to " << input << endl;
+			cout << "\tRenaming data folder to " << input << endl;
 			status=rename(Path_name,input);
 			if(status){
-				cout << "Error!" << endl;
-				if (errno==EEXIST){
-					cout << "Already exist" << endl;
-				}
+				cout << "\tCan't use that name, maybe another folder with that name already exist?" << endl;
 			}
 			else
 				break;
