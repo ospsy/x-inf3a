@@ -6,7 +6,7 @@ FIND_PACKAGE( OpenCV REQUIRED )
 
 
 ADD_EXECUTABLE(Capture fhead.cpp main.cpp v4l2uvc.c)
-TARGET_LINK_LIBRARIES(Main ${OpenCV_LIBS})
+TARGET_LINK_LIBRARIES(Capture ${OpenCV_LIBS})
 
 ADD_EXECUTABLE(PostProcess fhead.cpp main2.cpp)
-TARGET_LINK_LIBRARIES(Main2 ${OpenCV_LIBS})
+TARGET_LINK_LIBRARIES(PostProcess ${OpenCV_LIBS})

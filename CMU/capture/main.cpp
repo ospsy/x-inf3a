@@ -397,7 +397,7 @@ int main(void)
 		int key=cvWaitKey(wait_time);
 		cout << "key : "<< key << endl;
     		if (key==27) break;
-		if (key== || key==83){
+		if (key==113 || key==83){
 			struct vdIn *tmp;
 			tmp=videoEye;
 			videoEye=videoOut;
@@ -427,19 +427,19 @@ int main(void)
 		img_in=cvLoadImage("tmp_eye.jpg");
 		cvResize(img_in,img_in_orig,CV_INTER_LINEAR);			// Resize
 		if(Mode_cam0 !=2)
-			cvFlip(img_in_orig,img_in_orig,Mode_cam0);						// Flip
+			cvFlip(img_in_orig,img_in_orig,Mode_cam0);		// Flip
 
 		//Out cam
 		img_out=cvLoadImage("tmp_out.jpg");
 		cvResize(img_out,img_out_orig,CV_INTER_LINEAR);			// Resize
 		if (Mode_cam1 !=2)
-			cvFlip(img_out_orig,img_out_orig,Mode_cam1);					// Flip
+			cvFlip(img_out_orig,img_out_orig,Mode_cam1);		// Flip
 
 		if (Option_cam == 1){
 			//Opt cam
 			img_opt=cvLoadImage("tmp_opt.jpg");
-			cvResize(img_opt,img_opt_orig,CV_INTER_LINEAR);			// Resize
-			cvFlip(img_opt_orig,img_opt_orig,Mode_cam2);					// Flip
+			cvResize(img_opt,img_opt_orig,CV_INTER_LINEAR);		// Resize
+			cvFlip(img_opt_orig,img_opt_orig,Mode_cam2);		// Flip
 		}
 
 		cvReleaseImage(&img_in);
@@ -482,194 +482,143 @@ int main(void)
 
 
         //Main loop
-		count = 0;
-		startTic = cvGetTickCount();
+	count = 0;
+	startTic = cvGetTickCount();
 
         double pre_t0 = 0;
-		double pre_t1 = 0;
-		
+	double pre_t1 = 0;
+	
 
-		printf("\n Start capture ...");
-		while(1){
+	printf("\n Start capture ...");
+	while(1){
 
-                 int key=cvWaitKey(wait_time);
-                 if (key==27) break;           //Termination for ESC key
+		 int key=cvWaitKey(wait_time);
+		 if (key==27) break;           //Termination for ESC key
 
-                 //* Capture Image *//
+		 //* Capture Image *//
 
-				//int count_sync = 0;
-				triggerTic = cvGetTickCount();
-				if (Option_cam == 1){
-					if (uvcGrab (videoOpt) < 0){
-						cerr << "Grabbing impossible" << endl;
-						err=1;
-						break;
-					}
-				}
-				if (uvcGrab (videoEye) < 0 || uvcGrab (videoOut) < 0) {
-					cerr << "Grabbing impossible" << endl;
-					err=1;
-					break;
-				}
-
-				sprintf(save_fname_in,"%s/%s_%08d.%s",Path_name,Img_name,count,Ext_name);
-				sprintf(save_fname_out,"%s/%s_out_%08d.%s",Path_name,Img_name,count,Ext_name);
-				writeVideoData(save_fname_in,videoEye);
-				writeVideoData(save_fname_out,videoOut);
-				if (Option_cam == 1){
-					sprintf(save_fname_opt,"%s/%s_opt_%08d.%s",Path_name,Img_name,count,Ext_name);
-					writeVideoData(save_fname_out,videoOpt);
-#ifdef WITH_SOUND_SUPPORT
-					if (Flg_audio){
-						alcGetIntegerv(device, ALC_CAPTURE_SAMPLES, (ALCsizei)sizeof(ALint), &iSamplesAvailable);
-
-						if (iSamplesAvailable > (BUFFERSIZE / sWaveHeader.wfex.nBlockAlign))
-						{
-							alcCaptureSamples(device, Buffer, BUFFERSIZE / sWaveHeader.wfex.nBlockAlign);
-
-
-							fwrite(Buffer, BUFFERSIZE, 1, pFile);	// Write the audio data to a file
-							iDataSize += BUFFERSIZE;				// Record total amount of data recorded
-						}
-					}
-#endif
-				}
-
-				
-			//* Emmbed Time Stamp *//	
-				//TODO
-				/*char h_t = (char)(t0/3600);
-			    char m_t = (char)((t0 - (double)h_t*3600)/60);
-				char s_t = (char)((t0 - (double)h_t*3600 - (double)(m_t)*60));
-				char ms0_t = (char)(double(t0 - int(t0))*1000/127);
-				char ms1_t = (char)(double(t0 - int(t0))*1000 - (double)ms0_t*127);
-
-				img_in_rect[count]->imageData[0] = cvRound ( s_t );
-				img_in_rect[count]->imageData[1] = cvRound ( m_t );
-				img_in_rect[count]->imageData[2] = cvRound ( h_t );
-				img_in_rect[count]->imageData[3] = 0;
-				img_in_rect[count]->imageData[4] = cvRound ( ms1_t );
-				img_in_rect[count]->imageData[5] = cvRound ( ms0_t );*/
-
-				count++;
-				printf("count: %d \n",count);
-
+		//int count_sync = 0;
+		triggerTic = cvGetTickCount();
+		if (Option_cam == 1){
+			if (uvcGrab (videoOpt) < 0){
+				cerr << "Grabbing impossible" << endl;
+				err=1;
+				break;
+			}
 		}
-		stopTic = cvGetTickCount();
+		if (uvcGrab (videoEye) < 0 || uvcGrab (videoOut) < 0) {
+			cerr << "Grabbing impossible" << endl;
+			err=1;
+			break;
+		}
 
-		processTime = (stopTic-startTic)/ticFrequency;
-		printf("\n\n  Save %.3f[sec]FrameRate is [ %.3f ]fps \n\n",processTime/1000000,(double)count*1000000/(double)processTime);
+		sprintf(save_fname_in,"%s/%s_%08d.%s",Path_name,Img_name,count,Ext_name);
+		sprintf(save_fname_out,"%s/%s_out_%08d.%s",Path_name,Img_name,count,Ext_name);
+		writeVideoData(save_fname_in,videoEye);
+		writeVideoData(save_fname_out,videoOut);
+		if (Option_cam == 1){
+			sprintf(save_fname_opt,"%s/%s_opt_%08d.%s",Path_name,Img_name,count,Ext_name);
+			writeVideoData(save_fname_out,videoOpt);
+	#ifdef WITH_SOUND_SUPPORT
+			if (Flg_audio){
+				alcGetIntegerv(device, ALC_CAPTURE_SAMPLES, (ALCsizei)sizeof(ALint), &iSamplesAvailable);
 
-#ifdef WITH_SOUND_SUPPORT
-		if (Option_cam == 1 && Flg_audio == 1){
-			alcCaptureStop(device);
-			// Check if any Samples haven't been consumed yet
-			alcGetIntegerv(device, ALC_CAPTURE_SAMPLES, 1, &iSamplesAvailable);
-			while (iSamplesAvailable)
-			{
 				if (iSamplesAvailable > (BUFFERSIZE / sWaveHeader.wfex.nBlockAlign))
 				{
 					alcCaptureSamples(device, Buffer, BUFFERSIZE / sWaveHeader.wfex.nBlockAlign);
-					fwrite(Buffer, BUFFERSIZE, 1, pFile);
-					iSamplesAvailable -= (BUFFERSIZE / sWaveHeader.wfex.nBlockAlign);
-					iDataSize += BUFFERSIZE;
-				}
-				else
-				{
-					alcCaptureSamples(device, Buffer, iSamplesAvailable);
-					fwrite(Buffer, iSamplesAvailable * sWaveHeader.wfex.nBlockAlign, 1, pFile);
-					iDataSize += iSamplesAvailable * sWaveHeader.wfex.nBlockAlign;
-					iSamplesAvailable = 0;
+
+
+					fwrite(Buffer, BUFFERSIZE, 1, pFile);	// Write the audio data to a file
+					iDataSize += BUFFERSIZE;				// Record total amount of data recorded
 				}
 			}
-
-			// Fill in Size information in Wave Header
-			fseek(pFile, 4, SEEK_SET);
-			iSize = iDataSize + sizeof(WAVEHEADER) - 8;
-			fwrite(&iSize, 4, 1, pFile);
-			fseek(pFile, 42, SEEK_SET);
-			fwrite(&iDataSize, 4, 1, pFile);
-			fclose(pFile);
-
-			alcCaptureCloseDevice(device);
+	#endif
 		}
+
+	
+	//* Emmbed Time Stamp *//	
+		//TODO
+		/*char h_t = (char)(t0/3600);
+	    char m_t = (char)((t0 - (double)h_t*3600)/60);
+		char s_t = (char)((t0 - (double)h_t*3600 - (double)(m_t)*60));
+		char ms0_t = (char)(double(t0 - int(t0))*1000/127);
+		char ms1_t = (char)(double(t0 - int(t0))*1000 - (double)ms0_t*127);
+
+		img_in_rect[count]->imageData[0] = cvRound ( s_t );
+		img_in_rect[count]->imageData[1] = cvRound ( m_t );
+		img_in_rect[count]->imageData[2] = cvRound ( h_t );
+		img_in_rect[count]->imageData[3] = 0;
+		img_in_rect[count]->imageData[4] = cvRound ( ms1_t );
+		img_in_rect[count]->imageData[5] = cvRound ( ms0_t );*/
+
+		count++;
+		printf("count: %d \n",count);
+
+	}
+	stopTic = cvGetTickCount();
+
+	processTime = (stopTic-startTic)/ticFrequency;
+	printf("\n\n  Save %.3f[sec]FrameRate is [ %.3f ]fps \n\n",processTime/1000000,(double)count*1000000/(double)processTime);
+
+#ifdef WITH_SOUND_SUPPORT
+	if (Option_cam == 1 && Flg_audio == 1){
+		alcCaptureStop(device);
+		// Check if any Samples haven't been consumed yet
+		alcGetIntegerv(device, ALC_CAPTURE_SAMPLES, 1, &iSamplesAvailable);
+		while (iSamplesAvailable)
+		{
+			if (iSamplesAvailable > (BUFFERSIZE / sWaveHeader.wfex.nBlockAlign))
+			{
+				alcCaptureSamples(device, Buffer, BUFFERSIZE / sWaveHeader.wfex.nBlockAlign);
+				fwrite(Buffer, BUFFERSIZE, 1, pFile);
+				iSamplesAvailable -= (BUFFERSIZE / sWaveHeader.wfex.nBlockAlign);
+				iDataSize += BUFFERSIZE;
+			}
+			else
+			{
+				alcCaptureSamples(device, Buffer, iSamplesAvailable);
+				fwrite(Buffer, iSamplesAvailable * sWaveHeader.wfex.nBlockAlign, 1, pFile);
+				iDataSize += iSamplesAvailable * sWaveHeader.wfex.nBlockAlign;
+				iSamplesAvailable = 0;
+			}
+		}
+
+		// Fill in Size information in Wave Header
+		fseek(pFile, 4, SEEK_SET);
+		iSize = iDataSize + sizeof(WAVEHEADER) - 8;
+		fwrite(&iSize, 4, 1, pFile);
+		fseek(pFile, 42, SEEK_SET);
+		fwrite(&iDataSize, 4, 1, pFile);
+		fclose(pFile);
+
+		alcCaptureCloseDevice(device);
+	}
 #endif
-		cvDestroyAllWindows();
-
-		/*char input[60];
-		cout << "Post-process? y/n Default:n" << endl;
-		cin >> input;
-		if(!strcmp(input,"y")){
-
-			cout << "Start post-processing" << endl;
-			// Correct images (resize and flip)
-			startTic=cvGetTickCount();
-			for(int i = 0;i<count;i++){
-				sprintf(save_fname_in,"%s/%s_%08d.%s",Path_name,Img_name,i,Ext_name);
-				sprintf(save_fname_out,"%s/%s_out_%08d.%s",Path_name,Img_name,i,Ext_name);
-				sprintf(save_fname_opt,"%s/%s_opt_%08d.%s",Path_name,Img_name,i,Ext_name);
-
-				//Eye cam
-				img_in=cvLoadImage(save_fname_in);
-				cvResize(img_in,img_in_orig,CV_INTER_LINEAR);			// Resize
-				if (Mode_cam0 !=2)
-					cvFlip(img_in_orig,img_in_orig,Mode_cam0);						// Flip
-				cvSaveImage(save_fname_in,img_in_orig);
-				cvReleaseImage(&img_in);
-
-				//Out cam
-				img_out=cvLoadImage(save_fname_out);
-				cvResize(img_out,img_out_orig,CV_INTER_LINEAR);			// Resize
-				if (Mode_cam1 !=2)
-					cvFlip(img_out_orig,img_out_orig,Mode_cam1);
-				cvSaveImage(save_fname_out,img_out_orig);
-				cvReleaseImage(&img_out);
-
-				if(Option_cam == 1){
-					img_opt=cvLoadImage(save_fname_opt);
-					cvResize(img_opt,img_opt_orig,CV_INTER_LINEAR);			// Resize
-					if (Mode_cam2 !=2)
-						cvFlip(img_opt_orig,img_opt_orig,Mode_cam2);
-					cvSaveImage(save_fname_opt,img_opt_orig);
-					cvReleaseImage(&img_opt);
-				}
+	cvDestroyAllWindows();
 
 
-				if((i+1)%10==0){
-					stopTic=cvGetTickCount();
-					processTime=(stopTic-startTic)/ticFrequency;
-					processTime/=1000000;
-					cout << i+1 << " frames done, "<<100*(i+1)/(double)count<<"%, "<< (count-i)*processTime/i << "s to go..." << endl;
-				}
-			}
-		}
+	cvReleaseImage(&img_in_orig);
 
-		cout << "done..." << endl;*/
+	cvReleaseImage(&img_out_orig);
 
-		cvReleaseImage(&img_in_orig);
-        //cvReleaseImage(&img_in_rect);
+	cvReleaseImage(&img_opt_orig);
 
-        cvReleaseImage(&img_out_orig);
-		//cvReleaseImage(&img_out_rect);
+	close_v4l2(videoEye);
+	close_v4l2(videoOut);
+	if(Option_cam)
+		close_v4l2(videoOpt);
+	free(videoEye);
+	free(videoOut);
+	free(videoOpt);
 
-		cvReleaseImage(&img_opt_orig);
-		//cvReleaseImage(&img_opt_rect);
-		close_v4l2(videoEye);
-		close_v4l2(videoOut);
-		if(Option_cam)
-			close_v4l2(videoOpt);
-		free(videoEye);
-		free(videoOut);
-		free(videoOpt);
+	char input[80];
+	cout << "Name of folder?"<<endl;
+	cin >> input;
+	if(strcmp(input,"")){
+		cout << "Renaming data folder to " << input << endl;
+		rename(Path_name,input);
 
-		char input[80];
-		cout << "Name of folder?"<<endl;
-		cin >> input;
-		if(strcmp(input,"")){
-			cout << "Renaming data folder to " << input << endl;
-			rename(Path_name,input);
-
-		}
+	}
         return 0;
 }
 
