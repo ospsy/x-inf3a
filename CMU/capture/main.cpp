@@ -397,7 +397,7 @@ int main(void)
 		int key=cvWaitKey(wait_time);
 		cout << "key : "<< key << endl;
     		if (key==27) break;
-		if (key==113 || key==83){
+		if (key==115 || key==83){
 			struct vdIn *tmp;
 			tmp=videoEye;
 			videoEye=videoOut;
@@ -594,7 +594,8 @@ int main(void)
 		alcCaptureCloseDevice(device);
 	}
 #endif
-	cvDestroyAllWindows();
+	cvDestroyWindow(winEye);
+	cvDestroyWindow(winOut);
 
 
 	cvReleaseImage(&img_in_orig);
@@ -612,13 +613,24 @@ int main(void)
 	free(videoOpt);
 
 	char input[80];
-	cout << "Name of folder?"<<endl;
-	cin >> input;
-	if(strcmp(input,"")){
-		cout << "Renaming data folder to " << input << endl;
-		rename(Path_name,input);
-
-	}
+	while(true){
+		cout << "Name of folder?"<<endl;
+		cin >> input;
+		if(strcmp(input,"")){
+			cout << "Renaming data folder to " << input << endl;
+			status=rename(Path_name,input);
+			if(status){
+				cout << "Error!" << endl;
+				if (errno==EEXIST){
+					cout << "Already exist" << endl;
+				}
+			}
+			else
+				break;
+		}
+	}	
+	
+	
         return 0;
 }
 
