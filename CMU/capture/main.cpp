@@ -105,7 +105,7 @@ int writeVideoData(const char *fileName, struct vdIn *vd){
 	}
 }
 
-int main(void)
+int main(int argc, char **argv)
 {	
 
         const char *winEye="Camera_eye";
@@ -276,6 +276,11 @@ int main(void)
 		out_cam_num = eye_cam_num;
 		eye_cam_num = tmp_num;
 
+	}
+
+	if(argc==3){
+		sscanf (argv[1],"%d",&eye_cam_num);
+		sscanf (argv[2],"%d",&out_cam_num);
 	}
 
 	struct vdIn *videoEye, *videoOut, *videoOpt;

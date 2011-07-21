@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
 		string  str1,str2,str3;
 
 		if ( setfile.open(Param_file_name) == 0 ){
-			fprintf(stderr,"Error.\n");
+			fprintf(stderr,"Error while trying to open param file.\n");
 			exit(1);
 		}
 		int fp_i= setfile.find_header("### Capture_params ###");
