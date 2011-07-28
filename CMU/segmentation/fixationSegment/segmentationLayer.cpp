@@ -158,6 +158,20 @@ int segLayer::copyToMask(IplImage* tmp){
 
 //----------------------------------**
 //Cues: color, intensity and texture
+int segLayer::edgeGPU(){
+  if(edgeGrad == NULL){
+    edgeGrad = cvCreateImage(cvGetSize(img), IPL_DEPTH_32F,1);    
+  }
+  if (edgeOri == NULL){
+    edgeOri = cvCreateImage(cvGetSize(img), IPL_DEPTH_32F,1);
+  }
+  IplImage* img_float = cvCreateImage(cvSize(width, height), IPL_DEPTH_32F, 3);
+  cvConvertScale(img, img_float, 1.0);
+  pbGPU(img_float, edgeGrad, edgeOri);
+  cvReleaseImage(&img_float);
+  return 0;
+}
+
 int segLayer::edgeCGTG(){
   if(edgeGrad == NULL){
     edgeGrad = cvCreateImage(cvGetSize(img), IPL_DEPTH_32F,1);    

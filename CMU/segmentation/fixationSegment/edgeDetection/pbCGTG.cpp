@@ -14,6 +14,10 @@
 //------------------------------------------------------------------------------
 //   Color and Gradient based edge detector
 //------------------------------------------------------------------------------
+void pbGPU(IplImage *im, IplImage* grad, IplImage* ori){
+
+}
+
 void pbCGTG(IplImage *im, IplImage* grad, IplImage* ori){
 	double BETA[] = {-4.5016,    1.6921,    0.9562,    1.0045,    2.8116};
 
