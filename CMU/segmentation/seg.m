@@ -135,7 +135,7 @@ for i=starti:endi,
             delete([tmp_dir, '/*.*']);
         end 
 
-        cmd=['export LD_LIBRARY_PATH=""; ', segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        cmd=['export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/opt/acml4.4.0/gfortran64/lib"; ', segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
         if sobel
              cmd=[cmd ' -sobel ']
         end

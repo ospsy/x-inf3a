@@ -60,6 +60,7 @@ class segLayer{
   int copyToMask(IplImage* tmp);
   
   //Cues
+  int edgeGPU();
   int edgeCGTG();
   int edgeBG();
   int edgeSobel();

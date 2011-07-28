@@ -24,6 +24,7 @@ CvMat *fitparab(CvMat &, double, double, double);
 CvMat *tgso (CvMat &, int, double, double, CvMat &, int);
 CvMat **tgmo(CvMat &, int, double, double*&, int, CvMat &, int);
 CvMat **cgmo (IplImage* , int , double* );
+void  pbGPU (IplImage *,IplImage*, IplImage*);
 void  pbCGTG (IplImage *,IplImage*, IplImage*);
 void  pbCGTG_NoMaxSup (IplImage *,IplImage*, IplImage*);
 void  pbCG (IplImage *,IplImage*, IplImage*);
