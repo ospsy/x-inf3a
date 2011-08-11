@@ -10,11 +10,12 @@
 #include "highgui.h"
 #include "savgol.h"
 #include "textureGradient.h"
-#include "damascene.h"
 
 //------------------------------------------------------------------------------
 //   Color and Gradient based edge detector
 //------------------------------------------------------------------------------
+#ifdef CUDA_SUPPORT
+#include "damascene.h"
 void pbGPU(IplImage *im, IplImage* grad, IplImage* ori, bool gPb){
   IplImage* im2=cvCreateImage( cvGetSize(im), IPL_DEPTH_8U, 4 );
   //Adding a fourth channel
@@ -40,6 +41,8 @@ void pbGPU(IplImage *im, IplImage* grad, IplImage* ori, bool gPb){
   }*/
   damascene(cvGetSize(im).width,cvGetSize(im).height,(uint*)(im2->imageData),(float*)(grad->imageData),(float*)(ori->imageData),gPb);
 }
+#endif
+
 
 void pbCGTG(IplImage *im, IplImage* grad, IplImage* ori){
 	double BETA[] = {-4.5016,    1.6921,    0.9562,    1.0045,    2.8116};
