@@ -1,7 +1,7 @@
 #! /bin/bash 
 
 name=$2
-prefix=basename $2
+prefix= `basename $2`
 cmd="~/Matlab/svn/segment -i ~/shona/$1/$name -pbOnly -o ~/shona/$1/pbBoundary/$prefix"
 
 echo $cmd
