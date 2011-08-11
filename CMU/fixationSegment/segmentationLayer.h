@@ -60,7 +60,9 @@ class segLayer{
   int copyToMask(IplImage* tmp);
   
   //Cues
+#ifdef CUDA_SUPPORT
   int edgeGPU(bool gPb=true);
+#endif
   int edgeCGTG();
   int edgeBG();
   int edgeSobel();

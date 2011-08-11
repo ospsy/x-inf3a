@@ -158,6 +158,7 @@ int segLayer::copyToMask(IplImage* tmp){
 
 //----------------------------------**
 //Cues: color, intensity and texture
+#ifdef CUDA_SUPPORT
 int segLayer::edgeGPU(bool gPb){
   if(edgeGrad == NULL){
     edgeGrad = cvCreateImage(cvGetSize(img), IPL_DEPTH_32F,1);    
@@ -168,6 +169,7 @@ int segLayer::edgeGPU(bool gPb){
   pbGPU(img, edgeGrad, edgeOri, gPb);
   return 0;
 }
+#endif
 
 int segLayer::edgeCGTG(){
   if(edgeGrad == NULL){
