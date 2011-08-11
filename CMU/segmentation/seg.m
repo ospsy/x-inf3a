@@ -124,7 +124,7 @@ for i=starti:endi,
         imshow(img); axis image;
         title(' Original image');
     end
-    segment_bin='./segment'; 
+    segment_bin='../../test2/bin/segment'; 
     fix_txt=fullfile(fix_dir, [name, '_fix.txt']);    
     
     if 1
@@ -159,9 +159,11 @@ for i=starti:endi,
         segfile=fullfile(tmp_dir, sprintf('_region_%d.png', j));
         if exist(segfile, 'file')
             fgMapWtColor=imread(segfile);
-            fgMapWtColor=preprocessRegion(fgMapWtColor>250);
-            fgMapWtColor=logical(fgMapWtColor)*255;
-            bd = bwboundaries(fgMapWtColor > 250, 8, 'noholes');
+            fgMapWtColor=fgMapWtColor(:,:,1);
+            %fgMapWtColor=preprocessRegion(fgMapWtColor>250);
+            %fgMapWtColor=logical(fgMapWtColor)*255;
+            %bd = bwboundaries(fgMapWtColor >250 , 8, 'noholes');
+            bd = bwboundaries(fgMapWtColor >250 , 8, 'noholes');
             if length(bd)>=1
                 cnt = cnt +1;
                 img_fg = img;
