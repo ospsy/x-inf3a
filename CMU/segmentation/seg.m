@@ -124,7 +124,7 @@ for i=starti:endi,
         imshow(img); axis image;
         title(' Original image');
     end
-    segment_bin='../../test2/bin/segment'; 
+    segment_bin='./segment'; 
     fix_txt=fullfile(fix_dir, [name, '_fix.txt']);    
     
     if 1
@@ -135,7 +135,12 @@ for i=starti:endi,
             delete([tmp_dir, '/*.*']);
         end 
 
-        cmd=['export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/opt/acml4.4.0/gfortran64/lib"; ', segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+	[a b]=fileparts(pathstr);
+
+	cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name];
+	unix(cmd); 
+
+        cmd=['export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/opt/acml4.4.0/gfortran64/lib"; ', segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
         if sobel
              cmd=[cmd ' -sobel ']
         end

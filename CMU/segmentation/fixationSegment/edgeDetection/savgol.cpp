@@ -132,7 +132,8 @@ CvMat *fitparab(CvMat &z, double ra, double rb, double theta) {
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-CvMat *tgso (CvMat &tmap, int ntex, double sigma, double theta, CvMat &tsim, int useChi2) {
+CvMat *tgso (CvMat &tmap, int ntex, double sigma, double theta, CvMat &tsim, int useChi2) {
+
 
 	CvMat *roundTmap=cvCreateMat(tmap.rows,tmap.cols,CV_32FC1);
 	CvMat *comp=cvCreateMat(tmap.rows,tmap.cols,CV_32FC1);
@@ -434,7 +435,8 @@ CvMat **tgmo (CvMat &tmap, int ntex, double sigma, double *&theta, int norient, 
 //------------------------------------------------------------------------------
 // Compute the color gradient at a single scale and multiple orientations
 //------------------------------------------------------------------------------
-CvMat **cgmo (IplImage* im, int norient, double* theta) {
+CvMat **cgmo (IplImage* im, int norient, double* theta) {
+
 	int   h  = im->height;
 	int   w  = im->width;
 	double imDiag = sqrt((double)(h*h+w*w));
@@ -498,6 +500,7 @@ CvMat **cgmo (IplImage* im, int norient, double* theta) {
 		cvMinMaxLoc(Lab[i],&min,&max);
 		if (min < 0 || max > 1) {
 			printf("error -- pixel values out of range [0,1]\n");
+			printf("min : %f max : %f\n",min, max);
 			exit(1);
 		}
 		for (int j=0;j<nChannels;j++) {
