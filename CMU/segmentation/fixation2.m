@@ -18,7 +18,7 @@ if(~exist(fix_dir, 'dir'))
 end
 
 if ~exist('grid','var')
-    grid=[0,0 ; [20*cos(pi/4:pi/4:2*pi) ; 20*sin(pi/4:pi/4:2*pi)]' ; [40*cos(pi/4:pi/4:2*pi) ; 40*sin(pi/4:pi/4:2*pi)]' ];
+    grid=[0,0 ; [30*cos(pi/4:pi/4:2*pi) ; 30*sin(pi/4:pi/4:2*pi)]' ; [60*cos(pi/4:pi/4:2*pi) ; 60*sin(pi/4:pi/4:2*pi)]' ];
 elseif grid==0
     grid=[0,0];
 elseif grid==1
