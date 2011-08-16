@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
   	frame1.readImage(argv[1]);
 
 	// Edge detection!
-  	frame1.edgeSobel();
+  	frame1.edgeCGTG();
 	frame1.generatePbBoundary();
 	frame1.displayPbBoundary(-1);
 

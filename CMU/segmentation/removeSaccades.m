@@ -47,16 +47,51 @@ end
 N=length(filenames);
 
 logs=read_log_file([input_dir '/image_save/Log_data.txt']);
+if isempty(logs)
+    logs=read_log_file([input_dir '/Log_data.txt']);
+end
 timestamps=logs.Data(:,14);
 fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
+
+fixs=max(fixs,-200);
+
+i=2;
+while i<size(fixs,1)
+    if logs.Data(i,7)>200
+        j=i;
+        while logs.Data(j,7)>200
+            j=j+1;
+        end
+        fixs(i:j,:)=ones(j-i+1,1)*fixs(i-1,:)+(1:j-i+1)'*(fixs(j+1,:)-fixs(i-1,:))/(j-i);
+        i=j;
+    end
+    i=i+1;
+end
+
+dlmwrite([input_dir '/tmp.txt'],fixs,'delimiter',' ');
+%TODO calculate flow
+flows=load([input_dir '/flows.txt']);
+flows(2:size(flows,1)+1,:)=flows;
+flows(1,:)=[0 0];
+fixs2(:,:)=fixs(:,:)-cumsum(flows,1);
+
+x=fixs2(:,1);
+y=fixs2(:,2);
+[THR,SORH,KEEPAPP] = ddencmp('den','wv',x(1:400));
+x= wdencmp('gbl',x,'db3',8,THR,SORH,KEEPAPP);
+y= wdencmp('gbl',y,'db3',8,THR,SORH,KEEPAPP);
+fixs2=[x y];
+
+fixs=fixs2+cumsum(flows,1);
+
 if type==1
-    fixations=dispersionExtraction(max(fixs,-200));
+    fixations=dispersionExtraction(fixs2);
 elseif type ==2
     fixations=HMMWithFlowExtraction(max(fixs,-200),flow_dir);
 elseif type ==3
     fixations=dispersionWithFlowExtraction(max(fixs,-200),flow_dir);
 else
-    fixations=HMMSimpleExtraction(max(fixs,-200));
+    fixations=HMMSimpleExtraction(fixs2);
 end;
 disp(fixations);
 
@@ -251,14 +286,21 @@ if ~exist('timestamps', 'var') || isempty(timestamps)
     timestamps = 1/30*(1:N)';
 end
 
+flows=zeros(N,2);
 for i=1:N-1
     flow=getFlow(fullfile(flow_dir,filenames(i).name));
     if fixs(i,1)<1 || fixs(i,2)<1 || fixs(i,2)>size(flow,1) || fixs(i,1)>size(flow,2)
        continue 
     end
-    f=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
-    fixs(i+1,:)=fixs(i+1,:)-f;
+    flows(i+1,:)=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
 end;
+fixs(:,:)=fixs(:,:)-cumsum(flows,1);
+x=fixs(:,1);
+y=fixs(:,2);
+[THR,SORH,KEEPAPP] = ddencmp('den','wv',x(1:400));
+x= wdencmp('gbl',x,'db3',8,THR,SORH,KEEPAPP);
+y= wdencmp('gbl',y,'db3',8,THR,SORH,KEEPAPP);
+fixs=[x y];
 
 result = dispersionExtraction(fixs,timestamps,durationThreshold,dispersionThreshold);
 end
@@ -277,7 +319,7 @@ if ~exist('durationThreshold', 'var') || isempty(durationThreshold)
 end
 
 if ~exist('dispersionThreshold', 'var') || isempty(dispersionThreshold)
-    dispersionThreshold=150;
+    dispersionThreshold=300;
 end
 
 N=size(fixs,1);
@@ -295,7 +337,7 @@ while i<=N
    n=0;%# of points in window
    sumPt=[0 0];
    minPt=[1000000 1000000];
-   maxPt=[0 0];
+   maxPt=[-1000000 -1000000];
    j=i;
    while j<=N && d<=durationThreshold %initialisation on a minimal duration window
        d=timestamps(j)-timestamps(i);
@@ -347,24 +389,43 @@ end
 function result = HMMWithFlowExtraction(fixs,flow_dir,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(fixs,1);
-
-velocities=fixs(2:N,:)-fixs(1:N-1,:);
 filenames=dir([flow_dir, '/capture_img_out_*.png']);
-if length(filenames)~=N-1
-    disp('All the flow calculation hasn''t been done...');
-end;
+
+% velocities=fixs(2:N,:)-fixs(1:N-1,:);
+% if length(filenames)~=N-1
+%     disp('All the flow calculation hasn''t been done...');
+% end;
+% for i=1:N-1
+%     flow=getFlow(fullfile(flow_dir,filenames(i).name));
+%     if fixs(i,1)<1 || fixs(i,2)<1 || fixs(i,2)>size(flow,1) || fixs(i,1)>size(flow,2)
+%        continue 
+%     end
+%     f=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
+% %     disp(velocities(i,:));
+% %     disp(f);
+% %     disp('_______________');
+%     velocities(i,:)=velocities(i,:)+f;
+% end
+% velocities=sum(velocities.^2,2).^0.5; % norm-2 of the velocities
+% velocities=velocities';
+
+flows=zeros(N,2);
 for i=1:N-1
     flow=getFlow(fullfile(flow_dir,filenames(i).name));
     if fixs(i,1)<1 || fixs(i,2)<1 || fixs(i,2)>size(flow,1) || fixs(i,1)>size(flow,2)
        continue 
     end
-    f=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
-%     disp(velocities(i,:));
-%     disp(f);
-%     disp('_______________');
-    velocities(i,:)=velocities(i,:)+f;
-end
+    flows(i+1,:)=[ flow(round(fixs(i,2)),round(fixs(i,1)),1) , flow(round(fixs(i,2)),round(fixs(i,1)),2)];
+end;
+fixs(:,:)=fixs(:,:)-cumsum(flows,1);
+x=fixs(:,1);
+y=fixs(:,2);
+[THR,SORH,KEEPAPP] = ddencmp('den','wv',x(1:400));
+x= wdencmp('gbl',x,'db3',8,THR,SORH,KEEPAPP);
+y= wdencmp('gbl',y,'db3',8,THR,SORH,KEEPAPP);
+fixs=[x y];
 
+velocities=fixs(2:N,:)-fixs(1:N-1,:);
 velocities=sum(velocities.^2,2).^0.5; % norm-2 of the velocities
 velocities=velocities';
 
