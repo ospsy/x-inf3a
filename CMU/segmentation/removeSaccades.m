@@ -69,7 +69,8 @@ while i<size(fixs,1)
 end
 
 dlmwrite([input_dir '/tmp.txt'],fixs,'delimiter',' ');
-%TODO calculate flow
+cmd=['export LD_LIBRARY_PATH=""; ../../../opticalFlow/bin/main ' input_dir];
+unix(cmd);
 flows=load([input_dir '/flows.txt']);
 flows(2:size(flows,1)+1,:)=flows;
 flows(1,:)=[0 0];
@@ -77,7 +78,7 @@ fixs2(:,:)=fixs(:,:)-cumsum(flows,1);
 
 x=fixs2(:,1);
 y=fixs2(:,2);
-[THR,SORH,KEEPAPP] = ddencmp('den','wv',x(1:400));
+[THR,SORH,KEEPAPP] = ddencmp('den','wv',x(1:600));
 x= wdencmp('gbl',x,'db3',8,THR,SORH,KEEPAPP);
 y= wdencmp('gbl',y,'db3',8,THR,SORH,KEEPAPP);
 fixs2=[x y];
@@ -111,7 +112,7 @@ if type2==0
     n=0;
     for i=1:size(fixations,1)
         k=fixations(i,1);
-        if fixations(i,3)<=0 || fixations(i,2)<=0 || fixations(i,3)>logs.siz_Outimg(1) || fixations(i,2)>logs.siz_Outimg(2)
+        if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
             fprintf('Dropping out-of-range fixation points...\n');
             if fixations(i,3)<=0
                 fprintf('\thigh\n');
@@ -210,6 +211,80 @@ elseif type2==1
             end
         end
     end
+elseif type2==2
+    n=0;
+    m=0;
+    fid = fopen([input_dir '/tmp.txt'], 'w');
+    for i=1:size(fixations,1)
+        k=fixations(i,1);
+        if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
+            fprintf('Dropping out-of-range fixation points...\n');
+            if fixs(k,2)<=0
+                fprintf('\thigh\n');
+            end
+            if fixs(k,1)<=0
+                fprintf('\tleft\n');
+            end
+            if fixs(k,2)>logs.siz_Outimg(1)
+                fprintf('\tbottom\n');
+            end
+            if fixs(k,1)>logs.siz_Outimg(2)
+                fprintf('\tright\n');
+            end
+            continue
+        end;
+        while m<fixations(i,1)
+            fprintf(fid,'\n');
+            m=m+1;
+        end;
+        
+        input_name=fullfile(input_dir,filenames(k).name);
+        img=imread(input_name);
+        img=drawCross(img,round(fixs(k,1)),round(fixs(k,2)),[0 255 0]);
+        imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
+        
+        fprintf(fid,'%i %i\n',round(fixs(k,1)),round(fixs(k,2)));
+        m=m+1;
+        
+%         n=n+1;
+%         bestScore=0;
+%         argMax=-1;
+%         for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
+%             input_name=fullfile(input_dir,filenames(k).name);
+%             img=imread(input_name);
+%             tmp=sharpnessScore(img);
+%             if using_flow
+%                 flow_name=fullfile(flow_dir,flowFilenames(k).name);
+%                 flow_img=imread(flow_name);
+%                 tmp=sharpnessScore(img)+sum(std(std(double(flow_img),0,1),0,2));
+%             end
+%             if tmp>bestScore
+%                 argMax=k;
+%                 bestScore=tmp;
+%             end
+%     %         if isVerticalSync(img) || k==1
+%     %             break;
+%     %         else
+%     %             k=k-1;
+%     %             fprintf('Dropping out-of-VSync frame : %i\n',k);
+%     %         end;
+%         end;
+%         input_name=fullfile(input_dir,filenames(argMax).name);
+%         output_name=fullfile(output_dir, filenames(argMax).name);
+%         names(n,:)=filenames(argMax).name;
+%         names2(n,:)=filenames(argMax+1).name;
+%         %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
+%         eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
+%         copyfile(input_name,output_name);
+%         img=imread(input_name);
+%         img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
+%         imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
+    end
+    while m<size(fixs,1)
+            fprintf(fid,'\n');
+            m=m+1;
+    end;
+    fclose(fid);
 else
     n=0;
     for i=1:size(fixations,1)

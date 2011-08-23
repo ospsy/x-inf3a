@@ -31,7 +31,7 @@ int damascene(uint width, uint height, uint* imageData, float* gradData, float* 
 
   int nEigNum = 9;
   float fEigTolerance = 1e-3;
-  int nTextonChoice = TEXTON32;
+  int nTextonChoice = TEXTON64;
 
   uint* devRgbU;
   int nPixels = width * height;
@@ -169,7 +169,7 @@ int damascene(uint width, uint height, uint* imageData, float* gradData, float* 
   oriDataInd=(int*)malloc(sizeof(int) * nPixels);
   cudaMemcpy(oriDataInd, devOri, nPixels*sizeof(int), cudaMemcpyDeviceToHost);
   for(int l=0;l<nPixels;l++){
-    oriData[l]=oriDataInd[l]*M_PIl/8;
+    oriData[l]=fmod(oriDataInd[l]*M_PIl/8+M_PIl/2,M_PIl);
   }
   free(oriDataInd);
   CUDA_SAFE_CALL(cudaFree(devOri));
