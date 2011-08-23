@@ -59,7 +59,7 @@ int main(int argc, char* argv[]){
 	tic1=cvGetTickCount();
 
 	IplImage *im=cvLoadImage(tmp), *im2;
-	int maxWidth=900;
+	int maxWidth=640;
 	bool resized=false;
 	float scale=1;
 	if(cvGetSize(im).width>maxWidth){
