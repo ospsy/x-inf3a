@@ -59,7 +59,11 @@ int main(int argc, char* argv[]){
 	tic1=cvGetTickCount();
 
 	IplImage *im=cvLoadImage(tmp), *im2;
+	#ifdef CUDA_SUPPORT
 	int maxWidth=640;
+	#else
+	int maxWidth=1280;
+	#endif
 	bool resized=false;
 	float scale=1;
 	if(cvGetSize(im).width>maxWidth){
