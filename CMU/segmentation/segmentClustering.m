@@ -21,8 +21,8 @@ disp(img_dir);
 disp(name);
 
 overlap_threshold = 0.9;
-minimum_segsize = 1600;
-onboarder_threshold=0.5;
+minimum_segsize = 20000;
+onboarder_threshold=0.3;
 resfiles=dir(sprintf('%s/%s_*_res.mat', input_dir, name));
 
 disp(length(resfiles));
