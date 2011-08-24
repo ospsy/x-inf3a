@@ -21,11 +21,11 @@ int main( int argc, char** argv )
     vector< vector<CvPoint> > gazePoints;
     vector< vector<CvPoint> > gazePointsInit;
     vector<CvPoint2D32f> flows;
-    sprintf(tmp,"%s/tmp.txt",argv[1]);
+    sprintf(tmp,"%s/fixs2.txt",argv[1]);
     
     ifstream ifs(tmp);
     if ( !ifs ) {     
-        printf("No tmp.txt\n");
+        printf("No fixs2.txt\n");
         exit(0);
     } else {
 		int nbPoints=0; 
@@ -184,7 +184,7 @@ int main( int argc, char** argv )
 			int x2=(int)(x+dx), y2=(int)(y+dy);
 			if(x2>=0 && y2>=0 && x2<im1->width && y2<im1->height){
 				trackedPoints2.push_back(cvPoint(x2,y2));
-                gazePoints[i+1].push_back(cvPoint(x2,y2));
+                gazePoints[i-1].push_back(cvPoint(x2,y2));
             }
 		    //printf("%f %f\n",dx,dy);
         }
@@ -199,21 +199,23 @@ int main( int argc, char** argv )
 
 
     //SHOW RESULTS
-    for(int i=0;i<gazePoints.size();i++){
-        sprintf(tmp,"%s/capture_img_out_%08i.jpg",argv[1],i+1);
-        im1=cvLoadImage(tmp);
-        IplImage *result=cvCreateImage(cvGetSize(im1),IPL_DEPTH_8U,3);
-		cvConvertImage(im1,result);
-		for(int k=0;k<gazePoints[i].size();k++){
-			cvCircle( result, gazePoints[i][k], 10, CV_RGB ( 0,255,0),-1);
-		}
-		printf("%i points tracked\n",gazePoints[i].size());
-		cvShowImage("mainWin", result );
-		cvWaitKey(0);
-		cvReleaseImage(&result);
-    }
+    if(false)
+        for(int i=0;i<gazePoints.size();i++){
+            sprintf(tmp,"%s/capture_img_out_%08i.jpg",argv[1],i);
+            im1=cvLoadImage(tmp);
+            IplImage *result=cvCreateImage(cvGetSize(im1),IPL_DEPTH_8U,3);
+		    cvConvertImage(im1,result);
+		    for(int k=0;k<gazePoints[i].size();k++){
+			    cvCircle( result, gazePoints[i][k], 10, CV_RGB ( 0,255,0),-1);
+		    }
+		    printf("%i points tracked\n",gazePoints[i].size());
+		    cvShowImage("mainWin", result );
+		    cvWaitKey(0);
+		    cvReleaseImage(&result);
+		    cvReleaseImage(&im1);
+        }
 
-    sprintf(tmp,"%s/tmp.txt",argv[1]);
+    sprintf(tmp,"%s/fixs3.txt",argv[1]);
 
     ofstream ofs(tmp, ios_base::out | ios_base::trunc);
     if ( !ofs ) {     

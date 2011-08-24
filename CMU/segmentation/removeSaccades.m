@@ -68,8 +68,8 @@ while i<size(fixs,1)
     i=i+1;
 end
 
-dlmwrite([input_dir '/tmp.txt'],fixs,'delimiter',' ');
-cmd=['export LD_LIBRARY_PATH=""; ../../../opticalFlow/bin/main ' input_dir];
+dlmwrite([input_dir '/fixs.txt'],fixs,'delimiter',' ');
+cmd=['export LD_LIBRARY_PATH=""; ../../opticalFlow/main ' input_dir];
 unix(cmd);
 flows=load([input_dir '/flows.txt']);
 flows(2:size(flows,1)+1,:)=flows;
@@ -214,7 +214,7 @@ elseif type2==1
 elseif type2==2
     n=0;
     m=0;
-    fid = fopen([input_dir '/tmp.txt'], 'w');
+    fid = fopen([input_dir '/fixs2.txt'], 'w');
     for i=1:size(fixations,1)
         k=fixations(i,1);
         if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
@@ -285,6 +285,66 @@ elseif type2==2
             m=m+1;
     end;
     fclose(fid);
+    cmd=['export LD_LIBRARY_PATH=""; ../../opticalFlow/main2 ' input_dir];
+    unix(cmd);
+    % get back the results of tracking
+    fid=fopen([input_dir '/fixs3.txt']);
+    m=0;
+    while ~feof(fid)
+        a=sscanf(fgetl(fid),'%i %i',[2 inf]);
+        a=a';
+        m=m+1;
+        fixationsTracked(m).fixs=a;
+    end
+    fclose(fid);
+    
+    % subsample video
+    n=0;
+    nbImages=0;
+    while n<size(fixationsTracked,2)
+        mask=[];
+        m=0;
+        while n<size(fixationsTracked,2) && m<10
+            n=n+1;
+            m=m+1;
+            if(size(fixationsTracked(n).fixs,1)>0)
+                mask=[mask n];
+            end
+        end
+        if size(mask)>0
+            bestScore=0;
+            argMax=-1;
+            for k=mask
+                input_name=fullfile(input_dir,filenames(k).name);
+                img=imread(input_name);
+                tmp=sharpnessScore(img);
+                if tmp>bestScore
+                    argMax=k;
+                    bestScore=tmp;
+                end
+            end;
+            nbImages=nbImages+1;
+            input_name=fullfile(input_dir,filenames(argMax).name);
+            output_name=fullfile(output_dir, filenames(argMax).name);
+            %names(n,:)=filenames(argMax).name;
+            %names2(n,:)=filenames(argMax+1).name;
+            %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
+            %eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
+            
+            copyfile(input_name,output_name);
+            img=imread(input_name);
+            fprintf('Image %i ',argMax);
+            for k=1:size(fixationsTracked(argMax).fixs,1)
+                img=drawCross(img,fixationsTracked(argMax).fixs(k,1),fixationsTracked(argMax).fixs(k,2),[0 255 0]);
+                fprintf(', %i %i ',fixationsTracked(argMax).fixs(k,1),fixationsTracked(argMax).fixs(k,2));
+            end
+            fprintf('\n');
+            imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
+            
+            fixationsResult(nbImages).fixs=fixationsTracked(argMax).fixs;
+            fixationsResult(nbImages).name=filenames(argMax).name;
+        end;
+    end
 else
     n=0;
     for i=1:size(fixations,1)
@@ -323,7 +383,8 @@ end
 % fclose(fid);
 names=char(names);
 names2=char(names2);
-save([output_dir '/save.mat'],'eye_pos','names','names2');
+save([output_dir '/save.mat'],'fixationsResult');
+% save([output_dir '/save.mat'],'eye_pos','names','names2','fixationsResult');
 end
 
 function result = sharpnessScore(img)
