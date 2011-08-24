@@ -52,7 +52,6 @@ void assignTextons(CvMat* tmap, CvMat* grayImg){
 	// 1. Read the filter Bank parameters
 	// 2. convolve the image with the filter to get the response.
 	char filterBankFileName[1000];
-	strcpy(filterBin_dirLoc, ".");
 	strcpy(filterBankFileName, filterBin_dirLoc);
 	strcat(filterBankFileName,"/texture_filterbank_13.txt");
 	FILE* fp_13 = fopen(filterBankFileName,"r");
