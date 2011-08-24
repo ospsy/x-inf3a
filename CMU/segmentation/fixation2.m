@@ -52,10 +52,21 @@ end
 
 filename=fullfile(input_dir, 'save.mat');
 load(filename);
-eye_pos=[eye_pos(:,1),eye_pos(:,2)];
 
-for i=starti:endi,    
-    imgFileName=fullfile(input_dir, names(i,:));
+% for i=starti:endi   
+%     imgFileName=fullfile(input_dir, names(i,:));
+%     
+%     disp(imgFileName);
+% 
+%     [pathstr, name, ext] = fileparts(imgFileName);
+%     
+%     fix_txt = [name, '_fix.txt'];
+%     fid = fopen(fullfile(fix_dir,fix_txt),'w');
+%     fprintf(fid,'%f %f\n',(ones(size(grid,1),1)*eye_pos(i,:)+grid)');
+%     fclose(fid);
+% end
+for i=1:size(fixationsResult,2)   
+    imgFileName=fullfile(input_dir, fixationsResult(i).name);
     
     disp(imgFileName);
 
@@ -63,7 +74,10 @@ for i=starti:endi,
     
     fix_txt = [name, '_fix.txt'];
     fid = fopen(fullfile(fix_dir,fix_txt),'w');
-    fprintf(fid,'%f %f\n',(ones(size(grid,1),1)*eye_pos(i,:)+grid)');
+    for j=1:size(fixationsResult(i).fixs,1) 
+        fprintf(fid,'%f %f\n',(ones(size(grid,1),1)*fixationsResult(i).fixs(j,:)+grid)');
+    end
     fclose(fid);
 end
+
 end

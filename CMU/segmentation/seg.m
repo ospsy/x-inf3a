@@ -135,12 +135,13 @@ for i=starti:endi,
             delete([tmp_dir, '/*.*']);
         end 
 
-	[a b]=fileparts(pathstr);
+        [a b]=fileparts(pathstr);
 
-	cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name];
-	unix(cmd); 
-
-        cmd=['export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/opt/acml4.4.0/gfortran64/lib"; ', segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
+        %cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name];
+        %unix(cmd); 
+        %cmd=['export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/opt/acml4.4.0/gfortran64/lib"; ', segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
+        
+        cmd=['export LD_LIBRARY_PATH="/usr/local/cuda/lib64:/opt/acml4.4.0/gfortran64/lib"; ', segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
         if sobel
              cmd=[cmd ' -sobel ']
         end

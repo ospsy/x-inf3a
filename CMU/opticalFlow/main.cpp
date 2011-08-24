@@ -20,11 +20,11 @@ int main( int argc, char** argv )
     char tmp[tmpLength];
     vector<CvPoint> gazePoints;
     vector<CvPoint2D32f> flows;
-    sprintf(tmp,"%s/tmp.txt",argv[1]);
+    sprintf(tmp,"%s/fixs.txt",argv[1]);
     
     ifstream ifs(tmp);
     if ( !ifs ) {     
-        printf("No tmp.txt\n");
+        printf("No fixs.txt\n");
         exit(0);
     } else {    
         while( ifs.good() ) { 
@@ -89,7 +89,7 @@ int main( int argc, char** argv )
 	    dx/=n;
 	    dy/=n;
 	}
-	if(true){//show result at each frame
+	if(false){//show result at each frame
 		IplImage *result=cvCreateImage(cvGetSize(im1),IPL_DEPTH_8U,3);
 		cvConvertImage(im1,result);
 		for(int j=0;j<cornerCount;j++){
