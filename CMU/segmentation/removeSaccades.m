@@ -30,7 +30,9 @@ end
 imgFixs_dir=[output_dir '/output/imgs_fixs'];
 if ~exist(imgFixs_dir, 'dir')
     mkdir(imgFixs_dir);
-end
+else
+    delete([imgFixs_dir, '/*.*']);
+end 
 
 
 filenames=dir([input_dir, '/capture_img_out_*.ppm']);
@@ -238,10 +240,10 @@ elseif type2==2
             m=m+1;
         end;
         
-        input_name=fullfile(input_dir,filenames(k).name);
-        img=imread(input_name);
-        img=drawCross(img,round(fixs(k,1)),round(fixs(k,2)),[0 255 0]);
-        imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
+%         input_name=fullfile(input_dir,filenames(k).name);
+%         img=imread(input_name);
+%         img=drawCross(img,round(fixs(k,1)),round(fixs(k,2)),[0 255 0]);
+%         imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
         
         fprintf(fid,'%i %i\n',round(fixs(k,1)),round(fixs(k,2)));
         m=m+1;
