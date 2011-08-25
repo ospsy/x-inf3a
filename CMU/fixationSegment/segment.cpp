@@ -62,7 +62,7 @@ int main(int argc, char* argv[]){
 	#ifdef CUDA_SUPPORT
 	int maxWidth=640;
 	#else
-	int maxWidth=1280;
+	int maxWidth=640;
 	#endif
 	bool resized=false;
 	float scale=1;

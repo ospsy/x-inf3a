@@ -22,7 +22,7 @@ if ~exist('grid','var')
 elseif grid==0
     grid=[0,0];
 elseif grid==1
-    grid=[0,0 ; [20*cos(pi/2:pi/2:2*pi) ; 20*sin(pi/2:pi/2:2*pi)]'];
+    grid=[0,0 ; [30*cos(pi/2:pi/2:2*pi) ; 30*sin(pi/2:pi/2:2*pi)]'];
 end
 
 filenames=dir([input_dir, '/*.ppm']);
