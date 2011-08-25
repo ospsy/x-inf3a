@@ -8,7 +8,7 @@
 #include "highgui.h"
 #include "fhead.h"
 
-#define WIN_SIZE 200
+#define WIN_SIZE 150
 
 int main( int argc, char** argv )
 {
@@ -100,16 +100,18 @@ int main( int argc, char** argv )
 	        		dy+=currFeatures[k].y-prevFeatures[k].y;
 				}
 			}
-			if(n!=0){
-				dx/=n;
-				dy/=n;
-			};
 		    //printf("%i points matched \n",n);
 		    free(prevFeatures);
 		    free(currFeatures);
 		    free(status);
 		    free(track_error);
 		    
+            if(n!=0){
+				dx/=n;
+				dy/=n;
+			}else{
+                continue;
+            }
 			int x2=(int)(x+dx), y2=(int)(y+dy);
 			if(x2>=0 && y2>=0 && x2<im1->width && y2<im1->height){
 				trackedPoints2.push_back(cvPoint(x2,y2));
@@ -171,16 +173,19 @@ int main( int argc, char** argv )
 	        		dy+=currFeatures[k].y-prevFeatures[k].y;
 				}
 			}
-			if(n!=0){
-				dx/=n;
-				dy/=n;
-			};
+
 		    //printf("%i points matched \n",n);
 		    free(prevFeatures);
 		    free(currFeatures);
 		    free(status);
 		    free(track_error);
-		    
+
+		    if(n!=0){
+				dx/=n;
+				dy/=n;
+			}else{
+                continue;
+            }
 			int x2=(int)(x+dx), y2=(int)(y+dy);
 			if(x2>=0 && y2>=0 && x2<im1->width && y2<im1->height){
 				trackedPoints2.push_back(cvPoint(x2,y2));
