@@ -40,7 +40,7 @@ for i=1:length(cs)
         sum_d = sum(overlap_distance(ci, ci), 2);
         [md,mi]=min(sum_d);
         segi = seg_ind{ci(mi)};
-        cluster_ind=[cluster_ind , ci(mi) ];
+        cluster_ind=[cluster_ind , mi ];
     end
     seg = zeros(size(segs{1}));
     seg(segi)=255;
