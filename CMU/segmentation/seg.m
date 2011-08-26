@@ -145,7 +145,7 @@ for i=starti:endi,
 
 	%cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name];
 	%unix(cmd); 
-     % cmd=[ segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
+    % cmd=[ segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
      
 	cmd=[segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
         if sobel
@@ -163,7 +163,6 @@ for i=starti:endi,
     end
     
     fixs=load(fix_txt);
-    fixs=[fixs(:,2), fixs(:,1)];
     
     cnt = 0;
     

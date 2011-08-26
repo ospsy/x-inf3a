@@ -1,4 +1,4 @@
-function seg_cluster = cluster_segs(segs, overlap_threshold)
+function [ seg_cluster, cluster_ind] = cluster_segs(segs, overlap_threshold)
 
 nsegs = length(segs);
 
@@ -28,6 +28,7 @@ cs = unique(c);
 
 seg_cluster = cell(length(cs),1);
 cluster_method = 1;
+cluster_ind=[];
 for i=1:length(cs)
 	ci=find(c==cs(i));
     segi=[];
@@ -39,6 +40,7 @@ for i=1:length(cs)
         sum_d = sum(overlap_distance(ci, ci), 2);
         [md,mi]=min(sum_d);
         segi = seg_ind{ci(mi)};
+        cluster_ind=[cluster_ind , ci(mi) ];
     end
     seg = zeros(size(segs{1}));
     seg(segi)=255;

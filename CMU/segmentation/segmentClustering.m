@@ -28,6 +28,7 @@ resfiles=dir(sprintf('%s/%s_*_res.mat', input_dir, name));
 disp(length(resfiles));
 
 segs=cell(0);
+fixs2=[];
 for j=1:length(resfiles)    
     res_mat = fullfile(input_dir, resfiles(j).name);
     if exist(res_mat, 'file')
@@ -50,15 +51,17 @@ for j=1:length(resfiles)
            toc
         end
 
-       if s>minimum_segsize&& ratio<onboarder_threshold % && STATS(1).Solidity>0.5
+       if s>minimum_segsize && ratio<onboarder_threshold % && STATS(1).Solidity>0.5
            segs = [segs, {fgMapWtColor}];
+           fixs2(size(fixs2,1)+1,:)=fixs(i,:);
        end
     end
 end
 if length(segs)<2
     segs_cluster=segs;
+    cluster_ind=[1];
 else
-    segs_cluster = cluster_segs(segs, overlap_threshold);
+   [ segs_cluster, cluster_ind] = cluster_segs(segs, overlap_threshold);
 end
 imgFileName = sprintf([img_dir,'/%s.ppm'], name);
 if~exist(imgFileName, 'file')
@@ -94,10 +97,7 @@ for j=1:length(segs_cluster)
 %             img_fg2 = imposelabel(img_fg2, fixPt, 11, [255, 0, 0]);
         fg2_name=[sprintf('%s_%03d_fg2.jpg', name,j)];
         disp(fg2_name);
-        img_fg2=drawCross(img_fg2,fixs(1,2),fixs(1,1),[0 255 0]);
-        for l=2:size(fixs,1)
-            img_fg2=drawCross(img_fg2,fixs(l,2),fixs(l,1),[0 0 255]);
-        end
+        img_fg2=drawCross(img_fg2,fixs2(cluster_ind(j),1),fixs2(cluster_ind(j),2),[0 255 0]);
         imwrite(img_fg2, fullfile(output_dir, fg2_name));
     end
 end
