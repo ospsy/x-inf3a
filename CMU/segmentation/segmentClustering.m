@@ -53,7 +53,7 @@ for j=1:length(resfiles)
 
        if s>minimum_segsize && ratio<onboarder_threshold % && STATS(1).Solidity>0.5
            segs = [segs, {fgMapWtColor}];
-           fixs2(size(fixs2,1)+1,:)=fixs(i,:);
+           fixs2(size(fixs2,1)+1,:)=fixs(j,:);
        end
     end
 end
