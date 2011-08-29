@@ -240,47 +240,9 @@ elseif type2==2
             m=m+1;
         end;
         
-%         input_name=fullfile(input_dir,filenames(k).name);
-%         img=imread(input_name);
-%         img=drawCross(img,round(fixs(k,1)),round(fixs(k,2)),[0 255 0]);
-%         imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
-        
         fprintf(fid,'%i %i\n',round(fixs(k,1)),round(fixs(k,2)));
         m=m+1;
         
-%         n=n+1;
-%         bestScore=0;
-%         argMax=-1;
-%         for k=round(fixations(i,1)-30/3*fixations(i,4)):round(fixations(i,1)+30/3*fixations(i,4))
-%             input_name=fullfile(input_dir,filenames(k).name);
-%             img=imread(input_name);
-%             tmp=sharpnessScore(img);
-%             if using_flow
-%                 flow_name=fullfile(flow_dir,flowFilenames(k).name);
-%                 flow_img=imread(flow_name);
-%                 tmp=sharpnessScore(img)+sum(std(std(double(flow_img),0,1),0,2));
-%             end
-%             if tmp>bestScore
-%                 argMax=k;
-%                 bestScore=tmp;
-%             end
-%     %         if isVerticalSync(img) || k==1
-%     %             break;
-%     %         else
-%     %             k=k-1;
-%     %             fprintf('Dropping out-of-VSync frame : %i\n',k);
-%     %         end;
-%         end;
-%         input_name=fullfile(input_dir,filenames(argMax).name);
-%         output_name=fullfile(output_dir, filenames(argMax).name);
-%         names(n,:)=filenames(argMax).name;
-%         names2(n,:)=filenames(argMax+1).name;
-%         %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
-%         eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
-%         copyfile(input_name,output_name);
-%         img=imread(input_name);
-%         img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
-%         imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
     end
     while m<size(fixs,1)
             fprintf(fid,'\n');
@@ -307,23 +269,23 @@ elseif type2==2
         mask=[];
         m=0;
         while n<size(fixationsTracked,2) && m<10
-            n=n+1;
-            m=m+1;
-            if(size(fixationsTracked(n).fixs,1)>0)
-                mask=[mask n];
-            end
+           n=n+1;
+           m=m+1;
+           if(size(fixationsTracked(n).fixs,1)>0)
+               mask=[mask n];
+           end
         end
         if size(mask)>0
             bestScore=0;
             argMax=-1;
             for k=mask
-                input_name=fullfile(input_dir,filenames(k).name);
-                img=imread(input_name);
-                tmp=sharpnessScore(img);
-                if tmp>bestScore
-                    argMax=k;
-                    bestScore=tmp;
-                end
+               input_name=fullfile(input_dir,filenames(k).name);
+               img=imread(input_name);
+               tmp=sharpnessScore(img);
+               if tmp>bestScore
+                   argMax=k;
+                   bestScore=tmp;
+               end
             end;
             nbImages=nbImages+1;
             input_name=fullfile(input_dir,filenames(argMax).name);
@@ -337,8 +299,8 @@ elseif type2==2
             img=imread(input_name);
             fprintf('Image %i ',argMax);
             for k=1:size(fixationsTracked(argMax).fixs,1)
-                img=drawCross(img,fixationsTracked(argMax).fixs(k,1),fixationsTracked(argMax).fixs(k,2),[0 255 0]);
-                fprintf(', %i %i ',fixationsTracked(argMax).fixs(k,1),fixationsTracked(argMax).fixs(k,2));
+               img=drawCross(img,fixationsTracked(argMax).fixs(k,1),fixationsTracked(argMax).fixs(k,2),[0 255 0]);
+               fprintf(', %i %i ',fixationsTracked(argMax).fixs(k,1),fixationsTracked(argMax).fixs(k,2));
             end
             fprintf('\n');
             imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));

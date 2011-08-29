@@ -15,14 +15,15 @@ if(~exist(output_dir, 'dir'))
     mkdir(output_dir);
 end
 
-logs=read_log_file([input_dir '/image_save/Log_data.txt']);
-file=[input_dir '/../save.mat'];
-if ~exist(file,'file')
-    disp('No save.mat file');
-    exit;
+fid=fopen([input_dir '/fixs3.txt']);
+m=0;
+while ~feof(fid)
+    a=sscanf(fgetl(fid),'%i %i',[2 inf]);
+    a=a';
+    m=m+1;
+    fixationsTracked(m).fixs=a;
 end
-
-load(file);
+fclose(fid);
 
 filenames=dir([input_dir, '/capture_img_out_*.ppm']);
 if(length(filenames)==0)
@@ -36,24 +37,31 @@ if(length(filenames)==0)
 end
 
 N=length(filenames);
-fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
+logs=read_log_file([input_dir '/image_save/Log_data.txt']);
+eye_pos=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
 
 n=1;
 for i=1:N
-    if strcmp(names(n,:),filenames(i).name)
-        [d t]=fileparts(names(n,:));
-        target=[segs_dir '/' t '_001_fg2.jpg'];
-        color=[0 255 0];
-        if ~exist(target,'file')
-            target=[input_dir '/' filenames(i).name];
-        end
-        n=n+1;
-    else
-        color=[255 0 0];
-        target=[input_dir '/' filenames(i).name];
+    [d name ext]=fileparts(filenames(i).name);
+    filenames2=dir([segs_dir '/' name '_*_fg2.jpg']);
+    img=imread([input_dir '/' filenames(i).name]);
+    N2=length(filenames2);
+    fprintf('%i segs found\n',N2);
+    for j=1:N2
+        im2=imread([segs_dir '/' filenames2(j).name]);
+        t=find(im2(:,:,1)<25 & im2(:,:,3)<25 & im2(:,:,2)>230);
+        [x,y]=ind2sub([size(im2,1),size(im2,2)],t);
+        t2=sub2ind(size(im2),x,y,1*ones(size(x)));
+        img(t2)=0;
+        t2=sub2ind(size(im2),x,y,2*ones(size(x)));
+        img(t2)=255;
+        t2=sub2ind(size(im2),x,y,3*ones(size(x)));
+        img(t2)=0;
     end
-    img=imread(target);
-    img = drawCross(img,fixs(i,1),fixs(i,2),color);
+    img=drawCross(img,eye_pos(i,1),eye_pos(i,2),[255 0 0]);
+    for k=1:size(fixationsTracked(i).fixs,1)
+        img=drawCross(img,fixationsTracked(i).fixs(k,1),fixationsTracked(i).fixs(k,2),[0 255 0]);
+    end
     imwrite(img,[output_dir '/' filenames(i).name]);
 end
 
