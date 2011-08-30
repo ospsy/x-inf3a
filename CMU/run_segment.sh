@@ -40,19 +40,7 @@ else
 	echo "Using Sobel algorithm"
 fi
 
-tmp=`ls ${input_dir}/capture_img_out_*.ppm | wc -l`
-if [ $tmp -eq 0 ]
-then
-	tmp=`ls ${input_dir}/capture_img_out_*.jpg | wc -l`
-fi
-if [ $tmp -eq 0 ]
-then
-	tmp=`ls ${input_dir}/capture_img_out_*.png | wc -l`
-fi
-if [ $tmp -eq 0 ]
-then
-	tmp=`ls ${input_dir}/capture_img_out_*.bmp | wc -l`
-fi
+tmp=`ls ${input_dir}/*.jpg | wc -l`
 if [ $tmp -eq 0 ]
 then
 	echo "No images in that directory"
@@ -67,7 +55,7 @@ for i in `seq 1 ${nb_threads} `
 do
 	first=`echo "scale=0; ((${i}-1)*${tmp}+1)/1" | bc`
 	last=`echo "scale=0; (${i}*${tmp})/1" | bc`
-	cmd="nice -18 matlab -nojvm -r addpath('segmentation');seg('$input_dir',$flow,$sobel,$first,$last);disp(clock);exit;"
+	cmd="nice -18 matlab -nojvm -r addpath('segmentation');seg('$input_dir',$flow,$sobel,$first,$last);exit;"
 	echo $cmd
 	$cmd & > /dev/null
 done

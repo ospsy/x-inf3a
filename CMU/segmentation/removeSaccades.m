@@ -15,11 +15,11 @@ if ~exist(input_dir, 'dir')
 end
 
 
-if ~exist('type', 'var')
+if ~exist('type', 'var') %saccades detection algorithm
     type=1;
 end
 
-if ~exist('type2', 'var')
+if ~exist('type2', 'var') %image extraction algorithm
     type2=2;
 end
 
@@ -35,19 +35,17 @@ else
 end 
 
 %% NEED TO CHANGE IT IF YOU CHANGE THE INPUT DATA (images)
-filenames=dir([input_dir, '/capture_img_out_*.ppm']);
-if(length(filenames)==0)
-    filenames=dir([input_dir, '/capture_img_out_*.jpg']);
-end
-if(length(filenames)==0)
-    filenames=dir([input_dir, '/capture_img_out_*.png']);
-end
-if(length(filenames)==0)
-    filenames=dir([input_dir, '/capture_img_out_*.bmp']);
-end
+imageBasename='/capture_img_out_*.jpg'; % basename of image files
+filenames=dir([input_dir, imageBasename]);
 N=length(filenames);
+if N==0
+    disp('No data!!!');
+    exit(1);
+end
 
 %% NEED TO CHANGE IT IF YOU CHANGE THE INPUT DATA (eyes positions data)
+%% what's needed is a N*2 matrix representing the coords (x,y) of the gaze
+%% in each frame
 logs=read_log_file([input_dir '/image_save/Log_data.txt']);
 if isempty(logs)
     logs=read_log_file([input_dir '/Log_data.txt']);
@@ -57,8 +55,7 @@ fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy; %Matrix N*2 for 
 
 fixs=max(fixs,-200);%thresolding to remove the -Inf values given by the eye-tracking system when it does not converge
 
-%% interpolating the eye's pos data according to the error score (probably
-%% not needed if using other inputs)
+% interpolating the eye's pos data according to the error score (PROBABLY NOT NEEDED FOR OTHER INPUTS)
 i=2;
 while i<size(fixs,1)
     if logs.Data(i,7)>200%error score
@@ -74,8 +71,10 @@ end
 
 %% biaising the values with the optical flow
 dlmwrite([input_dir '/fixs.txt'],fixs,'delimiter',' '); %write the values in a txt file
-cmd=['export LD_LIBRARY_PATH=""; ../../opticalFlow/main ' input_dir];
-unix(cmd);%launch the external program for calculation
+cmd=['export LD_LIBRARY_PATH=""; ./trackingGaze ' input_dir];
+if unix(cmd)%launch the external program for calculation
+    disp(['Impossible to use correctly the executable : ' cmd '. Is the folder correct and the executables compiled?']);
+end;
 flows=load([input_dir '/flows.txt']);%load the results of the computation
 flows(2:size(flows,1)+1,:)=flows;
 flows(1,:)=[0 0];
@@ -104,18 +103,18 @@ end;
 disp(fixations);
 
 %% deprecated (old optical flow method)
-names=zeros(1,size(filenames(1).name,2));
-names2=zeros(1,size(filenames(1).name,2));
-flowFilenames=dir([flow_dir, '/capture_img_out_*.png']);
-using_flow=false;
-if length(flowFilenames)~=N-1
-    disp('All the flow calculation hasn''t been done...');
-    using_flow=false;
-end;
+% flowFilenames=dir([flow_dir, '/capture_img_out_*.png']);
+% using_flow=false;
+% if length(flowFilenames)~=N-1
+%     disp('All the flow calculation hasn''t been done...');
+%     using_flow=false;
+% end;
 
 %% extraction of images from the fixations
 unix(['rm ' output_dir '/*.jpg']);
 unix(['rm ' imgFixs_dir '/*']);
+names=zeros(1,size(filenames(1).name,2));
+names2=zeros(1,size(filenames(1).name,2));
 eye_pos=zeros(1,2);
 if type2==0 % extract one image per fixation
     n=0;
@@ -160,18 +159,20 @@ if type2==0 % extract one image per fixation
     %             fprintf('Dropping out-of-VSync frame : %i\n',k);
     %         end;
         end;
+        
         input_name=fullfile(input_dir,filenames(argMax).name);
-        output_name=fullfile(output_dir, filenames(argMax).name);
+        new_name=sprintf('%010i.jpg',argMax);
+        output_name=fullfile(output_dir, new_name);
         names(n,:)=filenames(argMax).name;
         names2(n,:)=filenames(argMax+1).name;
-        %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
-        eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
+        fixationsResult(n).fixs=round([fixs(argMax,1) fixs(argMax,2)]);
+        fixationsResult(n).name=new_name;
         copyfile(input_name,output_name);
         img=imread(input_name);
-        img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
-        imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
+        img=drawCross(img,fixationsResult(argMax).fixs(1,1),fixationsResult(argMax).fixs(1,2),[0 255 0]);
+        imwrite(img,fullfile(imgFixs_dir,new_name));
     end
-elseif type2==1 % extract multthighiple images (if fixations is long enough)
+elseif type2==1 % extract multiple images (if fixations are long enough)
     green=[0 255 0];
     blue=[0 0 255];
     windowSize=20;
@@ -202,15 +203,16 @@ elseif type2==1 % extract multthighiple images (if fixations is long enough)
             gotOne=true;
             n=n+1;
             input_name=fullfile(input_dir,filenames(argMax).name);
-            output_name=fullfile(output_dir, filenames(argMax).name);
+            new_name=sprintf('%010i.jpg',argMax);
+            output_name=fullfile(output_dir, new_name);
             names(n,:)=filenames(argMax).name;
             names2(n,:)=filenames(argMax+1).name;
-            %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
-            eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
+            fixationsResult(n).fixs=round([fixs(argMax,1) fixs(argMax,2)]);
+            fixationsResult(n).name=new_name;
             copyfile(input_name,output_name);
             img=imread(input_name);
             img=drawCross(img,eye_pos(n,1),eye_pos(n,2),color);
-            imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
+            imwrite(img,fullfile(imgFixs_dir,new_name));
         end
         if gotOne
             if isequal(color,green)
@@ -257,7 +259,7 @@ elseif type2==2 % track fixations and extract one image every subsampleStep imag
             m=m+1;
     end;
     fclose(fid);
-    cmd=['export LD_LIBRARY_PATH=""; ../../opticalFlow/main2 ' input_dir];
+    cmd=['export LD_LIBRARY_PATH=""; ./trackingFixations ' input_dir];
     unix(cmd);
     % get back the results of tracking
     fid=fopen([input_dir '/fixs3.txt']);
@@ -297,11 +299,10 @@ elseif type2==2 % track fixations and extract one image every subsampleStep imag
             end;
             nbImages=nbImages+1;
             input_name=fullfile(input_dir,filenames(argMax).name);
-            output_name=fullfile(output_dir, filenames(argMax).name);
-            %names(n,:)=filenames(argMax).name;
-            %names2(n,:)=filenames(argMax+1).name;
-            %eye_pos(n,:)=round([fixations(i,2) fixations(i,3)]);
-            %eye_pos(n,:)=round([fixs(argMax,1) fixs(argMax,2)]);
+            new_name=sprintf('%010i.jpg',argMax);
+            output_name=fullfile(output_dir, new_name);
+            names(n,:)=filenames(argMax).name;
+            names2(n,:)=filenames(argMax+1).name;
             
             copyfile(input_name,output_name);
             img=imread(input_name);
@@ -311,10 +312,10 @@ elseif type2==2 % track fixations and extract one image every subsampleStep imag
                fprintf(', %i %i ',fixationsTracked(argMax).fixs(k,1),fixationsTracked(argMax).fixs(k,2));
             end
             fprintf('\n');
-            imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
+            imwrite(img,fullfile(imgFixs_dir,new_name));
             
             fixationsResult(nbImages).fixs=fixationsTracked(argMax).fixs;
-            fixationsResult(nbImages).name=filenames(argMax).name;
+            fixationsResult(nbImages).name=new_name;
         end;
     end
 else %extract all images in fixations duration
@@ -322,41 +323,22 @@ else %extract all images in fixations duration
     for i=1:size(fixations,1)
         for k=fixations(i,5):fixations(i,6)
             if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
-%                 fprintf('Dropping out-of-range fixation points...\n');
-%                 if fixs(k,2)<=0
-%                     fprintf('\thigh\n');
-%                 end
-%                 if fixs(k,1)<=0
-%                     fprintf('\tleft\n');
-%                 end
-%                 if fixs(k,2)>logs.siz_Outimg(1)
-%                     fprintf('\tbottom\n');
-%                 end
-%                 if fixs(k,1)>logs.siz_Outimg(2)
-%                     fprintf('\tright\n');
-%                 end
                 continue
             end;
             n=n+1;
             input_name=fullfile(input_dir,filenames(k).name);
-            output_name=fullfile(output_dir, filenames(k).name);
+            output_name=fullfile(output_dir, sprintf('%010i.jpg',k));
             names(n,:)=filenames(k).name;
             names2(n,:)=filenames(k+1).name;
-            eye_pos(n,:)=round([fixs(k,1) fixs(k,2)]);
+            fixationsResult(n).fixs=round([fixs(k,1) fixs(k,2)]);
+            fixationsResult(n).name=sprintf('%010i.jpg',k);
             copyfile(input_name,output_name);
-            %img=imread(input_name);
-            %img=imposelabel(img,eye_pos(n,:));
-            %imwrite(img,fullfile(imgFixs_dir,filenames(k).name));
         end
     end
 end
-% fid = fopen(fullfile(output_dir,'eye_positions.txt'),'w');
-% fprintf(fid,'%f %f\n',( fixations(:,2:3) )');
-% fclose(fid);
 names=char(names);
 names2=char(names2);
-save([output_dir '/save.mat'],'fixationsResult');
-% save([output_dir '/save.mat'],'eye_pos','names','names2','fixationsResult');
+save([output_dir '/save.mat'],'names','names2','fixationsResult');
 end
 
 %% SharpnessScore of an img, based on the mean and standard deviation of
