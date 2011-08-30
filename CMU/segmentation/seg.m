@@ -140,14 +140,17 @@ for i=starti:endi,
             delete([tmp_dir, '/*.*']);
         end 
 
+        [a b]=fileparts(pathstr);
 
-	[a b]=fileparts(pathstr);
+        %USE THIS FOR COMPUTING THE EDGE BOUNDARAY ON AN OTHER MACHINE (with a
+        %GPU for example)
+        %cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name]; %
+        %unix(cmd); 
+        % cmd=[ segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
 
-	%cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name];
-	%unix(cmd); 
-    % cmd=[ segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
-     
-	cmd=[segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        %USE THIS FOR CLASSIC COMPUTATION
+        cmd=[segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        
         if sobel
              cmd=[cmd ' -sobel ']
         end

@@ -16,11 +16,11 @@ end
 
 
 if ~exist('type', 'var')
-    type=0;
+    type=1;
 end
 
 if ~exist('type2', 'var')
-    type2=0;
+    type2=2;
 end
 
 if ~exist(output_dir, 'dir')
@@ -34,7 +34,7 @@ else
     delete([imgFixs_dir, '/*.*']);
 end 
 
-
+%% NEED TO CHANGE IT IF YOU CHANGE THE INPUT DATA (images)
 filenames=dir([input_dir, '/capture_img_out_*.ppm']);
 if(length(filenames)==0)
     filenames=dir([input_dir, '/capture_img_out_*.jpg']);
@@ -45,21 +45,23 @@ end
 if(length(filenames)==0)
     filenames=dir([input_dir, '/capture_img_out_*.bmp']);
 end
-
 N=length(filenames);
 
+%% NEED TO CHANGE IT IF YOU CHANGE THE INPUT DATA (eyes positions data)
 logs=read_log_file([input_dir '/image_save/Log_data.txt']);
 if isempty(logs)
     logs=read_log_file([input_dir '/Log_data.txt']);
 end
 timestamps=logs.Data(:,14);
-fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy;
+fixs=logs.Data(:,8:9)+ones(size(logs.Data,1),1)*logs.Offset_xy; %Matrix N*2 for the eyes coordinates in each frame (x,y)
 
-fixs=max(fixs,-200);
+fixs=max(fixs,-200);%thresolding to remove the -Inf values given by the eye-tracking system when it does not converge
 
+%% interpolating the eye's pos data according to the error score (probably
+%% not needed if using other inputs)
 i=2;
 while i<size(fixs,1)
-    if logs.Data(i,7)>200
+    if logs.Data(i,7)>200%error score
         j=i;
         while logs.Data(j,7)>200
             j=j+1;
@@ -70,14 +72,16 @@ while i<size(fixs,1)
     i=i+1;
 end
 
-dlmwrite([input_dir '/fixs.txt'],fixs,'delimiter',' ');
+%% biaising the values with the optical flow
+dlmwrite([input_dir '/fixs.txt'],fixs,'delimiter',' '); %write the values in a txt file
 cmd=['export LD_LIBRARY_PATH=""; ../../opticalFlow/main ' input_dir];
-unix(cmd);
-flows=load([input_dir '/flows.txt']);
+unix(cmd);%launch the external program for calculation
+flows=load([input_dir '/flows.txt']);%load the results of the computation
 flows(2:size(flows,1)+1,:)=flows;
 flows(1,:)=[0 0];
-fixs2(:,:)=fixs(:,:)-cumsum(flows,1);
+fixs2(:,:)=fixs(:,:)-cumsum(flows,1); %biaised values
 
+%% denoising
 x=fixs2(:,1);
 y=fixs2(:,2);
 [THR,SORH,KEEPAPP] = ddencmp('den','wv',x(1:600));
@@ -85,39 +89,42 @@ x= wdencmp('gbl',x,'db3',8,THR,SORH,KEEPAPP);
 y= wdencmp('gbl',y,'db3',8,THR,SORH,KEEPAPP);
 fixs2=[x y];
 
-fixs=fixs2+cumsum(flows,1);
+fixs=fixs2+cumsum(flows,1);%original fixations denoised
 
-if type==1
+%% saccades detection algorithms
+if type==0
+    fixations=HMMSimpleExtraction(fixs2);
+elseif type==1
     fixations=dispersionExtraction(fixs2);
 elseif type ==2
-    fixations=HMMWithFlowExtraction(max(fixs,-200),flow_dir);
+    fixations=HMMWithFlowExtraction(max(fixs,-200),flow_dir);%deprecated
 elseif type ==3
-    fixations=dispersionWithFlowExtraction(max(fixs,-200),flow_dir);
-else
-    fixations=HMMSimpleExtraction(fixs2);
+    fixations=dispersionWithFlowExtraction(max(fixs,-200),flow_dir);%deprecated
 end;
 disp(fixations);
 
-unix(['rm ' output_dir '/*.jpg']);
-unix(['rm ' imgFixs_dir '/*']);
-
+%% deprecated (old optical flow method)
 names=zeros(1,size(filenames(1).name,2));
 names2=zeros(1,size(filenames(1).name,2));
 flowFilenames=dir([flow_dir, '/capture_img_out_*.png']);
-using_flow=true;
+using_flow=false;
 if length(flowFilenames)~=N-1
     disp('All the flow calculation hasn''t been done...');
     using_flow=false;
 end;
+
+%% extraction of images from the fixations
+unix(['rm ' output_dir '/*.jpg']);
+unix(['rm ' imgFixs_dir '/*']);
 eye_pos=zeros(1,2);
-if type2==0
+if type2==0 % extract one image per fixation
     n=0;
     for i=1:size(fixations,1)
         k=fixations(i,1);
         if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
             fprintf('Dropping out-of-range fixation points...\n');
             if fixations(i,3)<=0
-                fprintf('\thigh\n');
+                fprintf('\ttop\n');
             end
             if fixations(i,2)<=0
                 fprintf('\tleft\n');
@@ -164,7 +171,7 @@ if type2==0
         img=drawCross(img,eye_pos(n,1),eye_pos(n,2),[0 255 0]);
         imwrite(img,fullfile(imgFixs_dir,filenames(argMax).name));
     end
-elseif type2==1
+elseif type2==1 % extract multthighiple images (if fixations is long enough)
     green=[0 255 0];
     blue=[0 0 255];
     windowSize=20;
@@ -213,7 +220,8 @@ elseif type2==1
             end
         end
     end
-elseif type2==2
+elseif type2==2 % track fixations and extract one image every subsampleStep images
+    subsampleStep=10;
     n=0;
     m=0;
     fid = fopen([input_dir '/fixs2.txt'], 'w');
@@ -222,7 +230,7 @@ elseif type2==2
         if fixs(k,1)<=0 || fixs(k,2)<=0 || fixs(k,2)>logs.siz_Outimg(1) || fixs(k,1)>logs.siz_Outimg(2)
             fprintf('Dropping out-of-range fixation points...\n');
             if fixs(k,2)<=0
-                fprintf('\thigh\n');
+                fprintf('\ttop\n');
             end
             if fixs(k,1)<=0
                 fprintf('\tleft\n');
@@ -268,7 +276,7 @@ elseif type2==2
     while n<size(fixationsTracked,2)
         mask=[];
         m=0;
-        while n<size(fixationsTracked,2) && m<10
+        while n<size(fixationsTracked,2) && m<subsampleStep
            n=n+1;
            m=m+1;
            if(size(fixationsTracked(n).fixs,1)>0)
@@ -309,7 +317,7 @@ elseif type2==2
             fixationsResult(nbImages).name=filenames(argMax).name;
         end;
     end
-else
+else %extract all images in fixations duration
     n=0;
     for i=1:size(fixations,1)
         for k=fixations(i,5):fixations(i,6)
@@ -351,6 +359,8 @@ save([output_dir '/save.mat'],'fixationsResult');
 % save([output_dir '/save.mat'],'eye_pos','names','names2','fixationsResult');
 end
 
+%% SharpnessScore of an img, based on the mean and standard deviation of
+%% gradient
 function result = sharpnessScore(img)
     tmp=im2double(rgb2gray(img));
     Gx=imfilter(imfilter(tmp,[-1 0 1]),[1;2;1]);
@@ -359,6 +369,7 @@ function result = sharpnessScore(img)
     result=norm([mean(gradient(:)) std(gradient(:))]); 
 end
 
+%% Deprecated, used when the vertical sync of frames was far from perfect
 function result = isVerticalSync(img)
 tmp=im2double(img);
 tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:);
@@ -366,6 +377,7 @@ tmp=tmp(2:size(tmp,1),:)-tmp(1:size(tmp,1)-1,:); % second degree derivative
 result = max(sum(tmp,2)/size(tmp,2)) < 0.07; 
 end
 
+%% deprecated, old optical flow method
 function result = dispersionWithFlowExtraction(fixs,flow_dir,timestamps,durationThreshold,dispersionThreshold)
 
 if ~exist('durationThreshold', 'var') || isempty(durationThreshold)
@@ -405,13 +417,14 @@ fixs=[x y];
 result = dispersionExtraction(fixs,timestamps,durationThreshold,dispersionThreshold);
 end
 
-% Keep relevant fixation points from raw data
+%% Keep relevant fixation points from raw data (dispersion based)
 % fixs : array of [x y] for each image
 % timestamps : vector of images' timestamps
 % result : matrix of found fixation points
-%       first column -> index of image
-%       second/third column -> x/y
-%       fourth column -> duration of fixation
+%       first column -> index of middle image
+%       second column -> duration of fixation
+%       third column -> index of first image in the fixation
+%       fourth column -> index of last image in the fixation
 function result = dispersionExtraction(fixs,timestamps,durationThreshold,dispersionThreshold)
 
 if ~exist('durationThreshold', 'var') || isempty(durationThreshold)
@@ -460,7 +473,7 @@ while i<=N
            j=j+1;
        end
        numberFixations=numberFixations+1;
-       result(numberFixations,:)=[round(i+n/2) sumPt/n d i j-1];
+       result(numberFixations,:)=[round(i+n/2) d i j-1];
        i=j;
    else
        i=i+1;
@@ -470,7 +483,14 @@ end
 fprintf('%i fixations points found \n',numberFixations);
 end
 
-
+%% Keep relevant fixation points from raw data (HMM based)
+% fixs : array of [x y] for each image
+% timestamps : vector of images' timestamps
+% result : matrix of found fixation points
+%       first column -> index of middle image
+%       second column -> duration of fixation
+%       third column -> index of first image in the fixation
+%       fourth column -> index of last image in the fixation
 function result = HMMSimpleExtraction(fixs,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(fixs,1);
@@ -486,6 +506,7 @@ end
 result= HMMExtraction(fixs,velocities,timestamps);
 end
 
+%% deprecated (old optical flow method)
 function result = HMMWithFlowExtraction(fixs,flow_dir,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(fixs,1);
@@ -540,7 +561,7 @@ function flow = getFlow(filename)
     flow=(double(imread(filename))/255-0.5)*40;
 end
 
-% Extraction based on Viterbi algorithm on Hidden Markov Models
+%% Extraction based on Viterbi algorithm on Hidden Markov Models
 function result = HMMExtraction(fixs,velocities,timestamps)
 addpath(genpath('../HMMall/'));
 N=size(velocities,1);
