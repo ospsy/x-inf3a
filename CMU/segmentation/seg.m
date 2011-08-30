@@ -1,29 +1,9 @@
 function seg(input_dir, flow,sobel, starti, endi)
-% Demo for single image only
-    % add paths
-% addpath(genpath('../../../shared'));
-% addpath(genpath('../Recog'));
-% addpath( fullfile(pwd,'/edgeDetector/'));
-% addpath( fullfile(pwd,'/mexSegFixatedRegion/Release'));
 
-%addpath( fullfile(pwd,'/activeSegmentation'));
-%addpath( fullfile(pwd,'/mexSegFixatedRegion/Debug'));
 
 if ~exist('input_dir', 'var')
-    input_dir = '../mydata/rsPNGV2';
-    input_dir = '/media/SEA_DISC/ObjRecog/mydata/AmazonFlickr/AppleiPodclassic/00001';
-    input_dir = '/media/SEA_DISC/data/egocentric_objects_intel_06_2009/keyframes';    
-    input_dir = '/media/SEA_DISC/ObjRecog/mydata/AmazonFlickr_ALL/AppleMagicMouse/00001';
-
-    input_dir = '/media/SEA_DISC/data/AlphaMattingDataset/all/';
-    
-    input_dir = '/media/SEA_DISC/data/GrabAlpha/composite_500';
-    
-    input_dir = '/media/SEA_DISC/data/WillowGarage/all';
-end
-
-if ~exist('randomly', 'var')
-    randomly = 1;    
+    disp('Need an input dir');
+    exit(1);
 end
 
 if ~exist('sobel', 'var')
@@ -31,7 +11,7 @@ if ~exist('sobel', 'var')
 end
 
 if ~exist('flow', 'var')
-    flow = 1;    
+    flow = 0;    
 end
 
 
@@ -117,10 +97,6 @@ for i=starti:endi,
     
     [pathstr, name, ext] = fileparts(imgFileName);
 
-    if 0
-        figure(100); 
-        set(gcf,'NAME','segmentation process(monocular)');
-    end
 
     % test image
     img  = imread(imgFileName);
@@ -142,15 +118,18 @@ for i=starti:endi,
 
         [a b]=fileparts(pathstr);
 
-        %USE THIS FOR COMPUTING THE EDGE BOUNDARAY ON AN OTHER MACHINE (with a
-        %GPU for example)
-        %cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name]; %
-        %unix(cmd); 
-        % cmd=[ segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
-
-        %USE THIS FOR CLASSIC COMPUTATION
-        cmd=[segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        if 0
+            %% USE THIS FOR COMPUTING THE EDGE BOUNDARAY ON AN OTHER MACHINE (with a
+            %% GPU for example)
+            cmd=['./segmentShonaBuyukada.sh ', b, ' ', filenames(i).name]; %
+            unix(cmd); 
+            cmd=[ segment_bin, ' -i ', imgFileName, ' -pb ', pathstr,'/pbBoundary/',name ,' -o ', tmp_dir, ' -f ',fix_txt];
+        else
+            %% USE THIS FOR CLASSIC COMPUTATION
+            cmd=[segment_bin, ' -i ', imgFileName, ' -o ', tmp_dir, ' -f ',fix_txt];
+        end;
         
+        %% Others options (sobel, flow)
         if sobel
              cmd=[cmd ' -sobel ']
         end

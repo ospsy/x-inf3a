@@ -1,5 +1,5 @@
 % Generate the fixations files for the images in input_dir based on the
-% eye_positions.txt file
+% save.mat file
 function fixation2(input_dir,grid, starti, endi)
 
 if ~exist('input_dir', 'var')
@@ -53,18 +53,6 @@ end
 filename=fullfile(input_dir, 'save.mat');
 load(filename);
 
-% for i=starti:endi   
-%     imgFileName=fullfile(input_dir, names(i,:));
-%     
-%     disp(imgFileName);
-% 
-%     [pathstr, name, ext] = fileparts(imgFileName);
-%     
-%     fix_txt = [name, '_fix.txt'];
-%     fid = fopen(fullfile(fix_dir,fix_txt),'w');
-%     fprintf(fid,'%f %f\n',(ones(size(grid,1),1)*eye_pos(i,:)+grid)');
-%     fclose(fid);
-% end
 for i=1:size(fixationsResult,2)   
     imgFileName=fullfile(input_dir, fixationsResult(i).name);
     

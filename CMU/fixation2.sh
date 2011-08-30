@@ -2,7 +2,7 @@
 
 if [ "$#" -lt 1 ]
 then
-	echo "Usage : <input_dir> [0|1]"
+	echo "Usage : <input_dir> [0|1|2]"
 	exit 0
 fi
 
@@ -23,5 +23,5 @@ else
 fi
 
 echo $cmd
-$cmd &
+$cmd
 	
